@@ -19,7 +19,7 @@
       <div class="spacer"></div>
       <div class="nav-and-info">
         <section v-if="!navIsOn" class="info">
-          <img class="face" :src="'/images/faces/' + selected.face" alt="selected.name">
+          <img class="face" :src="'images/faces/' + selected.face" alt="selected.name">
           <h2>{{selected.name}}</h2>
           <h3>{{selected.rating}}</h3>
           <p>{{selected.summary}}</p>
@@ -42,7 +42,7 @@
           <!-- <h3>{{group.low}} to {{group.high}} </h3> -->
           <div class="cmps" :class="{gms: group.isGms}">
             <span class="cmp" :title="cmp.summary" v-for='cmp of group.cmps'>
-              <img class="face" :src="'/images/faces/' + cmp.face" alt="cmp.name"
+              <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name"
                 @mouseover="selectCmp(cmp)" 
                 @click="togglePlayMode(cmp)"
                 :class="{
