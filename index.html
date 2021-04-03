@@ -31,13 +31,15 @@
           <p v-if="isInPlayMode" >{{selected.style}}</p>
         </section>
         <nav v-if="navIsOn">
-          <a v-for="group in groups" :href="'#' + group.title">{{group.title}}</a>
+          <a v-for="group in groups" :href="'#' + group.title.replace(' ','')">
+            {{group.title}}
+          </a>
          </nav>
       </div>
       
       <div class="groups">
         <section class="group" v-for="group in groups"> 
-          <a :name="group.title"></a>
+          <a :name="group.title.replace(' ','')"></a>
           <h1>{{group.title}}</h1> 
           <!-- <h3>{{group.low}} to {{group.high}} </h3> -->
           <div class="cmps" :class="{gms: group.isGms}">
