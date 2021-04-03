@@ -1,0 +1,67 @@
+<!Doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Ye Old Wizard</title>
+  <meta name="description" content="Ye Old Wizard">
+  <link rel="icon" type="image/png" href="images/favicon.ico"/>
+  <link rel="stylesheet" href="yeoldwiz.css">
+</head>
+<body>
+
+  <div id="app" v-cloak>
+    <header>
+      <span class="hamburger" @mouseover="switchNav">☰</span> 
+      Ye Old Wizard
+    </header>
+    <main>
+      <div class="spacer"></div>
+      <div class="nav-and-info">
+        <section v-if="!navIsOn" class="info">
+          <img class="face" :src="'/images/faces/' + selected.face" alt="selected.name">
+          <h2>{{selected.name}}</h2>
+          <h3>{{selected.rating}}</h3>
+          <p>{{selected.summary}}</p>
+          <p v-if="!isInPlayMode" >{{selected.bio}}</p>
+          <div v-if="isInPlayMode" class="buttons">
+            <a class="button yellow" @click="stopPlayMode">Cancel</a>
+            <a class="button blue">Play</a>
+          </div>
+          <p v-if="isInPlayMode" >{{selected.style}}</p>
+        </section>
+        <nav v-if="navIsOn">
+          <a v-for="group in groups" :href="'#' + group.title">{{group.title}}</a>
+         </nav>
+      </div>
+      
+      <div class="groups">
+        <section class="group" v-for="group in groups"> 
+          <a :name="group.title"></a>
+          <h1>{{group.title}}</h1> 
+          <!-- <h3>{{group.low}} to {{group.high}} </h3> -->
+          <div class="cmps" :class="{gms: group.isGms}">
+            <span class="cmp" :title="cmp.summary" v-for='cmp of group.cmps'>
+              <img class="face" :src="'/images/faces/' + cmp.face" alt="cmp.name"
+                @mouseover="selectCmp(cmp)" 
+                @click="togglePlayMode(cmp)"
+                :class="{
+                  selected: selected.name === cmp.name,
+                  inPlayMode: isInPlayMode && selected.name == cmp.name,
+                }"
+              >
+              <span>{{cmp.name}}</span>
+              <span>{{cmp.rating}}</span>
+            </span>
+          </div>
+        </section>
+      </div>>
+    </main>
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="yeoldwiz.js"></script>
+</body>
+</html>

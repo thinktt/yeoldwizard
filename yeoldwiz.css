@@ -1,0 +1,239 @@
+@font-face {
+  font-family: dosfont;
+  src: url(fonts/LessPerfectDOSVGA.ttf);
+}
+
+@font-face {
+  font-family: retro;
+  src: url(fonts/setback-tt-brk.ttf);
+}
+
+@font-face {
+  font-family: retro2;
+  src: url(fonts/bitpap.medium.ttf);
+}
+
+:root {
+  --nav-and-info-width: 20%
+}
+
+body {
+  margin-top: 0px;
+  margin-left: 0px;
+  margin-right: 0;
+  background-color: black;
+  color: white;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: dosfont;
+  background-image: url("/images/wood.png");
+  background-repeat: repeat-y repeat-x;
+  font-weight: lighter;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+}
+
+h2 {
+  font-weight: lighter;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+}
+
+h3 {
+  font-weight: lighter;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+}
+
+header {
+  width: 100%;
+  height: 2rem;
+  background-color: rgb(59, 31, 17);
+  display: block;
+  position: fixed;
+  z-index: 2;
+  line-height: 2rem;
+  padding-left: 1rem;
+  font-family: retro2;
+  font-size: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+.hamburger { 
+  cursor: pointer; 
+}
+
+main {
+  margin: 0 0 0 0;
+  display: flex;
+  flex-direction: row;
+}
+
+
+.nav-and-info {
+  height: 100%;
+  width: 20rem;
+  margin-top : 1rem;
+  background-color: rgb(49, 32, 7, .5);
+  position: fixed;
+  flex: 0 auto auto;
+  display: block;
+  padding: 1.5rem;
+  padding-top: 3.5rem;
+} 
+
+nav {
+  margin-top: 5rem;
+  text-align: center;
+}
+
+nav a {
+  display: block;
+  text-decoration: none;
+  color: white;
+  font-weight: lighter;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  line-height: 1.5rem;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.info .face {
+  zoom: 2;
+  image-rendering: pixelated;
+}
+
+.info h2, h3 {
+  margin: 0;
+}
+
+.info h2 {
+  font-size: 2rem;
+}
+
+
+.groups {
+  margin-top: 3rem;
+  margin-left: 25rem;
+  margin-bottom: 25rem;
+}
+
+
+.group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.group .face {
+  zoom: 1.5;
+}
+
+
+.cmps {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+  /* align-content: row-reverse; */
+  justify-content: center;
+}
+
+.gms {
+  flex-direction: row-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+.cmp {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cmp .face {
+  cursor: pointer;
+}
+
+.face {
+  width: 72px;
+  height: 93px;
+  margin: 3px;
+  border: 4px solid rgb(59, 31, 17);
+  image-rendering: crisp-edges;
+  /* zoom: 1; */
+  /* filter: brightness(1.1) contrast(1.5); */
+  /* image-rendering: smooth; */
+  /* image-rendering: pixelated; */
+}
+
+.selected {
+  border: 4px solid goldenrod;
+}
+
+.inPlayMode {
+  border: 4px solid rgb(0, 81, 255)
+}
+
+a.button{
+  display:inline-block;
+  padding:0.2em 0.5em;
+  border:0.16em solid #FFFFFF;
+  margin:0 0.3em 0.3em 0;
+  box-sizing: border-box;
+  text-decoration:none;
+  text-transform:uppercase;
+  font-size: 1.5em;
+  font-weight:400;
+  color:#FFFFFF;
+  text-align:center;
+  transition: all 0.15s;
+  /* text-shadow: none; */
+  /* font-family:'Roboto',sans-serif; */
+}
+a.blue {
+  border:0.16em solid rgb(0, 81, 255);
+  color: rgb(0, 81, 255);
+}
+a.yellow {
+  border:0.16em solid goldenrod;
+  color: goldenrod;
+}
+
+a.button.yellow:hover{
+  /* color:#DDDDDD; */
+  /* border-color: yellow; */
+  border-color:#DDDDDD;
+  cursor: pointer;
+}
+a.button.blue:hover{
+  /* color:#DDDDDD; */
+  /* border-color:rgb(78, 134, 255); */
+  border-color:#DDDDDD;
+  cursor: pointer;
+}
+a.button:active{
+  color:#BBBBBB;
+  border-color:#BBBBBB;
+}
+@media all and (max-width:30em){
+    a.button {
+    display:block;
+    margin:0.4em auto;
+  }
+}
+
+[v-cloak] { display: none !important; }
