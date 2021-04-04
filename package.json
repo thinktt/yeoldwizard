@@ -1,0 +1,24 @@
+{
+  "name": "yeoldwizard",
+  "author": "Tobias Toland",
+  "version": "1.0.0",
+  "description": "The Frontend for Ye Old Wizard",
+  "main": "yeoldwiz.js",
+  "scripts": {
+    "serve": "http-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thinktt/yeoldwizard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thinktt/yeoldwizard/issues"
+  },
+  "homepage": "https://github.com/thinktt/yeoldwizard#readme",
+  "devDependencies": {
+    "http-server": "^0.12.3"
+  }
+}
