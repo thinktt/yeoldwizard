@@ -23,7 +23,7 @@ if (match) {
 }
 
 
-// startApp()
+startApp()
 
 async function startApp() {
   const res = await fetch('personalities.json')
