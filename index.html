@@ -12,8 +12,15 @@
 
   <div id="app" v-cloak>
     <header>
-      <span class="hamburger" @mouseover="switchNav">☰</span> 
-      Ye Old Wizard
+      <span> 
+        <span class="hamburger" @mouseover="switchNav">☰</span> 
+        <span class="main-title">Ye Old Wizard</span>
+      </span>
+      <span class="sign-in">
+        <a href="https://oauth.lichess.org/oauth/authorize?response_type=code&client_id=L47TqpZn7iaJppGM&redirect_uri=http://localhost:8080&scope=preference:read">Sign In With Lichess</a>
+        <span>♞</span>
+      </span>
+      <!-- <img class="knight" src="images/wkight.png"> -->
     </header>
     <main>
       <div class="spacer"></div>

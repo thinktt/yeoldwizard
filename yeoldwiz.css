@@ -61,9 +61,24 @@ header {
   z-index: 2;
   line-height: 2rem;
   padding-left: 1rem;
+  /* font-family: retro2; */
+  
+  padding-top: 0.5rem;
+}
+
+.main-title {
   font-family: retro2;
   font-size: 1.5rem;
-  padding-top: 0.5rem;
+}
+
+.sign-in {
+  float: right;
+  margin-right: 2em;
+}
+
+.sign-in a {
+  text-decoration: none;
+  color: white;
 }
 
 .hamburger { 
