@@ -2,28 +2,58 @@
 // console.log(window.location.search.substr(1))
 
 
-const authCodeRegex = /code\=([a-f0-9]*)/
-const match = authCodeRegex.exec(window.location.search.substr(1))
-if (match) {
-  const code = match[1]
-  const query =  `?code=${code}`
-  fetch('http://localhost:5000/token' + query)
-  .then(res => {
-    console.log('Howdy')
-    console.log(res.json)
-    return res.json()
-  })
-  .then(data => {
-    console.log(`token: ${JSON.stringify(data)}`)
-  })
-  .catch(err => {
-    console.log('boo')
-    console.log(err)
-  })
+// const authCodeRegex = /code\=([a-f0-9]*)/
+// const match = authCodeRegex.exec(window.location.search.substr(1))
+// if (match) {
+//   const code = match[1]
+//   const query =  `?code=${code}`
+//   fetch('http://localhost:5000/token' + query)
+//   .then(res => {
+//     console.log('Howdy')
+//     console.log(res.json)
+//     return res.json()
+//   })
+//   .then(data => {
+//     console.log(`token: ${JSON.stringify(data)}`)
+//   })
+//   .catch(err => {
+//     console.log('boo')
+//     console.log(err)
+//   })
+// }
+
+doAccountFlow()
+
+async function doAccountFlow() {
+  // first check if this is a Athorization callback
+  const authCodeRegex = /code\=([a-f0-9]*)/
+  const match = authCodeRegex.exec(window.location.search.substr(1))
+  if (match) {
+    console.log("Auth callback detected, attempting to fetch tokens")
+    const code = match[1]
+    const query =  `?code=${code}`
+    try {
+      let res = await fetch('http://localhost:5000/token' + query)
+      console.log(res.status)
+      console.log(res.statusText)
+      const tokens = await res.json() 
+      console.log(tokens)
+      
+      res = await fetch('https://lichess.org/api/account', {
+        headers: {
+          'Authorization' : 'Bearer ' + tokens.access_token, 
+        }
+      }) 
+      const account = await res.json()
+      console.log(account)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  
+  startApp()
 }
 
-
-startApp()
 
 async function startApp() {
   const res = await fetch('personalities.json')
