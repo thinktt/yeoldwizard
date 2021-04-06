@@ -1,26 +1,6 @@
+// const yowProxyUrl = 'http://localhost:5000'
+const yowProxyUrl = 'https://yowproxy.herokuapp.com'
 
-// console.log(window.location.search.substr(1))
-
-
-// const authCodeRegex = /code\=([a-f0-9]*)/
-// const match = authCodeRegex.exec(window.location.search.substr(1))
-// if (match) {
-//   const code = match[1]
-//   const query =  `?code=${code}`
-//   fetch('http://localhost:5000/token' + query)
-//   .then(res => {
-//     console.log('Howdy')
-//     console.log(res.json)
-//     return res.json()
-//   })
-//   .then(data => {
-//     console.log(`token: ${JSON.stringify(data)}`)
-//   })
-//   .catch(err => {
-//     console.log('boo')
-//     console.log(err)
-//   })
-// }
 
 doAccountFlow()
 
@@ -33,7 +13,8 @@ async function doAccountFlow() {
     const code = match[1]
     const query =  `?code=${code}`
     try {
-      let res = await fetch('http://localhost:5000/token' + query)
+      let url = yowProxyUrl + '/token' + query
+      let res = await fetch(url)
       console.log(res.status)
       console.log(res.statusText)
       const tokens = await res.json() 
