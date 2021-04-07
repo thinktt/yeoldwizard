@@ -10,7 +10,7 @@ if (window.location.host == 'localhost:8080') {
   redirectQuery = '&redirect_uri=http://localhost:8080'
 } else {
   clientIdQuery = '&client_id=L9Yucz97TJAgWsGU'
-  redirectQuery = '&redirect_uri=https://thinktt.github.io/yeoldwizard/'
+  redirectQuery = '&redirect_uri=https://thinktt.github.io/yeoldwizard'
 }
 
 
