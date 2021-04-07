@@ -5,38 +5,53 @@ const yowProxyUrl = 'https://yowproxy.herokuapp.com'
 doAccountFlow()
 
 async function doAccountFlow() {
+  if (window.localStorage.user) {
+    console.log('User ' + window.localStorage.user + ' found')
+    startApp(window.localStorage.user)
+    return
+  }
+
   // first check if this is a Athorization callback
   const authCodeRegex = /code\=([a-f0-9]*)/
   const match = authCodeRegex.exec(window.location.search.substr(1))
   if (match) {
+    //null starts the app with knight spining to show it's trying to connect
+    const app = await startApp(null)
+
     console.log("Auth callback detected, attempting to fetch tokens")
     const code = match[1]
     const query =  `?code=${code}`
     try {
       let url = yowProxyUrl + '/token' + query
       let res = await fetch(url)
-      console.log(res.status)
-      console.log(res.statusText)
+      console.log('response: ', res.status, res.statusText)
       const tokens = await res.json() 
-      console.log(tokens)
-      
+      console.log('Setting tokens is local storage')
+      tokens.fetchTime = Math.floor(Date.now() / 1000)
+      window.localStorage.tokens = tokens
+  
       res = await fetch('https://lichess.org/api/account', {
         headers: {
           'Authorization' : 'Bearer ' + tokens.access_token, 
         }
       }) 
       const account = await res.json()
-      console.log(account)
+      console.log('Setting user ' + account.username + 'in local storage')
+      localStorage.user = account.username
+      app.user = account.username
+
     } catch (err) {
       console.log(err)
     }
+    return     
   }
   
+  // startApp with no user starts app in a singed out state
   startApp()
 }
 
 
-async function startApp() {
+async function startApp(user) {
   const res = await fetch('personalities.json')
   const cmpsObj = await res.json()
   const cmps = Object.entries(cmpsObj).map(e => e[1]).reverse()
@@ -44,8 +59,10 @@ async function startApp() {
   const app = new Vue({
     el: '#app',
     data: {
+      user: user,
       selected: cmpsObj.Chessmaster,
       navIsOn: true,
+      shouldShowSignOut: false,
       isInPlayMode: false,
       groups : [
         {
@@ -112,6 +129,13 @@ async function startApp() {
       stopPlayMode(){
         // console.log(isInPlayMode)
         this.isInPlayMode = false
+      },
+      toggleSignOut(shouldShow) {
+        this.shouldShowSignOut = shouldShow
+      },
+      signOut() {
+        this.user = ""
+        window.localStorage.clear()
       }
     }
   })
@@ -119,6 +143,8 @@ async function startApp() {
   for (const group of app.groups) {
     group.cmps = getRatingGroup(cmps, group.high, group.low)
   }
+
+  return app
 }
 
 function getRatingGroup(cmps, high, low) {

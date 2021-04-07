@@ -9,6 +9,12 @@
 }
 
 @font-face {
+  font-family: enigmax;
+  src: url(fonts/enigmax.ttf);
+}
+
+
+@font-face {
   font-family: retro2;
   src: url(fonts/bitpap.medium.ttf);
 }
@@ -74,6 +80,7 @@ header {
 .sign-in {
   float: right;
   margin-right: 2em;
+  line-height: 1.25em;
 }
 
 .sign-in a {
@@ -81,8 +88,46 @@ header {
   color: white;
 }
 
+.sign-in:hover {
+  cursor: pointer;
+}
+
+.sign-out {
+  float: right;
+  background-color: rgb(59, 31, 17);
+  padding-right: 2em;
+  padding-left: 2em;
+  padding-top: .25em;
+}
+
+.sign-out:hover {
+  cursor: pointer;
+}
+
+.knight {
+  display: inline-block;
+  width: 1em;
+  font-size: 1.25em;
+  font-family: enigmax;
+}
+
+.spin {
+  animation-name: spin;
+  animation-duration: 1900ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  /* transform-origin: center;  */
+}
+
+@keyframes spin {
+  from {transform:rotate(0deg);}
+  to {transform:rotate(360deg);}
+}
+
+
 .hamburger { 
   cursor: pointer; 
+  line-height: 1.25em;
 }
 
 main {
