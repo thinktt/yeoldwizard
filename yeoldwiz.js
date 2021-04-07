@@ -1,5 +1,17 @@
 // const yowProxyUrl = 'http://localhost:5000'
 const yowProxyUrl = 'https://yowproxy.herokuapp.com'
+const oauthUrl = 'https://oauth.lichess.org/oauth/authorize' 
+const oauthQuery = '?response_type=code'
+const scopeQuery = '&scope=preference:read'
+
+let clientIdQuery, redirectQuery
+if (window.location.host == 'localhost:8080') {
+  clientIdQuery = '&client_id=L47TqpZn7iaJppGM'
+  redirectQuery = '&redirect_uri=http://localhost:8080'
+} else {
+  clientIdQuery = '&client_id=L9Yucz97TJAgWsGU'
+  redirectQuery = '&redirect_uri=https://thinktt.github.io/yeoldwizard/'
+}
 
 
 doAccountFlow()
@@ -67,6 +79,7 @@ async function startApp(user) {
       navIsOn: true,
       shouldShowSignOut: false,
       isInPlayMode: false,
+      signInLink: oauthUrl + oauthQuery + scopeQuery + clientIdQuery + redirectQuery,
       groups : [
         {
           title: 'The Wizard',

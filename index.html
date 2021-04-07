@@ -31,8 +31,9 @@
       </span>
       
       <span v-else class="sign-in">
-        <a href="https://oauth.lichess.org/oauth/authorize?response_type=code&client_id=L47TqpZn7iaJppGM&redirect_uri=http://localhost:8080&scope=preference:read">Sign In With Lichess</a>
+        <a :href="signInLink">Sign In With Lichess</a>
         <div class="knight">♞</div>
+        <!-- <div>{{signInLink}}</div> -->
       </span>
 
     </header>
