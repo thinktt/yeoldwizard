@@ -15,9 +15,12 @@ async function doAccountFlow() {
   const authCodeRegex = /code\=([a-f0-9]*)/
   const match = authCodeRegex.exec(window.location.search.substr(1))
   if (match) {
+    // go ahead and clear the query string as we no longer need it
+    window.history.replaceState({}, null, window.location.origin + window.location.pathname)
+    
     //null starts the app with knight spining to show it's trying to connect
     const app = await startApp(null)
-
+    
     console.log("Auth callback detected, attempting to fetch tokens")
     const code = match[1]
     const query =  `?code=${code}`
@@ -28,7 +31,7 @@ async function doAccountFlow() {
       const tokens = await res.json() 
       console.log('Setting tokens is local storage')
       tokens.fetchTime = Math.floor(Date.now() / 1000)
-      window.localStorage.tokens = tokens
+      window.localStorage.tokens = JSON.stringify(tokens)
   
       res = await fetch('https://lichess.org/api/account', {
         headers: {

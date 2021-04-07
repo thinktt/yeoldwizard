@@ -24,15 +24,17 @@
           <div @click="signOut" class="sign-out">Sign Out</div>
         </div>
       </span>
+      
       <span v-else-if="user === null" class="sign-in">
         <span> Connecting to Lichess </span>
         <div class="knight spin">♞</div>
       </span>
+      
       <span v-else class="sign-in">
         <a href="https://oauth.lichess.org/oauth/authorize?response_type=code&client_id=L47TqpZn7iaJppGM&redirect_uri=http://localhost:8080&scope=preference:read">Sign In With Lichess</a>
         <div class="knight">♞</div>
       </span>
-      <!-- <img class="knight" src="images/wkight.png"> -->
+
     </header>
     <main>
       <div class="spacer"></div>
