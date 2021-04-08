@@ -2,12 +2,8 @@ const oauthUrl = 'https://oauth.lichess.org/oauth/authorize'
 const oauthQuery = '?response_type=code'
 const scopeQuery = '&scope=preference:read'
 
-// const yowProxyUrl = 'http://localhost:5000'
-const clientIdQuery = '&client_id=L47TqpZn7iaJppGM'
-// const redirectQuery = '&redirect_uri=http://localhost:8080'
-
 const yowProxyUrl = 'https://yowproxy.herokuapp.com'
-// const clientIdQuery = '&client_id=L9Yucz97TJAgWsGU'
+const clientIdQuery = '&client_id=L47TqpZn7iaJppGM'
 const redirectQuery = '&redirect_uri=https://thinktt.github.io/yeoldwizard'
 
 
