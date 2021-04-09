@@ -8,8 +8,8 @@ let redirectUri = 'https://thinktt.github.io/yeoldwizard'
 if (window.localStorage.redirectUri) redirectUri = window.localStorage
 if (window.localStorage.yowProxyUrl) yowProxyUrl = window.localStorage.yowProxyUrl
 
-// const yowProxyUrl = 'http://localhost:5000'
-// const redirectUri = 'http://localhost:8080'
+// yowProxyUrl = 'http://localhost:5000'
+redirectUri = 'http://localhost:8080'
 let tokens
 
 doAccountFlow()
@@ -76,9 +76,15 @@ async function startApp(user) {
       user: user,
       selected: cmpsObj.Chessmaster,
       navIsOn: true,
+      infoMode: 'browsing',
+      currentGame: 'RklLOoMREuDI',
       shouldShowSignOut: false,
+      selectionIsLocked: false,
       isInPlayMode: false,
       isStartingGame: false,
+      isSignedIn: false,
+      gameIsStarted: false,
+      gameUrl: '',
       signInLink: oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + clientId + '&redirect_uri=' + redirectUri,
       groups : [
         {
@@ -129,22 +135,37 @@ async function startApp(user) {
     methods: {
       switchNav(event) {
          this.navIsOn = true
-         this.isInPlayMode = false
       },
-      selectCmp(cmp) {
-        if (!this.isInPlayMode) {
+      showCmp(cmp) {
+        this.navIsOn = false
+        if (!this.selectionIsLocked) {
           this.selected = cmpsObj[cmp.name]
-          this.navIsOn = false
         }
       },
-      togglePlayMode(cmp) {
-        this.selected = cmpsObj[cmp.name]
+      toggleSelectionLock(cmp) {
+        console.log((this.infoMode !== 'selected' && this.infoMode !== 'browsing'))
+        console.log(this.infoMode)
+        // do nothing if infoMode has gone past 'selected', in this 
+        // case we are in a state that should not unlock the selection 
+        if (this.infoMode !== 'selected' && this.infoMode !== 'browsing') return
+        
         this.navIsOn = false
-        this.isInPlayMode = !this.isInPlayMode
+        this.selected = cmpsObj[cmp.name]
+        
+        console.log(this.infoMode === 'browsing')
+        if (this.infoMode === 'browsing') {
+          console.log('what now?')
+          this.infoMode = 'selected'
+          this.selectionIsLocked = true
+          return
+        } else {
+          this.infoMode = 'browsing'
+          this.selectionIsLocked = false
+        }
       },
-      stopPlayMode(){
-        // console.log(isInPlayMode)
-        this.isInPlayMode = false
+      stopSelectionLock(){
+        this.infoMode = 'browsing'
+        this.selectionIsLocked = false
       },
       toggleSignOut(shouldShow) {
         this.shouldShowSignOut = shouldShow
@@ -172,6 +193,11 @@ function getRatingGroup(cmps, high, low) {
 }
 
 async function startGame(opponent) {
+  this.infoMode = 'starting'
+  await new Promise(resolve => setTimeout(resolve, 5000));
+  this.infoMode = 'started'
+  return true
+
   console.log(`Attempting to start a game with ${opponent}`)
   const tokens = JSON.parse(window.localStorage.tokens)
   this.isStartingGame = true
@@ -179,7 +205,7 @@ async function startGame(opponent) {
 
   const res = await fetch('https://lichess.org/api/challenge/yeoldwiz', {
     method: 'POST',
-    body: { rated: false },
+    body: { rated: false, message: `yoeldwiz {game} started with ${opponent}` },
     headers: { 'Authorization' : 'Bearer ' + tokens.access_token}
   })
 
@@ -219,9 +245,8 @@ async function checkGame(gameId) {
   if (!res.ok) return false
 
   const games = await res.json()
-  console.log(games.nowPlaying)
+  console.log('Checking for game', games.nowPlaying)
   for (game of games.nowPlaying) {
-    console.log(game.gameId, gameId, game.id === gameId)
     if (game.gameId === gameId) return true
   } 
 
@@ -231,29 +256,20 @@ async function checkGame(gameId) {
 
 async function setOpponent(gameId, opponent) {
   const tokens = JSON.parse(window.localStorage.tokens)
-  const res1 = await fetch(`https://lichess.org/api/bot/game/${gameId}/chat`, {
-    headers: {'Authorization' : 'Bearer ' + tokens.access_token},
-    method: 'POST',
-    body: {
-      "room": "player",
-      "text": opponent
+  const res1 = await fetch(`https://lichess.org/api/board/game/${gameId}/chat`, {
+    headers: {
+      'Authorization' : 'Bearer ' + tokens.access_token,
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
     },
+    method: 'POST',
+    body: `room=player&text=${opponent}`,
   })
 
-  if (!res1.ok) console.log('Error posting in player chat')
+  if (!res1.ok) {
+    console.log('Error posting in player chat')
+    return false
+  }
 
-  const res2 = await fetch(`https://lichess.org/api/bot/game/${gameId}/chat`, {
-    headers: {'Authorization' : 'Bearer ' + tokens.access_token},
-    method: 'POST',
-    body: {
-      "room": "spectator",
-      "text": opponent
-    },
-  })
-
-  if (!res1.ok) console.log('Error posting in spectator chat')
-
-  if(!res1.ok || !res2.ok) return false
   return true
 }
 

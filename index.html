@@ -33,7 +33,6 @@
       <span v-else class="sign-in">
         <a :href="signInLink">Sign In With Lichess</a>
         <div class="knight">♞</div>
-        <!-- <div>{{signInLink}}</div> -->
       </span>
 
     </header>
@@ -44,17 +43,36 @@
           <img class="face" :src="'images/faces/' + selected.face" alt="selected.name">
           <h2>{{selected.name}}</h2>
           <h3>{{selected.rating}}</h3>
-          <p v-if="!isStartingGame">{{selected.summary}}</p>
-          <p v-if="!isInPlayMode && !isStartingGame">{{selected.bio}}</p>
-          <div v-if="isInPlayMode && !isStartingGame" class="buttons">
-            <a class="button yellow" @click="stopPlayMode">Cancel</a>
+          
+          <p v-if="infoMode === 'browsing' || infoMode === 'selected'">
+            {{selected.summary}}
+          </p>
+          
+          <p v-if="infoMode === 'browsing'">{{selected.bio}}</p>
+          
+          <div v-if="infoMode === 'selected'" class="buttons">
+            <a class="button yellow" @click="stopSelectionLock">Cancel</a>
             <a class="button blue" @click="startGame(selected.name)">Play</a>
           </div>
-          <p v-if="isInPlayMode && !isStartingGame" >{{selected.style}}</p>
-          <span class="start-message" v-if="isStartingGame">
+          
+          <p v-if="infoMode === 'selected'" >
+            {{selected.style}}
+          </p>
+          
+          <span v-if="infoMode === 'starting'" class="start-message" >
             <div>Starting game...</div>
             <div  class="knight spin">♞</div>
           </span>
+
+          <span v-if="infoMode === 'started'" class="start-message" >
+            <div>Your game has started!</div>
+            <p>Click to GO TO GAME or open the Lichess app on your phone to play.</p>
+            <a class="button yellow" @click="stopSelectionLock">Done</a>
+            <a target="_blank" :href="'https://lichess.org/' + currentGame" class="button blue">
+              Go to Game
+            </a>
+          </span>
+                    
         </section>
         <nav v-if="navIsOn">
           <a v-for="group in groups" :href="'#' + group.title.replace(' ','')">
@@ -67,15 +85,14 @@
         <section class="group" v-for="group in groups"> 
           <a :name="group.title.replace(' ','')"></a>
           <h1>{{group.title}}</h1> 
-          <!-- <h3>{{group.low}} to {{group.high}} </h3> -->
           <div class="cmps" :class="{gms: group.isGms}">
             <span class="cmp" :title="cmp.summary" v-for='cmp of group.cmps'>
               <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name"
-                @mouseover="selectCmp(cmp)" 
-                @click="togglePlayMode(cmp)"
+                @mouseover="showCmp(cmp)" 
+                @click="toggleSelectionLock(cmp)"
                 :class="{
                   selected: selected.name === cmp.name,
-                  inPlayMode: isInPlayMode && selected.name == cmp.name,
+                  inPlayMode: selectionIsLocked && selected.name == cmp.name,
                 }"
               >
               <span>{{cmp.name}}</span>
