@@ -50,14 +50,25 @@
           
           <p v-if="infoMode === 'browsing'">{{selected.bio}}</p>
           
-          <div v-if="infoMode === 'selected'" class="buttons">
+          <div v-if="infoMode === 'selected' && user === undefined" class="buttons">
+            <a :href="signInLink" class="button blue">Sign in to Play</a>
             <a class="button yellow" @click="stopSelectionLock">Cancel</a>
-            <a class="button blue" @click="startGame(selected.name)">Play</a>
+            <p>{{selected.style}}</p> 
           </div>
           
-          <p v-if="infoMode === 'selected'" >
-            {{selected.style}}
-          </p>
+          <span v-if="infoMode === 'selected' && user === null" class="start-message" >
+            <div>Connecting to Lichess...</div>
+            <div  class="knight spin">♞</div>
+          </span>
+
+          <div v-if="infoMode === 'selected' && user" class="buttons">
+            <a class="button yellow" @click="stopSelectionLock">Cancel</a>
+            <a class="button blue" @click="startGame(selected.name)">Play</a>
+            <p>{{selected.style}}</p> 
+          </div>
+         
+          <!-- <p v-if="infoMode === 'selected'" >
+          </p> -->
           
           <span v-if="infoMode === 'starting'" class="start-message" >
             <div>Starting game...</div>

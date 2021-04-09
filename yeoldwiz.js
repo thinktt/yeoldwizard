@@ -9,7 +9,7 @@ if (window.localStorage.redirectUri) redirectUri = window.localStorage
 if (window.localStorage.yowProxyUrl) yowProxyUrl = window.localStorage.yowProxyUrl
 
 // yowProxyUrl = 'http://localhost:5000'
-redirectUri = 'http://localhost:8080'
+// redirectUri = 'http://localhost:8080'
 let tokens
 
 doAccountFlow()
@@ -82,7 +82,7 @@ async function startApp(user) {
       selectionIsLocked: false,
       isInPlayMode: false,
       isStartingGame: false,
-      isSignedIn: false,
+      isSignedIn: Boolean(user),
       gameIsStarted: false,
       gameUrl: '',
       signInLink: oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + clientId + '&redirect_uri=' + redirectUri,
@@ -171,7 +171,7 @@ async function startApp(user) {
         this.shouldShowSignOut = shouldShow
       },
       signOut() {
-        this.user = ""
+        this.user = undefined
         window.localStorage.clear()
       },
       startGame,
@@ -194,9 +194,6 @@ function getRatingGroup(cmps, high, low) {
 
 async function startGame(opponent) {
   this.infoMode = 'starting'
-  await new Promise(resolve => setTimeout(resolve, 5000));
-  this.infoMode = 'started'
-  return true
 
   console.log(`Attempting to start a game with ${opponent}`)
   const tokens = JSON.parse(window.localStorage.tokens)
@@ -230,6 +227,8 @@ async function startGame(opponent) {
     return false
   }
 
+  this.currentGame = gameId
+  this.infoMode = 'started'
   return true
 
 }
