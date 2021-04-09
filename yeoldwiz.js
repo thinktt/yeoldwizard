@@ -143,8 +143,6 @@ async function startApp(user) {
         }
       },
       toggleSelectionLock(cmp) {
-        console.log((this.infoMode !== 'selected' && this.infoMode !== 'browsing'))
-        console.log(this.infoMode)
         // do nothing if infoMode has gone past 'selected', in this 
         // case we are in a state that should not unlock the selection 
         if (this.infoMode !== 'selected' && this.infoMode !== 'browsing') return
@@ -152,9 +150,7 @@ async function startApp(user) {
         this.navIsOn = false
         this.selected = cmpsObj[cmp.name]
         
-        console.log(this.infoMode === 'browsing')
         if (this.infoMode === 'browsing') {
-          console.log('what now?')
           this.infoMode = 'selected'
           this.selectionIsLocked = true
           return
