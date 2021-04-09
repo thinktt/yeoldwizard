@@ -185,6 +185,14 @@ nav a {
   font-size: 2rem;
 }
 
+.start-message {
+  margin-top: 2rem;
+}
+.start-message .knight {
+  font-size: 2rem;
+  margin-top: 1rem;
+}
+
 
 .groups {
   margin-top: 3rem;

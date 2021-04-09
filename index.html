@@ -44,13 +44,17 @@
           <img class="face" :src="'images/faces/' + selected.face" alt="selected.name">
           <h2>{{selected.name}}</h2>
           <h3>{{selected.rating}}</h3>
-          <p>{{selected.summary}}</p>
-          <p v-if="!isInPlayMode" >{{selected.bio}}</p>
-          <div v-if="isInPlayMode" class="buttons">
+          <p v-if="!isStartingGame">{{selected.summary}}</p>
+          <p v-if="!isInPlayMode && !isStartingGame">{{selected.bio}}</p>
+          <div v-if="isInPlayMode && !isStartingGame" class="buttons">
             <a class="button yellow" @click="stopPlayMode">Cancel</a>
-            <a class="button blue">Play</a>
+            <a class="button blue" @click="startGame(selected.name)">Play</a>
           </div>
-          <p v-if="isInPlayMode" >{{selected.style}}</p>
+          <p v-if="isInPlayMode && !isStartingGame" >{{selected.style}}</p>
+          <span class="start-message" v-if="isStartingGame">
+            <div>Starting game...</div>
+            <div  class="knight spin">♞</div>
+          </span>
         </section>
         <nav v-if="navIsOn">
           <a v-for="group in groups" :href="'#' + group.title.replace(' ','')">
