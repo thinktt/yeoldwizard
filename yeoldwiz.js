@@ -3,11 +3,11 @@ const oauthQuery = '?response_type=code'
 const scope = 'board:play'
 
 const clientId = 'L47TqpZn7iaJppGM'
-// const yowProxyUrl = 'https://yowproxy.herokuapp.com'
-// const redirectQuery = 'https://thinktt.github.io/yeoldwizard'
+const yowProxyUrl = 'https://yowproxy.herokuapp.com'
+const redirectQuery = 'https://thinktt.github.io/yeoldwizard'
 
-const yowProxyUrl = 'http://localhost:5000'
-const redirectUri = 'http://localhost:8080'
+// const yowProxyUrl = 'http://localhost:5000'
+// const redirectUri = 'http://localhost:8080'
 let tokens
 
 doAccountFlow()
