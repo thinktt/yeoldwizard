@@ -5,12 +5,19 @@ const scope = 'board:play'
 const clientId = 'L47TqpZn7iaJppGM'
 let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 let redirectUri = 'https://thinktt.github.io/yeoldwizard'
-if (window.localStorage.redirectUri) redirectUri = window.localStorage
-if (window.localStorage.yowProxyUrl) yowProxyUrl = window.localStorage.yowProxyUrl
 
 // yowProxyUrl = 'http://localhost:5000'
 // redirectUri = 'http://localhost:8080'
 let tokens
+
+
+// a way to get dev to work using the same lichess client id
+if (localStorage.redirectToDev === 'true' && window.location.search && 
+  window.location.hostname !== 'localhost') {
+  console.log('Forwarding to dev')
+  const query = window.location.search 
+  window.location = "http://localhost:8080" + query
+}
 
 doAccountFlow()
 
@@ -74,6 +81,7 @@ async function startApp(user) {
     el: '#app',
     data: {
       user: user,
+      signInFailed: false,
       selected: cmpsObj.Chessmaster,
       navIsOn: true,
       infoMode: 'browsing',
@@ -168,7 +176,9 @@ async function startApp(user) {
       },
       signOut() {
         this.user = undefined
-        window.localStorage.clear()
+        this.signInFailed = false;
+        delete window.localStorage.user
+        delete window.localStorage.tokens
       },
       startGame,
     }

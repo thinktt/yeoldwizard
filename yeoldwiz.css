@@ -111,6 +111,15 @@ header {
   font-family: enigmax;
 }
 
+.error {
+  color: red;
+}
+
+.dead{
+  color: red;
+  transform: rotate(180deg) scaleX(1) translateY(-6px);
+}
+
 .spin {
   animation-name: spin;
   animation-duration: 1900ms;
