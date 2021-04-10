@@ -6,10 +6,7 @@ const clientId = 'L47TqpZn7iaJppGM'
 let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 let redirectUri = 'https://thinktt.github.io/yeoldwizard'
 
-// yowProxyUrl = 'http://localhost:5000'
-// redirectUri = 'http://localhost:8080'
 let tokens
-
 
 // a way to get dev to work using the same lichess client id
 if (localStorage.redirectToDev === 'true' && window.location.search && 
@@ -20,6 +17,8 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
 }
 
 doAccountFlow()
+
+
 
 async function doAccountFlow() {
   if (window.localStorage.user) {
@@ -56,12 +55,15 @@ async function doAccountFlow() {
           'Authorization' : 'Bearer ' + tokens.access_token, 
         }
       }) 
+
       const account = await res.json()
       console.log('Setting user ' + account.username + ' in local storage')
       localStorage.user = account.username
       app.user = account.username
 
     } catch (err) {
+      app.signInFailed = true
+      app.setError("There was an error signing into Lichess")
       console.log(err)
     }
     return     
@@ -83,7 +85,7 @@ async function startApp(user) {
       user: user,
       signInFailed: false,
       selected: cmpsObj.Chessmaster,
-      navIsOn: true,
+      navIsOn: false,
       infoMode: 'browsing',
       currentGame: 'RklLOoMREuDI',
       shouldShowSignOut: false,
@@ -93,6 +95,7 @@ async function startApp(user) {
       isSignedIn: Boolean(user),
       gameIsStarted: false,
       gameUrl: '',
+      errorMessage: 'Things fall apart',
       signInLink: oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + clientId + '&redirect_uri=' + redirectUri,
       groups : [
         {
@@ -180,6 +183,18 @@ async function startApp(user) {
         delete window.localStorage.user
         delete window.localStorage.tokens
       },
+      setError(message) {
+        this.selected = cmpsObj.Chessmaster
+        this.selectionIsLocked = true
+        this.navIsOn = false
+        this.infoMode = 'error'
+        this.errorMessage = message
+      },
+      clearError() {
+        this.selectionIsLocked = false
+        this.infoMode = "browsing"
+        if (this.signInFailed) this.signOut()
+      },
       startGame,
     }
   })
@@ -223,13 +238,15 @@ async function startGame(opponent) {
   await new Promise(resolve => setTimeout(resolve, 3000));
   
   if ( !(await checkGame(gameId)) ) {
-    console.log("Game did not start")
+    console.log('Game did not start')
+    this.setError('Game did not start')
     return false
   }
 
   console.log(`${gameId} started!`)
   if (!await setOpponent(gameId, opponent)) {
-    console.log('Unalbe to set opponent')
+    console.log('Game started unalbe to set opponent')
+    this.setError('Game started but unalbe to set opponent')
     return false
   }
 

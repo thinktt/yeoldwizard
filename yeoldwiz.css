@@ -202,6 +202,15 @@ nav a {
   margin-top: 1rem;
 }
 
+.error-message {
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+.error-message .knight {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
 
 .groups {
   margin-top: 3rem;

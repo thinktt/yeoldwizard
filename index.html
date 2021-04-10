@@ -46,9 +46,20 @@
       <div class="spacer"></div>
       <div class="nav-and-info">
         <section v-if="!navIsOn" class="info">
-          <img class="face" :src="'images/faces/' + selected.face" alt="selected.name">
-          <h2>{{selected.name}}</h2>
-          <h3>{{selected.rating}}</h3>
+          
+          <div>
+            <img class="face" :src="'images/faces/' + selected.face" alt="selected.name">
+            <h2>{{selected.name}}</h2>
+            <h3>{{selected.rating}}</h3>
+          </div>
+
+          <span v-if="infoMode === 'error'" class="error-message" >
+            <div  class="knight dead">♞</div>
+            <h3>Error</h3>
+            <p>{{errorMessage}}</p>
+            <p>Please contact your Wizard Admin</p>
+            <a class="button yellow" @click="clearError">Ok</a>
+          </span>
           
           <p v-if="infoMode === 'browsing' || infoMode === 'selected'">
             {{selected.summary}}
@@ -124,6 +135,6 @@
 
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-  <script src="yeoldwiz.js"></script>
+  <script src="yeoldwiz.js" type="module"></script>
 </body>
 </html>
