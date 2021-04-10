@@ -323,3 +323,33 @@ a.button:active{
 }
 
 [v-cloak] { display: none !important; }
+
+
+@media screen and (max-width: 1080px) {
+  .groups, .nav-and-info {
+    display: none;
+  }
+  .nav-and-info {
+    width: 100%;
+    margin-right: 5rem;
+  }
+
+  nav {
+    margin-right: 3rem;
+  }
+
+  .info {
+    margin-right: 7rem;
+    margin-left: 5rem;
+  }
+  .groups {
+    margin-left: 2rem;
+    margin-right: 2rem;
+  }
+
+
+  .groups.focus, .nav-and-info.focus {
+    display: block;
+  }
+
+}

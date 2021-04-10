@@ -147,6 +147,13 @@ async function startApp(user) {
       switchNav(event) {
          this.navIsOn = true
       },
+      toggleNav() {
+        const mediaQuery = window.matchMedia('(max-width: 1080px)') 
+        if (mediaQuery.matches) {
+          this.navIsOn = false
+          this.infoMode = "browsing"
+        } 
+      },
       showCmp(cmp) {
         this.navIsOn = false
         if (!this.selectionIsLocked) {

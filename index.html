@@ -44,7 +44,7 @@
     </header>
     <main>
       <div class="spacer"></div>
-      <div class="nav-and-info">
+      <div class="nav-and-info" :class="{focus: infoMode !== 'browsing' || navIsOn}">
         <section v-if="!navIsOn" class="info">
           
           <div>
@@ -84,9 +84,7 @@
             <p>{{selected.style}}</p> 
           </div>
          
-          <!-- <p v-if="infoMode === 'selected'" >
-          </p> -->
-          
+        
           <span v-if="infoMode === 'starting'" class="start-message" >
             <div>Starting game...</div>
             <div  class="knight spin">♞</div>
@@ -103,13 +101,13 @@
                     
         </section>
         <nav v-if="navIsOn">
-          <a v-for="group in groups" :href="'#' + group.title.replace(' ','')">
+          <a v-for="group in groups" :href="'#' + group.title.replace(' ','')" @click="toggleNav">
             {{group.title}}
           </a>
          </nav>
       </div>
       
-      <div class="groups">
+      <div class="groups" :class="{focus: infoMode == 'browsing' && !navIsOn}">
         <section class="group" v-for="group in groups"> 
           <a :name="group.title.replace(' ','')"></a>
           <h1>{{group.title}}</h1> 
