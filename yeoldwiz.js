@@ -150,8 +150,7 @@ async function startApp(user) {
          this.navIsOn = true
       },
       toggleNav() {
-        const mediaQuery = window.matchMedia('(max-width: 1080px)') 
-        if (mediaQuery.matches) {
+        if (isInPhoneMode()) {
           this.navIsOn = false
           this.infoMode = "browsing"
         } 
@@ -182,8 +181,10 @@ async function startApp(user) {
       stopSelectionLock(){
         this.infoMode = 'browsing'
         this.selectionIsLocked = false
-        window.location = '/#' + this.selected.name
-
+        if (isInPhoneMode()) {
+          window.location = window.location.origin + window.location.pathname + 
+          '#' + this.selected.name
+        }
       },
       toggleSignOut(shouldShow) {
         this.shouldShowSignOut = shouldShow
@@ -322,4 +323,8 @@ async function getUserStream() {
       console.log(value.length)
     }
   }
+}
+
+function isInPhoneMode () {
+  return window.matchMedia('(max-width: 1080px)').matches
 }
