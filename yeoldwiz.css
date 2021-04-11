@@ -334,6 +334,14 @@ a.button:active{
     margin-right: 1rem;
   }
 
+  .hamburger {
+    margin-left: 1rem;
+  }
+
+  .sign-in {
+    margin-right: 3rem;
+  }
+
   h1 {
     width: 80%;
   }
