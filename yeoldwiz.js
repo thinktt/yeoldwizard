@@ -6,6 +6,7 @@ const clientId = 'L47TqpZn7iaJppGM'
 let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 let redirectUri = 'https://thinktt.github.io/yeoldwizard'
 
+
 let tokens
 
 // a way to get dev to work using the same lichess client id
@@ -55,6 +56,7 @@ async function doAccountFlow() {
           'Authorization' : 'Bearer ' + tokens.access_token, 
         }
       }) 
+      if (!res.ok) throw res.error
 
       const account = await res.json()
       console.log('Setting user ' + account.username + ' in local storage')
@@ -236,7 +238,7 @@ async function startGame(opponent) {
 
   if (!res.ok) {
     this.isStartingGame = false
-    return
+    return false
   }
   const challenge = await res.json()
   const gameId = challenge.challenge.id
