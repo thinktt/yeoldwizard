@@ -275,7 +275,7 @@ async function checkGame(gameId) {
 
   const games = await res.json()
   console.log('Checking for game', games.nowPlaying)
-  for (game of games.nowPlaying) {
+  for (const game of games.nowPlaying) {
     if (game.gameId === gameId) return true
   } 
 
