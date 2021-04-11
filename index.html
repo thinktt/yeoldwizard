@@ -134,6 +134,14 @@
 
   </div>
 
+  <!-- Serive worker setup-->
+  <script> 
+    if (!navigator.serviceWorker.controller) {
+        navigator.serviceWorker.register("sw.js").then(function(reg) {
+            console.log("Service worker has been registered for scope: " + reg.scope);
+        });
+    }
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
   <script src="yeoldwiz.js" type="module"></script>
