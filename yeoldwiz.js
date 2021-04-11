@@ -207,6 +207,9 @@ async function startApp(user) {
         this.infoMode = "browsing"
         if (this.signInFailed) this.signOut()
       },
+      openGame() {
+        window.open('https://lichess.org/' + this.currentGame)
+      },
       startGame,
     }
   })

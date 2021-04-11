@@ -4,7 +4,6 @@
     "theme_color": "#3b1f11",
     "background_color": "#3b1f11",
     "display": "standalone",
-    "scope": "https://thinktt.github.io/yeoldwizard/",
     "start_url": "https://thinktt.github.io/yeoldwizard/",
     "description": "Play Chess with the Wizard again!",
     "orientation": "any",
