@@ -114,6 +114,7 @@
           <h1>{{group.title}}</h1> 
           <div class="cmps" :class="{gms: group.isGms}">
             <span class="cmp" :title="cmp.summary" v-for='cmp of group.cmps'>
+              <a clss="cmp-a" :name="cmp.name"></a>
               <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name"
                 @mouseover="showCmp(cmp)" 
                 @click="toggleSelectionLock(cmp)"

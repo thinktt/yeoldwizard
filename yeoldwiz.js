@@ -182,6 +182,8 @@ async function startApp(user) {
       stopSelectionLock(){
         this.infoMode = 'browsing'
         this.selectionIsLocked = false
+        window.location = '/#' + this.selected.name
+
       },
       toggleSignOut(shouldShow) {
         this.shouldShowSignOut = shouldShow
