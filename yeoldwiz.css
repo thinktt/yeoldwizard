@@ -344,6 +344,7 @@ a.button:active{
 
   h1 {
     width: 80%;
+    padding-top: 1rem;
   }
 
   .groups, .nav-and-info {
