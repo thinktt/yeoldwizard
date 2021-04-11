@@ -335,11 +335,11 @@ a.button:active{
   }
 
   .hamburger {
-    margin-left: 1rem;
+    margin-left: 1.3rem;
   }
 
   .sign-in {
-    margin-right: 3rem;
+    margin-right: 3.3rem;
   }
 
   h1 {
@@ -356,6 +356,7 @@ a.button:active{
 
   nav {
     margin-right: 3rem;
+    transform: scale(1.1);
   }
 
   .info {
