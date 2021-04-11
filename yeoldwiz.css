@@ -331,10 +331,11 @@ a.button:active{
     transform: scale(1.25);
     display: flex;
     justify-content: space-around;
+    margin-right: 1rem;
   }
 
   h1 {
-    width: 50%;
+    width: 80%;
   }
 
   .groups, .nav-and-info {
@@ -359,7 +360,7 @@ a.button:active{
   }
 
   .cmp {
-    margin: 4rem;
+    margin: 2rem;
     transform: scale(1.3);
   }
 
