@@ -208,7 +208,7 @@ async function startApp(user) {
         if (this.signInFailed) this.signOut()
       },
       openGame() {
-        window.open('https://lichess.org/' + this.currentGame, '_top')
+        window.open('https://lichess.org/' + this.currentGame, '_parent')
       },
       startGame,
     }
