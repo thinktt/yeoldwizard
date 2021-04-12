@@ -315,6 +315,12 @@ a.button:active{
   color:#BBBBBB;
   border-color:#BBBBBB;
 }
+
+a.button.blue.test {
+  visibility: hidden;
+}
+
+
 @media all and (max-width:25em){
     a.button {
     display:block;
