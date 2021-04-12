@@ -375,12 +375,14 @@ a.button.blue.test {
     padding-top: 1rem;
   }
 
-  .groups, .nav-and-info {
-    display: none;
+  .groups {
+    visibility: hidden;
   }
+
   .nav-and-info {
     width: 100%;
     margin-right: 5rem;
+    display: none;
   }
 
   nav {
@@ -402,7 +404,11 @@ a.button.blue.test {
     transform: scale(1.3);
   }
 
-  .groups.focus, .nav-and-info.focus {
+  .groups.focus {
+    visibility: visible;
+  }
+
+  .nav-and-info.focus{
     display: block;
   }
 
