@@ -320,6 +320,29 @@ a.button.blue.test {
   visibility: hidden;
 }
 
+.king {
+  display: none;
+}
+
+.king.lost {
+  transform: rotate(-75deg);
+}
+
+.draw-container {
+  width: 10rem;
+  /* position: absolute; */
+}
+
+.king.left {
+  position: relative;
+  left: 4rem;
+}
+
+.king.right {
+  position: relative;
+  right: 4rem;
+}
+
 
 @media all and (max-width:25em){
     a.button {
