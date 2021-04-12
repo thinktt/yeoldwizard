@@ -168,15 +168,14 @@ async function startApp(user) {
         
         this.navIsOn = false
         this.selected = cmpsObj[cmp.name]
-        
+
         if (this.infoMode === 'browsing') {
           this.infoMode = 'selected'
           this.selectionIsLocked = true
           return
-        } else {
-          this.infoMode = 'browsing'
-          this.selectionIsLocked = false
         }
+
+        this.stopSelectionLock()
       },
       stopSelectionLock(){
         this.infoMode = 'browsing'
