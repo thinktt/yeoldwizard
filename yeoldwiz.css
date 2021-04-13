@@ -317,7 +317,8 @@ a.button:active{
 }
 
 a.button.blue.test {
-  visibility: hidden;
+  margin-top: 3em;
+  opacity: 0;
 }
 
 .king {
