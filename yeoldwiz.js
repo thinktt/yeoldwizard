@@ -181,22 +181,22 @@ async function startApp(user) {
       setSelectionLock() {
         this.infoMode = 'selected'
         this.selectionIsLocked = true
+        this.scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
         this.lockBody()
       },
       stopSelectionLock(){
         this.infoMode = 'browsing'
         this.selectionIsLocked = false
         this.unlockBody()
+        if (isInPhoneMode()) {
+          document.documentElement.scrollTop = document.body.scrollTop = this.scrollPosition;
+        }
       },
       lockBody() {
-        this.scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
         if  (isInPhoneMode()) document.body.style.position = 'fixed'
       },
       unlockBody() {
         document.body.style.position = ''
-        if (isInPhoneMode()) {
-          document.documentElement.scrollTop = document.body.scrollTop = this.scrollPosition;
-        }
       },
       toggleSignOut(shouldShow) {
         this.shouldShowSignOut = shouldShow
@@ -230,7 +230,7 @@ async function startApp(user) {
     group.cmps = getRatingGroup(cmps, group.high, group.low)
   }
 
-  // make sure on resize the body is unlocked or locked as it should be
+  // // make sure on resize the body is unlocked or locked as it should be
   window.onresize = () => {
     if (app.infoMode === 'browsing') {
       app.unlockBody()
