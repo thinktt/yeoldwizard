@@ -97,6 +97,7 @@ async function startApp(user) {
       isSignedIn: Boolean(user),
       gameIsStarted: false,
       gameUrl: '',
+      scrollPosition: 0,
       errorMessage: 'Things fall apart',
       signInLink: oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + clientId + '&redirect_uri=' + redirectUri,
       groups : [
@@ -169,17 +170,33 @@ async function startApp(user) {
         this.navIsOn = false
         this.selected = cmpsObj[cmp.name]
 
+        
         if (this.infoMode === 'browsing') {
-          this.infoMode = 'selected'
-          this.selectionIsLocked = true
+          this.setSelectionLock()
           return
         }
 
         this.stopSelectionLock()
       },
+      setSelectionLock() {
+        this.infoMode = 'selected'
+        this.selectionIsLocked = true
+        this.lockBody()
+      },
       stopSelectionLock(){
         this.infoMode = 'browsing'
         this.selectionIsLocked = false
+        this.unlockBody()
+      },
+      lockBody() {
+        this.scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
+        if  (isInPhoneMode()) document.body.style.position = 'fixed'
+      },
+      unlockBody() {
+        document.body.style.position = ''
+        if (isInPhoneMode()) {
+          document.documentElement.scrollTop = document.body.scrollTop = this.scrollPosition;
+        }
       },
       toggleSignOut(shouldShow) {
         this.shouldShowSignOut = shouldShow
@@ -211,6 +228,15 @@ async function startApp(user) {
 
   for (const group of app.groups) {
     group.cmps = getRatingGroup(cmps, group.high, group.low)
+  }
+
+  // make sure on resize the body is unlocked or locked as it should be
+  window.onresize = () => {
+    if (app.infoMode === 'browsing') {
+      app.unlockBody()
+    } else {
+      app.lockBody()
+    }
   }
 
   return app
