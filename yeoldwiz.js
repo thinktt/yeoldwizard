@@ -352,3 +352,44 @@ async function getUserStream() {
 function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
 }
+
+async function getGames() {
+  const lastGameTime = '1617328317956';
+  const lichessEndpoint = 'https://lichess.org/api/games/user/yeoldwiz'
+  const query = `?since=${lastGameTime}&vs=thinktt&opening=true&rated=false&perfType=correspondence`
+  const tokens = JSON.parse(window.localStorage.tokens)
+  const res = await fetch(lichessEndpoint + query, {    
+    headers: {
+      'Authorization' : 'Bearer ' + tokens.access_token,
+      'Accept': 'application/x-ndjson',
+    }
+  })
+
+  if (!res.ok) {
+    console.log('Error getting games:') 
+    return null
+  }
+
+  const gamesNdjson = await res.text()
+  // const games = gamesNdjson.split('\n')
+  const games = [] 
+  for (const gameStr of gamesNdjson.split('\n')) {
+    if (!gameStr) break
+    // const game = JSON.parse(gameStr)
+    // games.push(game) 
+    const {id, status, players, winner } = JSON.parse(gameStr)
+    const conclusion = parseGameConclusion(players, winner)
+    games.push({id, status, conclusion})
+  }
+  console.log(games)
+
+}
+
+
+function parseGameConclusion(players, winner) {
+  if (!winner) return 'draw'
+  if (players[winner].user.name === 'yeoldwiz') return 'lost'
+  return 'won'
+}
+
+// getGames()
