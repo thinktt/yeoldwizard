@@ -353,8 +353,8 @@ function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
 }
 
-async function getGames() {
-  const lastGameTime = '1617328317956';
+// Using time from last game we have get all games since that game
+async function getGames(lastGameTime) {
   const lichessEndpoint = 'https://lichess.org/api/games/user/yeoldwiz'
   const query = `?since=${lastGameTime}&vs=thinktt&opening=true&rated=false&perfType=correspondence`
   const tokens = JSON.parse(window.localStorage.tokens)
@@ -377,19 +377,63 @@ async function getGames() {
     if (!gameStr) break
     // const game = JSON.parse(gameStr)
     // games.push(game) 
-    const {id, status, players, winner } = JSON.parse(gameStr)
+    const {id, createdAt, status, players, winner } = JSON.parse(gameStr)
+    
+    // none of these games should be aborted but if one is it should be ignored
+    if (status === 'aborted') continue
+
     const conclusion = parseGameConclusion(players, winner)
-    games.push({id, status, conclusion})
+    games.push({id, createdAt, conclusion})
   }
+
+  for (const game of games) {
+    game.opponent = await getOpponentFromChat(game.id)
+  }
+
+
   console.log(games)
 
 }
 
-
+// parse a simple conlcusion, did user win, lose, or draw?
 function parseGameConclusion(players, winner) {
   if (!winner) return 'draw'
   if (players[winner].user.name === 'yeoldwiz') return 'lost'
   return 'won'
 }
 
-// getGames()
+// Check the spectator chat (via HTML page) for a Wiz Player setting
+async function getOpponentFromChat(gameId) {
+  const req = await fetch(`https://lichess.org/${gameId}`)
+  
+  if (!req.ok) {
+    console.log(`Failed to fetch lichess game ${gameId} with status ${req.status}`)
+    console.log(`Error: ${req.statusText}`)
+    return null
+  }
+
+  const gamePage = await req.text()
+ 
+  // caputre and count messagse, if no messages have been sent respond with string
+  // no opponent was set for this game
+  const wizMessagesRx = /"u":"yeoldwiz","t":".*?"/g
+  const wizMessages = gamePage.match(wizMessagesRx) || []
+  if (wizMessages.length === 0) {
+    return null
+  }
+  
+  // Next we check for a "Playing as string" if one exist we will capture it
+  // and try to parse out the opponent name and return it
+  const playingAsRx = /"u":"yeoldwiz","t":"Playing as [A-Za-z0-9\.]*/g
+  const opponentData = gamePage.match(playingAsRx)
+  let opponent = ''
+  if (opponentData == null) {
+    return null
+  }
+  opponent = opponentData[0].replace('"u":"yeoldwiz","t":"Playing as ', '')
+  return opponent
+}
+
+// const opponent = await getWizPlayerFromChat('5ZAXEu4YAk5S')
+// console.log(opponent) 
+// getGames('1617328317956')
