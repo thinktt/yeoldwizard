@@ -77,9 +77,14 @@ async function doAccountFlow() {
 
 
 async function startApp(user) {
+  
   const res = await fetch('personalities.json')
   const cmpsObj = await res.json()
   const cmps = Object.entries(cmpsObj).map(e => e[1]).reverse()
+  
+  // If we're logged in then send an asycn call to update gameslist 
+  // in the background
+  if (user) updateGameList(user) 
 
   const app = new Vue({
     el: '#app',
@@ -355,17 +360,17 @@ function isInPhoneMode () {
 
 // Check is any new games have been played and adds them to the localStoage list
 async function updateGameList(user) {
+  console.log('Attempting to update the local storage game list')
   const storedGamesStr = localStorage[user + '_games'] || '[]'
   const storedGames = JSON.parse(storedGamesStr)
   const lastGameTime = getLastGameTime(storedGames) 
-  console.log(lastGameTime)
-  const newGames = await getGames(lastGameTime) || []
+  console.log('last game time found: ' + lastGameTime)
+  const newGames = await getGames(user, lastGameTime) || []
   const games = newGames.concat(storedGames) 
   localStorage[user + '_games'] = JSON.stringify(games)
 }
 
 function getLastGameTime(games) {
-  console.log(games)
   let lastGameTime = 0
   for (const game of games) {
     if (game.createdAt > lastGameTime) lastGameTime = game.createdAt
@@ -374,9 +379,9 @@ function getLastGameTime(games) {
 }
 
 // Using time from last game we have get all games since that game
-async function getGames(lastGameTime) {
+async function getGames(user, lastGameTime) {
   const lichessEndpoint = 'https://lichess.org/api/games/user/yeoldwiz'
-  const query = `?since=${lastGameTime}&vs=thinktt&opening=true&rated=false&perfType=correspondence`
+  const query = `?since=${lastGameTime}&vs=${user}&opening=false&rated=false&perfType=correspondence`
   const tokens = JSON.parse(window.localStorage.tokens)
   const res = await fetch(lichessEndpoint + query, {    
     headers: {
@@ -403,12 +408,12 @@ async function getGames(lastGameTime) {
     
     // none of these games should be aborted but if one is it should be ignored
     if (status === 'aborted') {
-       abortedGames.push(game) 
+       abortedGames.push(id) 
        continue
     }
     const opponent = await getOpponentFromChat(id)
     if (!opponent) {
-      opponentlessGames.push(game)
+      opponentlessGames.push(id)
       continue
     }
     
@@ -467,4 +472,4 @@ async function getOpponentFromChat(gameId) {
 // const games = await getGames('1617328317956')
 // localStorage['thinktt_games'] = JSON.stringify(games)
 
-updateGameList('thinktt')
+// updateGameList('thinktt')
