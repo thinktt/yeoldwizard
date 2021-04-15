@@ -353,6 +353,26 @@ function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
 }
 
+// Check is any new games have been played and adds them to the localStoage list
+async function updateGameList(user) {
+  const storedGamesStr = localStorage[user + '_games'] || '[]'
+  const storedGames = JSON.parse(storedGamesStr)
+  const lastGameTime = getLastGameTime(storedGames) 
+  console.log(lastGameTime)
+  const newGames = await getGames(lastGameTime) || []
+  const games = newGames.concat(storedGames) 
+  localStorage[user + '_games'] = JSON.stringify(games)
+}
+
+function getLastGameTime(games) {
+  console.log(games)
+  let lastGameTime = 0
+  for (const game of games) {
+    if (game.createdAt > lastGameTime) lastGameTime = game.createdAt
+  }
+  return lastGameTime
+}
+
 // Using time from last game we have get all games since that game
 async function getGames(lastGameTime) {
   const lichessEndpoint = 'https://lichess.org/api/games/user/yeoldwiz'
@@ -373,6 +393,8 @@ async function getGames(lastGameTime) {
   const gamesNdjson = await res.text()
   // const games = gamesNdjson.split('\n')
   const games = [] 
+  const abortedGames = []
+  const opponentlessGames = []
   for (const gameStr of gamesNdjson.split('\n')) {
     if (!gameStr) break
     // const game = JSON.parse(gameStr)
@@ -380,19 +402,25 @@ async function getGames(lastGameTime) {
     const {id, createdAt, status, players, winner } = JSON.parse(gameStr)
     
     // none of these games should be aborted but if one is it should be ignored
-    if (status === 'aborted') continue
-
+    if (status === 'aborted') {
+       abortedGames.push(game) 
+       continue
+    }
+    const opponent = await getOpponentFromChat(id)
+    if (!opponent) {
+      opponentlessGames.push(game)
+      continue
+    }
+    
     const conclusion = parseGameConclusion(players, winner)
-    games.push({id, createdAt, conclusion})
-  }
-
-  for (const game of games) {
-    game.opponent = await getOpponentFromChat(game.id)
+    games.push({id, createdAt, conclusion, opponent})
   }
 
 
-  console.log(games)
-
+  console.log(games.length, 'valid new games found')
+  console.log(opponentlessGames.length, 'opponentless games found')
+  console.log(abortedGames.length, 'aborted games found')
+  return games
 }
 
 // parse a simple conlcusion, did user win, lose, or draw?
@@ -436,4 +464,7 @@ async function getOpponentFromChat(gameId) {
 
 // const opponent = await getWizPlayerFromChat('5ZAXEu4YAk5S')
 // console.log(opponent) 
-// getGames('1617328317956')
+// const games = await getGames('1617328317956')
+// localStorage['thinktt_games'] = JSON.stringify(games)
+
+updateGameList('thinktt')
