@@ -5,6 +5,7 @@ const scope = 'board:play'
 const clientId = 'L47TqpZn7iaJppGM'
 let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 let redirectUri = 'https://thinktt.github.io/yeoldwizard'
+// yowProxyUrl = 'http://localhost:5000'
 
 
 let tokens
@@ -22,8 +23,14 @@ doAccountFlow()
 
 
 async function doAccountFlow() {
+
+  // User is already signed in and stored in
   if (window.localStorage.user) {
     console.log('User ' + window.localStorage.user + ' found')
+    
+    // start updating game list in background
+    updateGameList(window.localStorage.user)
+    
     startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
     return
@@ -63,6 +70,9 @@ async function doAccountFlow() {
       localStorage.user = account.username
       app.user = account.username
 
+      // now that we have an account update users game list
+      updateGameList(account.username)
+
     } catch (err) {
       app.signInFailed = true
       app.setError("There was an error signing into Lichess")
@@ -81,10 +91,6 @@ async function startApp(user) {
   const res = await fetch('personalities.json')
   const cmpsObj = await res.json()
   const cmps = Object.entries(cmpsObj).map(e => e[1]).reverse()
-  
-  // If we're logged in then send an asycn call to update gameslist 
-  // in the background
-  if (user) updateGameList(user) 
 
   const app = new Vue({
     el: '#app',
