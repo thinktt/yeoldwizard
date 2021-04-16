@@ -443,7 +443,7 @@ function parseGameConclusion(players, winner) {
 
 // Check the spectator chat (via HTML page) for a Wiz Player setting
 async function getOpponentFromChat(gameId) {
-  const req = await fetch(`https://lichess.org/${gameId}`)
+  const req = await fetch(`${yowProxyUrl}/games/${gameId}`)
   
   if (!req.ok) {
     console.log(`Failed to fetch lichess game ${gameId} with status ${req.status}`)
