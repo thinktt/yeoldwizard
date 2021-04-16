@@ -345,7 +345,7 @@ function getProperName(opponent) {
     'drawmaster': 'Logan',
   }
 
-  return properNames[opponent] || opponent
+  return properNames[opponent.toLowerCase()] || opponent
 }
 
 async function checkGame(gameId) {
@@ -421,8 +421,35 @@ async function updateGameList(user) {
   const newGames = await getGames(user, lastGameTime) || []
   const games = newGames.concat(storedGames) 
   localStorage[user + '_games'] = JSON.stringify(games)
-  gamesByPlayer 
 }
+
+// creates and object keyed by opponent names with each of their games
+function sortGamesByOpponent(games) {
+  let opponentGames = {}
+  for (const game of games) {
+
+    // if we haven't mapped this opponent yet
+    if ( !opponentGames[game.opponent] ) {
+      opponentGames[game.opponent] = {games: [], topFeat: 'lost'}
+    }
+
+    // if this game is a higher player achievement than any game before we will map it here
+    if (game.conclusion === 'won') {
+      opponentGames[game.opponent].topFeat = 'won'
+    } else if (game.conclusion === 'draw' && opponentGames[game.opponent].topFeat === 'lost') {
+      opponentGames[game.opponent].topFeat = 'draw'
+    }
+
+    opponentGames[game.opponent].games.push(game)
+
+    // this deletes opponent in gamesByOpponent due to JS object by reference
+    delete game.opponent
+  }
+  return opponentGames
+}
+// const games = JSON.parse(localStorage['thinktt_games'])
+// console.log(sortGamesByOpponent(games))
+
 
 function getLastGameTime(games) {
   let lastGameTime = 0
@@ -465,12 +492,15 @@ async function getGames(user, lastGameTime) {
        abortedGames.push(id) 
        continue
     }
-    const opponent = await getOpponentFromChat(id)
+    let opponent = await getOpponentFromChat(id)
     if (!opponent) {
       opponentlessGames.push(id)
       continue
     }
-    
+
+    // Make sure the opponent has it's proper cmpObj name
+    opponent = getProperName(opponent)
+        
     const conclusion = parseGameConclusion(players, winner)
     games.push({id, createdAt, conclusion, opponent})
   }
