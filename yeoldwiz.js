@@ -85,12 +85,13 @@ async function doAccountFlow() {
   startApp()
 }
 
-
 async function startApp(user) {
   
   const res = await fetch('personalities.json')
   const cmpsObj = await res.json()
   const cmps = Object.entries(cmpsObj).map(e => e[1]).reverse()
+
+  window.cmpsObj = cmpsObj
 
   const app = new Vue({
     el: '#app',
@@ -237,6 +238,8 @@ async function startApp(user) {
     }
   })
 
+  window.app = app
+
   for (const group of app.groups) {
     group.cmps = getRatingGroup(cmps, group.high, group.low)
   }
@@ -261,6 +264,10 @@ function getRatingGroup(cmps, high, low) {
 }
 
 async function startGame(opponent) {
+  
+  // be sure to send our alias to lichess to stay consistent
+  opponent = getAlias(opponent)
+
   this.infoMode = 'starting'
 
   console.log(`Attempting to start a game with ${opponent}`)
@@ -301,6 +308,44 @@ async function startGame(opponent) {
   this.infoMode = 'started'
   return true
 
+}
+function getAlias(opponent) {
+ const aliases = {
+    'Chessmaster' : 'Wizard',
+    'Josh6': 'JW6',
+    'Josh7': 'JW7',
+    'Josh8': 'JW8',
+    'Josh9': 'JW9',
+    'Josh12': 'JW12',
+  }
+  return aliases[opponent] || opponent
+}
+
+function getProperName(opponent) {
+  const properNames = {
+    'josh age 6': 'Josh6',
+    'josh age 7': 'Josh7',
+    'josh age 8': 'Josh8',
+    'josh age 9': 'Josh9',
+    'josh age 12': 'Josh12',
+    'nyckid6': 'Josh6',
+    'nyckid7': 'Josh7',
+    'nyckid8': 'Josh8',
+    'nyckid9': 'Josh9',
+    'nyckid9': 'Josh9',
+    'nyckid12': 'Josh12',
+    'jw6':  'Josh6',
+    'jw7': 'Josh7',
+    'jw8': 'Josh8',
+    'jw9': 'Josh9',
+    'jw12': 'Josh12',
+    'wizard': 'Chessmaster',
+    'the wizard': 'Chessmaster',
+    'pawnmaster': 'Shakespeare',
+    'drawmaster': 'Logan',
+  }
+
+  return properNames[opponent] || opponent
 }
 
 async function checkGame(gameId) {
@@ -364,6 +409,8 @@ function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
 }
 
+
+let gamesByPlayer
 // Check is any new games have been played and adds them to the localStoage list
 async function updateGameList(user) {
   console.log('Attempting to update the local storage game list')
@@ -374,6 +421,7 @@ async function updateGameList(user) {
   const newGames = await getGames(user, lastGameTime) || []
   const games = newGames.concat(storedGames) 
   localStorage[user + '_games'] = JSON.stringify(games)
+  gamesByPlayer 
 }
 
 function getLastGameTime(games) {
