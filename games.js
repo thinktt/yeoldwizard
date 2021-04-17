@@ -5,19 +5,40 @@ export default {
 let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 
 // module globals
-let games 
+let user = ''
+
+function setUser(userToSet) {
+  user = userToSet
+}
+
+function getGames() {
+  const storedGamesStr = localStorage[user + '_games'] || '[]'
+  const storedGames = JSON.parse(storedGamesStr)
+  return storedGames
+}
+
+function setGames(games) {
+  if (!user) {
+    console.error('Cannot set games, no user found')
+    return
+  }
+
+  localStorage[user + '_games'] = JSON.stringify(games)
+  window.gameList = JSON.parse(localStorage[user + '_games'])
+}
 
 // Check is any new games have been played and adds them to the localStoage list
 async function updateGameList(user) {
   console.log('Attempting to update the local storage game list')
-  const storedGamesStr = localStorage[user + '_games'] || '[]'
-  const storedGames = JSON.parse(storedGamesStr)
+  
+  setUser(user)
+  const storedGames = getGames()
   const lastGameTime = getLastGameTime(storedGames) 
   console.log('last game time found: ' + lastGameTime)
-  const newGames = await getGames(user, lastGameTime) || []
+  const newGames = await getGamesFromLichess(user, lastGameTime) || []
   const games = newGames.concat(storedGames) 
-  localStorage[user + '_games'] = JSON.stringify(games)
-  window.gameList = JSON.parse(localStorage[user + '_games'])
+  setGames(games)
+  console.log(games)
   return sortGamesByOpponent(games)
 }
 
@@ -58,7 +79,7 @@ function getLastGameTime(games) {
 }
 
 // Using time from last game we have get all games since that game
-async function getGames(user, lastGameTime) {
+async function getGamesFromLichess(user, lastGameTime) {
   const lichessEndpoint = 'https://lichess.org/api/games/user/yeoldwiz'
   const query = `?since=${lastGameTime}&vs=${user}&opening=false&rated=false&perfType=correspondence`
   const tokens = JSON.parse(window.localStorage.tokens)
