@@ -2,6 +2,11 @@ export default {
   updateGameList, 
 }
 
+let yowProxyUrl = 'https://yowproxy.herokuapp.com'
+
+// module globals
+let games 
+
 // Check is any new games have been played and adds them to the localStoage list
 async function updateGameList(user) {
   console.log('Attempting to update the local storage game list')
