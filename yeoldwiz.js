@@ -1,4 +1,5 @@
 import games from './games.js'
+window.games = games
 
 const oauthUrl = 'https://oauth.lichess.org/oauth/authorize' 
 const oauthQuery = '?response_type=code'
@@ -31,6 +32,8 @@ async function doAccountFlow() {
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
     app.games = await games.updateGameList(window.localStorage.user)
+    const currentGame =  await games.getCurrentLatestGame() || {}
+    app.currentGame = currentGame.id
 
     return
   }

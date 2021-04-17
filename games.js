@@ -1,5 +1,12 @@
 export default { 
-  updateGameList, 
+  updateGameList,
+  getGames, 
+  getCurrentGames,
+  getCurrentLatestGame,
+  addCurrentGame,
+  deleteCurrentGame,
+  clearGames,
+  clearCurrentGames,
 }
 
 let yowProxyUrl = 'https://yowproxy.herokuapp.com'
@@ -9,6 +16,20 @@ let user = ''
 
 function setUser(userToSet) {
   user = userToSet
+}
+
+// clear out any  number of games games starting from latest, for dev purposes
+function clearGames(numberOfGames = 5) {
+  const games = getGames()
+  for (let i = 0; i < numberOfGames; i++) {
+    games.shift()
+  }
+  setGames(games)
+}
+
+// wipe the entire current game object, used for dev testing
+function clearCurrentGames() {
+ delete localStorage[user + '_currentGames']
 }
 
 function getGames() {
@@ -23,23 +44,52 @@ function setGames(games) {
     return
   }
   localStorage[user + '_games'] = JSON.stringify(games)
-  window.gameList = JSON.parse(localStorage[user + '_games'])
 }
 
-function setCurrentGames(games) {
+async function setCurrentGames(games) {
   if (!user) {
-    console.error('Cannot set games, no user found')
+    console.error('Cannot set current games, no user found')
     return
   }
-  localStorage[user + '_currentGames'] = JSON.stringify(games)
+
+  const gameMap = getCurrentGames()
+
+  // check each game and add it to the game map if it doesn't exist
+  for (const game of games) {
+    if (!gameMap[game.id]) {
+      game.opponent = await getOpponentFromChat(game.id)
+      gameMap[game.id] = game
+    }    
+  }
+
+  localStorage[user + '_currentGames'] = JSON.stringify(gameMap)
 }
 
 function getCurrentGames() {
-
+  // if the string object doesn't exist return an empty object
+  return JSON.parse(localStorage[user + '_currentGames'] || '{}')
 }
 
-function getTopCurrentGame() {
+// get the ealriest current game, order not really guarateed due to using an
+// obj as the map but should be good enough for our purpose
+function getCurrentLatestGame() {
+  const gameMap = getCurrentGames()
+  const games = Object.values(gameMap)
+  return games.reverse()[0]
+}
 
+// allows for adding a single game to the current game list, useful for caching
+// games just created by the frontend, assumes the opponent is set
+function addCurrentGame(game) {
+  const gameMap = getCurrentGames()
+  gameMap[game.id] = game
+  localStorage[user + '_currentGames'] = JSON.stringify(gameMap)
+}
+
+function deleteCurrentGame(game) {
+  const gameMap = getCurrentGames()
+  delete gameMap[game.id]
+  localStorage[user + '_currentGames'] = JSON.stringify(gameMap)
 }
 
 // Check is any new games have been played and adds them to the localStoage list
@@ -51,7 +101,6 @@ async function updateGameList(user) {
   const lastGameTime = getLastGameTime(storedGames) 
   console.log('last game time found: ' + lastGameTime)
   const { games : newGames, currentGames } = await getGamesFromLichess(user, lastGameTime)
-  console.log(currentGames)
   const games = newGames.concat(storedGames) 
   setGames(games)
   setCurrentGames(currentGames)
@@ -100,7 +149,7 @@ async function getGamesFromLichess(user, lastGameTime) {
 
   const lichessEndpoint = 'https://lichess.org/api/games/user/yeoldwiz'
   const query = `?since=${lastGameTime}&vs=${user}&opening=false&rated=false&perfType=correspondence&ongoing=true`
-  const tokens = JSON.parse(window.localStorage.tokens)
+  const tokens = JSON.parse(localStorage.tokens)
   const res = await fetch(lichessEndpoint + query, {    
     headers: {
       'Authorization' : 'Bearer ' + tokens.access_token,
@@ -132,7 +181,6 @@ async function getGamesFromLichess(user, lastGameTime) {
        continue
     }
     if (status === 'started') {
-      console.log('Current game found!')
       currentGames.push({id, createdAt, status })
       continue
     }
@@ -158,23 +206,6 @@ async function getGamesFromLichess(user, lastGameTime) {
   return { games, currentGames}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // parse a simple conlcusion, did user win, lose, or draw?
 function parseGameConclusion(players, winner) {
   if (!winner) return 'draw'
@@ -184,6 +215,7 @@ function parseGameConclusion(players, winner) {
 
 // Check the spectator chat (via HTML page) for a Wiz Player setting
 async function getOpponentFromChat(gameId) {
+  console.log(`Getting opponent for game ${gameId}`)
   const req = await fetch(`${yowProxyUrl}/games/${gameId}`)
   
   if (!req.ok) {
