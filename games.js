@@ -38,7 +38,6 @@ async function updateGameList(user) {
   const newGames = await getGamesFromLichess(user, lastGameTime) || []
   const games = newGames.concat(storedGames) 
   setGames(games)
-  console.log(games)
   return sortGamesByOpponent(games)
 }
 
@@ -80,6 +79,8 @@ function getLastGameTime(games) {
 
 // Using time from last game we have get all games since that game
 async function getGamesFromLichess(user, lastGameTime) {
+  console.log(`Attempting to get all games for ${user} since ${lastGameTime}`)
+
   const lichessEndpoint = 'https://lichess.org/api/games/user/yeoldwiz'
   const query = `?since=${lastGameTime}&vs=${user}&opening=false&rated=false&perfType=correspondence`
   const tokens = JSON.parse(window.localStorage.tokens)

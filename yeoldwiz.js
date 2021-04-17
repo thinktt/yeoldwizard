@@ -31,7 +31,6 @@ async function doAccountFlow() {
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
     app.games = await games.updateGameList(window.localStorage.user)
-    console.log(app.games)
 
     return
   }
