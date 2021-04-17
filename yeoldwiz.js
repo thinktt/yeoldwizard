@@ -28,11 +28,11 @@ async function doAccountFlow() {
   if (window.localStorage.user) {
     console.log('User ' + window.localStorage.user + ' found')
     
-    // start updating game list in background
-    updateGameList(window.localStorage.user)
-    
-    startApp(window.localStorage.user)
+    const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
+    app.games = await updateGameList(window.localStorage.user)
+    console.log(app.games)
+
     return
   }
 
@@ -71,7 +71,7 @@ async function doAccountFlow() {
       app.user = account.username
 
       // now that we have an account update users game list
-      updateGameList(account.username)
+      app.games = await updateGameList(account.username)
 
     } catch (err) {
       app.signInFailed = true
@@ -97,6 +97,7 @@ async function startApp(user) {
     el: '#app',
     data: {
       user: user,
+      games: {},
       signInFailed: false,
       selected: cmpsObj.Chessmaster,
       navIsOn: false,
@@ -409,10 +410,9 @@ function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
 }
 
-
-let gamesByPlayer
 // Check is any new games have been played and adds them to the localStoage list
 async function updateGameList(user) {
+  console.log('Howdy')
   console.log('Attempting to update the local storage game list')
   const storedGamesStr = localStorage[user + '_games'] || '[]'
   const storedGames = JSON.parse(storedGamesStr)
@@ -421,6 +421,7 @@ async function updateGameList(user) {
   const newGames = await getGames(user, lastGameTime) || []
   const games = newGames.concat(storedGames) 
   localStorage[user + '_games'] = JSON.stringify(games)
+  return sortGamesByOpponent(games)
 }
 
 // creates and object keyed by opponent names with each of their games
