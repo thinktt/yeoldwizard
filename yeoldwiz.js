@@ -322,33 +322,6 @@ function getAlias(opponent) {
   return aliases[opponent] || opponent
 }
 
-function getProperName(opponent) {
-  const properNames = {
-    'josh age 6': 'Josh6',
-    'josh age 7': 'Josh7',
-    'josh age 8': 'Josh8',
-    'josh age 9': 'Josh9',
-    'josh age 12': 'Josh12',
-    'nyckid6': 'Josh6',
-    'nyckid7': 'Josh7',
-    'nyckid8': 'Josh8',
-    'nyckid9': 'Josh9',
-    'nyckid9': 'Josh9',
-    'nyckid12': 'Josh12',
-    'jw6':  'Josh6',
-    'jw7': 'Josh7',
-    'jw8': 'Josh8',
-    'jw9': 'Josh9',
-    'jw12': 'Josh12',
-    'wizard': 'Chessmaster',
-    'the wizard': 'Chessmaster',
-    'pawnmaster': 'Shakespeare',
-    'drawmaster': 'Logan',
-  }
-
-  return properNames[opponent.toLowerCase()] || opponent
-}
-
 async function checkGame(gameId) {
   console.log(gameId)
 
