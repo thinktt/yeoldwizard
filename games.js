@@ -22,9 +22,24 @@ function setGames(games) {
     console.error('Cannot set games, no user found')
     return
   }
-
   localStorage[user + '_games'] = JSON.stringify(games)
   window.gameList = JSON.parse(localStorage[user + '_games'])
+}
+
+function setCurrentGames(games) {
+  if (!user) {
+    console.error('Cannot set games, no user found')
+    return
+  }
+  localStorage[user + '_currentGames'] = JSON.stringify(games)
+}
+
+function getCurrentGames() {
+
+}
+
+function getTopCurrentGame() {
+
 }
 
 // Check is any new games have been played and adds them to the localStoage list
@@ -35,9 +50,11 @@ async function updateGameList(user) {
   const storedGames = getGames()
   const lastGameTime = getLastGameTime(storedGames) 
   console.log('last game time found: ' + lastGameTime)
-  const newGames = await getGamesFromLichess(user, lastGameTime) || []
+  const { games : newGames, currentGames } = await getGamesFromLichess(user, lastGameTime)
+  console.log(currentGames)
   const games = newGames.concat(storedGames) 
   setGames(games)
+  setCurrentGames(currentGames)
   return sortGamesByOpponent(games)
 }
 
@@ -82,7 +99,7 @@ async function getGamesFromLichess(user, lastGameTime) {
   console.log(`Attempting to get all games for ${user} since ${lastGameTime}`)
 
   const lichessEndpoint = 'https://lichess.org/api/games/user/yeoldwiz'
-  const query = `?since=${lastGameTime}&vs=${user}&opening=false&rated=false&perfType=correspondence`
+  const query = `?since=${lastGameTime}&vs=${user}&opening=false&rated=false&perfType=correspondence&ongoing=true`
   const tokens = JSON.parse(window.localStorage.tokens)
   const res = await fetch(lichessEndpoint + query, {    
     headers: {
@@ -93,7 +110,7 @@ async function getGamesFromLichess(user, lastGameTime) {
 
   if (!res.ok) {
     console.log('Error getting games:') 
-    return null
+    return {games: [], currentGames: []}
   }
 
   const gamesNdjson = await res.text()
@@ -101,6 +118,8 @@ async function getGamesFromLichess(user, lastGameTime) {
   const games = [] 
   const abortedGames = []
   const opponentlessGames = []
+  const currentGames = []
+  
   for (const gameStr of gamesNdjson.split('\n')) {
     if (!gameStr) break
     // const game = JSON.parse(gameStr)
@@ -112,6 +131,12 @@ async function getGamesFromLichess(user, lastGameTime) {
        abortedGames.push(id) 
        continue
     }
+    if (status === 'started') {
+      console.log('Current game found!')
+      currentGames.push({id, createdAt, status })
+      continue
+    }
+
     let opponent = await getOpponentFromChat(id)
     if (!opponent) {
       opponentlessGames.push(id)
@@ -129,8 +154,26 @@ async function getGamesFromLichess(user, lastGameTime) {
   console.log(games.length, 'valid new games found')
   console.log(opponentlessGames.length, 'opponentless games found')
   console.log(abortedGames.length, 'aborted games found')
-  return games
+  console.log(currentGames.length, 'current games found')
+  return { games, currentGames}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // parse a simple conlcusion, did user win, lose, or draw?
 function parseGameConclusion(players, winner) {
