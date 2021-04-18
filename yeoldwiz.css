@@ -338,8 +338,11 @@ a.button.blue.test {
   position: absolute;
   opacity: .90;
   top: 7.7rem;
-  left: 5.7rem;
+  left: 0.5rem;
+  z-index: 3;
 }
+
+
 
 @media all and (max-width:25em){
     a.button {
@@ -407,6 +410,11 @@ a.button.blue.test {
 
   .nav-and-info.focus{
     display: block;
+  }
+
+  .king {
+    top: 9.9rem;
+    left: 1rem;
   }
 
 }
