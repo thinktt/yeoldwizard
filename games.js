@@ -194,7 +194,11 @@ async function getGamesFromLichess(user, lastGameTime) {
     
     // none of these games should be aborted but if one is it should be ignored
     if (status === 'aborted') {
-       abortedGames.push(id) 
+      // clear aborted game from current games
+      const currentGames = getCurrentGames()
+      deleteCurrentGame(id)
+
+      abortedGames.push(id) 
        continue
     }
     if (status === 'started') {
