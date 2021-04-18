@@ -7,6 +7,7 @@ export default {
   deleteCurrentGame,
   clearGames,
   clearCurrentGames,
+  deDupeGames,
 }
 
 let yowProxyUrl = 'https://yowproxy.herokuapp.com'
@@ -43,7 +44,16 @@ function setGames(games) {
     console.error('Cannot set games, no user found')
     return
   }
+  
   localStorage[user + '_games'] = JSON.stringify(games)
+}
+
+function deDupeGames(gamesToDeDupe) {
+  const gameMap  = {}
+  for (const game of gamesToDeDupe) {
+    gameMap[game.id] = game
+  }
+  return Object.values(gameMap)
 }
 
 async function setCurrentGames(games) {
@@ -86,9 +96,10 @@ function addCurrentGame(game) {
   localStorage[user + '_currentGames'] = JSON.stringify(gameMap)
 }
 
-function deleteCurrentGame(game) {
+// used to clear games from the currentGame cache
+function deleteCurrentGame(gameId) {
   const gameMap = getCurrentGames()
-  delete gameMap[game.id]
+  delete gameMap[gameId]
   localStorage[user + '_currentGames'] = JSON.stringify(gameMap)
 }
 
@@ -98,10 +109,11 @@ async function updateGameList(user) {
   
   setUser(user)
   const storedGames = getGames()
-  const lastGameTime = getLastGameTime(storedGames) 
+  const storedCurrentGames = getCurrentGames()
+  const lastGameTime = getLastGameTime(storedGames, storedCurrentGames) 
   console.log('last game time found: ' + lastGameTime)
   const { games : newGames, currentGames } = await getGamesFromLichess(user, lastGameTime)
-  const games = newGames.concat(storedGames) 
+  const games = deDupeGames(newGames.concat(storedGames)) 
   setGames(games)
   setCurrentGames(currentGames)
   return sortGamesByOpponent(games)
@@ -135,11 +147,16 @@ function sortGamesByOpponent(games) {
 // console.log(sortGamesByOpponent(games))
 
 
-function getLastGameTime(games) {
+function getLastGameTime(games, currentGames) {
   let lastGameTime = 0
   for (const game of games) {
     if (game.createdAt > lastGameTime) lastGameTime = game.createdAt
   }
+  
+  for (const game of Object.values(currentGames)) {
+    if (game.createdAt < lastGameTime) lastGameTime = game.createdAt - 1
+  }
+
   return lastGameTime
 }
 
@@ -215,6 +232,19 @@ function parseGameConclusion(players, winner) {
 
 // Check the spectator chat (via HTML page) for a Wiz Player setting
 async function getOpponentFromChat(gameId) {
+
+  // before we make a call let's see if this was a previously cached currentGame
+  const currentGames = getCurrentGames()
+  if (currentGames[gameId]) {
+    const opponent = currentGames[gameId].opponent
+    
+    // not well abstracded but while we're here let's get rid of this old 
+    // cached 'current game'
+    deleteCurrentGame(gameId)
+    
+    return opponent
+  }
+  
   console.log(`Getting opponent for game ${gameId}`)
   const req = await fetch(`${yowProxyUrl}/games/${gameId}`)
   

@@ -105,6 +105,7 @@ async function startApp(user) {
       navIsOn: false,
       infoMode: 'browsing',
       currentGame: 'RklLOoMREuDI',
+      currentOpponent: '',
       shouldShowSignOut: false,
       selectionIsLocked: false,
       isInPlayMode: false,
