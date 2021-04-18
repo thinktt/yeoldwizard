@@ -216,7 +216,7 @@ async function getGamesFromLichess(user, lastGameTime) {
     opponent = getProperName(opponent)
         
     const conclusion = parseGameConclusion(players, winner)
-    games.push({id, createdAt, conclusion, opponent})
+    games.push({id, createdAt, status, conclusion, opponent})
   }
 
 
