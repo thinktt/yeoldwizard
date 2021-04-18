@@ -300,11 +300,17 @@ async function startApp(user) {
         startStream(`/board/game/stream/${gameId}`, (data) => {
           switch(data.type) {
             case 'gameFull': 
-              console.log(`Succefully connected to Game`)
-              console.log(data) 
+              console.log(`Succefully connected to Game:`)
+              console.log(data.id, data.createdAt, data.state.status) 
               break;
+            case 'gameState':
+              const endStates = ['mate', 'resign', 'stalemate', 'aborted']
+              if (endStates.includes(data.status)) {
+                console.log('Game ended!')
+                this.infoMode = 'ended'
+              }
             default: 
-               console.log(data)
+              //  console.log(data)
           } 
         })
       },
@@ -390,8 +396,6 @@ async function setOpponent(gameId, opponent) {
 window.startStream = startStream
 async function startStream(endpoint, callback) {
   const tokens = JSON.parse(window.localStorage.tokens)
-  console.log(tokens.access_token)
-
   const reader = await fetch('https://lichess.org/api' + endpoint,  {
     headers: {'Authorization' : 'Bearer ' + tokens.access_token}
   }).then((res) => res.body.pipeThrough(new TextDecoderStream()).getReader())

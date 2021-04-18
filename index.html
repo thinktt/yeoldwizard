@@ -101,6 +101,18 @@
               Go to Game
             </a>
           </span>
+
+          <span v-if="infoMode === 'ended'" class="start-message" >
+            <h3>Game Finished</h3>
+            <p>
+              You have completed your game with {{selected.name}}!
+              Click OK to find a new opponent
+            </p>
+            <a class="button yellow" @click="stopSelectionLock">OK</a>
+            <!-- <a @click="openGame" class="button blue">
+              Go to Game
+            </a> -->
+          </span>
                     
         </section>
         <nav v-if="navIsOn">
@@ -131,7 +143,7 @@
             </span>
           </div>
         </section>
-        <a @click="infoMode = 'started'" class="button blue test">testy</a>
+        <a @click="infoMode = 'ended'" class="button blue test">testy</a>
         <img class="king lost" src="images/king-red.svg" alt="">
         <span class="draw-container">
           <img class="king left" src="images/king-gray.svg" alt="">
