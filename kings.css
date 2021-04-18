@@ -1,0 +1,27 @@
+body {
+  background-color: black;
+}
+
+
+.king {
+  display: visible;
+}
+
+.king.lost {
+  transform: rotate(-75deg);
+}
+
+.draw-container {
+  width: 10rem;
+  /* position: absolute; */
+}
+
+.king.left {
+  position: relative;
+  left: 4rem;
+}
+
+.king.right {
+  position: relative;
+  right: 4rem;
+}

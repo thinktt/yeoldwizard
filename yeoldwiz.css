@@ -241,6 +241,10 @@ nav a {
   justify-content: center;
 }
 
+.cmp-inner-div {
+  display: block;
+}
+
 .gms {
   flex-direction: row-reverse;
   flex-wrap: wrap-reverse;
@@ -324,29 +328,18 @@ a.button.blue.test {
   opacity: 0;
 }
 
+.cmp-container  {
+  position: relative;
+}
+
 .king {
-  display: none;
+  height: 2.5rem;
+  width: auto;
+  position: absolute;
+  opacity: .90;
+  top: 7.7rem;
+  left: 5.7rem;
 }
-
-.king.lost {
-  transform: rotate(-75deg);
-}
-
-.draw-container {
-  width: 10rem;
-  /* position: absolute; */
-}
-
-.king.left {
-  position: relative;
-  left: 4rem;
-}
-
-.king.right {
-  position: relative;
-  right: 4rem;
-}
-
 
 @media all and (max-width:25em){
     a.button {

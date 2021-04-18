@@ -123,34 +123,58 @@
       </div>
       
       <div class="groups" :class="{focus: infoMode == 'browsing' && !navIsOn}">
-        <section class="group" v-for="group in groups"> 
+        <section v-for="group in groups" class="group"> 
           <a :name="group.title.replace(' ','')"></a>
           <h1>{{group.title}}</h1> 
           <div class="cmps" :class="{gms: group.isGms}">
-            <span class="cmp" :title="cmp.summary" v-for='cmp of group.cmps'>
-              <a clss="cmp-a" :name="cmp.name"></a>
-              <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name"
-                @mouseover="showCmp(cmp)" 
-                @click="toggleSelectionLock(cmp)"
-                :class="{
-                  selected: selected.name === cmp.name,
-                  inPlayMode: selectionIsLocked && selected.name == cmp.name,
-                }"
+            <div>
+              
+            </div>
+
+            <div v-for="cmp of group.cmps" class="cmp-container" :title="cmp.summary">
+              
+              <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'won'"
+                class="king" 
+                src="images/king-won.png" 
+                alt="won"
               >
-              <span>{{cmp.name}}</span>
-              <span>{{cmp.rating}}</span>
-              <span>{{ games[cmp.name] ? games[cmp.name].topFeat : ''}}</span>
-            </span>
+              <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'lost'"
+                class="king" 
+                src="images/king-lost.png" 
+                alt="lost"
+              >
+              <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'draw'"
+                class="king" 
+                src="images/king-draw.png" 
+                alt="draw"
+              >
+
+              <div class="cmp">
+                <a :name="cmp.name"></a>
+                <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name"
+                  @mouseover="showCmp(cmp)" 
+                  @click="toggleSelectionLock(cmp)"
+                  :class="{
+                    selected: selected.name === cmp.name,
+                    inPlayMode: selectionIsLocked && selected.name == cmp.name,
+                  }"
+                >
+                <span>{{cmp.name}}</span>
+                <span>{{cmp.rating}}</span>
+              </div>
+
+            </div>
+
           </div>
         </section>
         <a @click="infoMode = 'ended'" class="button blue test">testy</a>
-        <img class="king lost" src="images/king-red.svg" alt="">
+        <!-- <img class="king lost" src="images/king-red.svg" alt="">
         <span class="draw-container">
           <img class="king left" src="images/king-gray.svg" alt="">
           <img class="king right" src="images/king-gray.svg" alt="">
         </span>
         <img class="king won" src="images/king-green.svg" alt="">
-      </div>>
+      </div>> -->
     </main>
   </div>
   <!-- Serive worker setup-->
