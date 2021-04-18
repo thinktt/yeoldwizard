@@ -68,7 +68,7 @@ header {
   background-color: rgb(59, 31, 17);
   display: block;
   position: fixed;
-  z-index: 2;
+  z-index: 4;
   line-height: 2rem;
   padding-left: 1rem;
   /* font-family: retro2; */
