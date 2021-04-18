@@ -28,20 +28,9 @@ async function doAccountFlow() {
   // User is already signed in and stored in
   if (window.localStorage.user) {
     console.log('User ' + window.localStorage.user + ' found')
-    
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
-    app.games = await games.updateGameList(window.localStorage.user)
-    const currentGame =  await games.getCurrentLatestGame() || {}
-    
-    if (currentGame.id) {
-      app.currentGame = currentGame.id
-      app.toggleSelectionLock({name: currentGame.opponent })
-      app.infoMode = "started"
-      await new Promise(resolve => setTimeout(resolve, 50))
-    } 
-    
-    app.isHidden = false
+    app.loadUserGames()
     return
   }
 
@@ -79,8 +68,8 @@ async function doAccountFlow() {
       localStorage.user = account.username
       app.user = account.username
 
-      // now that we have an account update users game list
-      app.games = await games.updateGameList(account.username)
+      // now that we have an account we can connnect to users games
+      app.loadUserGames()
 
     } catch (err) {
       app.signInFailed = true
@@ -290,8 +279,34 @@ async function startApp(user) {
         games.addCurrentGame({id: gameId, opponent, })
         this.currentGame = gameId
         this.infoMode = 'started'
+
+        this.connectToStream(gameId)
+
         return true
-      
+      },
+      async loadUserGames() {
+        this.games = await games.updateGameList(window.localStorage.user)
+        const currentGame =  await games.getCurrentLatestGame() || {}
+        
+        if (currentGame.id) {
+          this.currentGame = currentGame.id
+          this.toggleSelectionLock({name: currentGame.opponent })
+          this.infoMode = "started"
+          this.connectToStream(currentGame.id)
+          // await new Promise(resolve => setTimeout(resolve, 50))
+        } 
+      },
+      connectToStream(gameId) {
+        startStream(`/board/game/stream/${gameId}`, (data) => {
+          switch(data.type) {
+            case 'gameFull': 
+              console.log(`Succefully connected to Game`)
+              console.log(data) 
+              break;
+            default: 
+               console.log(data)
+          } 
+        })
       },
     }
   })
