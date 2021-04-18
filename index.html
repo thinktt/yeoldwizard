@@ -134,16 +134,19 @@
             <div v-for="cmp of group.cmps" class="cmp-container" :title="cmp.summary">
               
               <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'won'"
+                :title="`You've beaten ${cmp.name}`"
                 class="king" 
                 src="images/king-won.png" 
                 alt="won"
               >
               <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'lost'"
+                :title="`${cmp.name} has always beaten you`"
                 class="king" 
                 src="images/king-lost.png" 
                 alt="lost"
               >
               <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'draw'"
+                :title="`Your best is a draw with ${cmp.name}`"
                 class="king" 
                 src="images/king-draw.png" 
                 alt="draw"
