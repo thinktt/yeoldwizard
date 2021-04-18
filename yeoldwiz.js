@@ -308,11 +308,13 @@ async function startGame(opponent) {
     return false
   }
 
+  games.addCurrentGame({id: gameId, opponent, })
   this.currentGame = gameId
   this.infoMode = 'started'
   return true
 
 }
+
 function getAlias(opponent) {
  const aliases = {
     'Chessmaster' : 'Wizard',
@@ -364,11 +366,12 @@ async function setOpponent(gameId, opponent) {
   return true
 }
 
-async function getUserStream() {
+window.startStream = startStream
+async function startStream(endpoint, callback) {
   const tokens = JSON.parse(window.localStorage.tokens)
   console.log(tokens.access_token)
 
-  const reader = await fetch('https://lichess.org/api/stream/event',  {
+  const reader = await fetch('https://lichess.org/api' + endpoint,  {
     headers: {'Authorization' : 'Bearer ' + tokens.access_token}
   }).then((res) => res.body.pipeThrough(new TextDecoderStream()).getReader())
 
@@ -376,8 +379,10 @@ async function getUserStream() {
     const { value, done } = await reader.read();
     if (done) break;
     if (value) {
-      console.log(value)
-      console.log(value.length)
+      const outs = value.split('\n')
+      for (const out of outs) {
+        if (out !== '') callback(JSON.parse(out))
+      }
     }
   }
 }
