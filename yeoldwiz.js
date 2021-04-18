@@ -246,7 +246,53 @@ async function startApp(user) {
       openGame() {
         window.open('https://lichess.org/' + this.currentGame, '_blank')
       },
-      startGame,
+      async startGame(opponent) {
+  
+        // be sure to send our alias to lichess to stay consistent
+        opponent = getAlias(opponent)
+      
+        this.infoMode = 'starting'
+      
+        console.log(`Attempting to start a game with ${opponent}`)
+        const tokens = JSON.parse(window.localStorage.tokens)
+        this.isStartingGame = true
+        // console.log(tokens.access_token)
+      
+        const res = await fetch('https://lichess.org/api/challenge/yeoldwiz', {
+          method: 'POST',
+          body: { rated: false, message: `yoeldwiz {game} started with ${opponent}` },
+          headers: { 'Authorization' : 'Bearer ' + tokens.access_token}
+        })
+      
+        if (!res.ok) {
+          this.isStartingGame = false
+          return false
+        }
+        const challenge = await res.json()
+        const gameId = challenge.challenge.id
+      
+        // give some time for the game to start, this is crappy but hopefuly works
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        if ( !(await checkGame(gameId)) ) {
+          console.log('Game did not start')
+          this.setError('Game did not start')
+          return false
+        }
+      
+        console.log(`${gameId} started!`)
+        if (!await setOpponent(gameId, opponent)) {
+          console.log('Game started unalbe to set opponent')
+          this.setError('Game started but unalbe to set opponent')
+          return false
+        }
+      
+        games.addCurrentGame({id: gameId, opponent, })
+        this.currentGame = gameId
+        this.infoMode = 'started'
+        return true
+      
+      },
     }
   })
 
@@ -273,54 +319,6 @@ function getRatingGroup(cmps, high, low) {
     return (cmp.rating >= low) && (cmp.rating < high) 
   }) 
   return cmpGroup.reverse()
-}
-
-async function startGame(opponent) {
-  
-  // be sure to send our alias to lichess to stay consistent
-  opponent = getAlias(opponent)
-
-  this.infoMode = 'starting'
-
-  console.log(`Attempting to start a game with ${opponent}`)
-  const tokens = JSON.parse(window.localStorage.tokens)
-  this.isStartingGame = true
-  // console.log(tokens.access_token)
-
-  const res = await fetch('https://lichess.org/api/challenge/yeoldwiz', {
-    method: 'POST',
-    body: { rated: false, message: `yoeldwiz {game} started with ${opponent}` },
-    headers: { 'Authorization' : 'Bearer ' + tokens.access_token}
-  })
-
-  if (!res.ok) {
-    this.isStartingGame = false
-    return false
-  }
-  const challenge = await res.json()
-  const gameId = challenge.challenge.id
-
-  // give some time for the game to start, this is crappy but hopefuly works
-  await new Promise(resolve => setTimeout(resolve, 3000));
-  
-  if ( !(await checkGame(gameId)) ) {
-    console.log('Game did not start')
-    this.setError('Game did not start')
-    return false
-  }
-
-  console.log(`${gameId} started!`)
-  if (!await setOpponent(gameId, opponent)) {
-    console.log('Game started unalbe to set opponent')
-    this.setError('Game started but unalbe to set opponent')
-    return false
-  }
-
-  games.addCurrentGame({id: gameId, opponent, })
-  this.currentGame = gameId
-  this.infoMode = 'started'
-  return true
-
 }
 
 function getAlias(opponent) {
