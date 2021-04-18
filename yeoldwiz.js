@@ -33,8 +33,15 @@ async function doAccountFlow() {
     tokens = JSON.parse(localStorage.tokens) 
     app.games = await games.updateGameList(window.localStorage.user)
     const currentGame =  await games.getCurrentLatestGame() || {}
-    app.currentGame = currentGame.id
-
+    
+    if (currentGame.id) {
+      app.currentGame = currentGame.id
+      app.toggleSelectionLock({name: currentGame.opponent })
+      app.infoMode = "started"
+      await new Promise(resolve => setTimeout(resolve, 50))
+    } 
+    
+    app.isHidden = false
     return
   }
 
@@ -99,6 +106,7 @@ async function startApp(user) {
     el: '#app',
     data: {
       user: user,
+      isHidden: true,
       games: {},
       signInFailed: false,
       selected: cmpsObj.Chessmaster,

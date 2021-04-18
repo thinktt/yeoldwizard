@@ -37,6 +37,9 @@ body {
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
+.hidden {
+  visibility: hidden;
+}
 
 h1 {
   font-size: 3rem;

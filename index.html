@@ -13,7 +13,7 @@
 </head>
 <body>
 
-  <div id="app" v-cloak>
+  <div id="app" v-cloak >
     <header>
       <span> 
         <span class="hamburger" @mouseover="switchNav">☰</span> 
@@ -45,7 +45,7 @@
       </span>
 
     </header>
-    <main>
+    <main :class="{ hidden: isHidden }">
       <div class="spacer"></div>
       <div class="nav-and-info" :class="{focus: infoMode !== 'browsing' || navIsOn}">
         <section v-if="!navIsOn" class="info">
@@ -96,7 +96,7 @@
           <span v-if="infoMode === 'started'" class="start-message" >
             <div>Your game has started!</div>
             <p>Click to GO TO GAME or open the Lichess app on your phone to play.</p>
-            <a class="button yellow" @click="stopSelectionLock">Done</a>
+            <!-- <a class="button yellow" @click="stopSelectionLock">Done</a> -->
             <a @click="openGame" class="button blue">
               Go to Game
             </a>
