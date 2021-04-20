@@ -308,6 +308,7 @@ async function startApp(user) {
               if (endStates.includes(data.status)) {
                 console.log('Game ended!')
                 this.infoMode = 'ended'
+                this.loadUserGames()
               }
             default: 
               //  console.log(data)
