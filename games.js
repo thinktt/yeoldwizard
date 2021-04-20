@@ -15,6 +15,21 @@ let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 // module globals
 let user = ''
 
+// Check is any new games have been played and adds them to the localStoage list
+async function updateGameList(user) {
+  console.log('Attempting to update the local storage game list')
+  setUser(user)
+  const storedGames = getGames()
+  const storedCurrentGames = getCurrentGames()
+  const lastGameTime = getLastGameTime(storedGames, storedCurrentGames) 
+  console.log('last game time found: ' + lastGameTime)
+  const { games : newGames, currentGames } = await getGamesFromLichess(user, lastGameTime)
+  const games = deDupeGames(newGames.concat(storedGames)) 
+  setGames(games)
+  setCurrentGames(currentGames)
+  return sortGamesByOpponent(games)
+}
+
 function setUser(userToSet) {
   user = userToSet
 }
@@ -67,7 +82,6 @@ async function setCurrentGames(games) {
   // check each game and add it to the game map if it doesn't exist
   for (const game of games) {
     if (!gameMap[game.id]) {
-      game.opponent = await getOpponentFromChat(game.id)
       gameMap[game.id] = game
     }    
   }
@@ -101,22 +115,6 @@ function deleteCurrentGame(gameId) {
   const gameMap = getCurrentGames()
   delete gameMap[gameId]
   localStorage[user + '_currentGames'] = JSON.stringify(gameMap)
-}
-
-// Check is any new games have been played and adds them to the localStoage list
-async function updateGameList(user) {
-  console.log('Attempting to update the local storage game list')
-  
-  setUser(user)
-  const storedGames = getGames()
-  const storedCurrentGames = getCurrentGames()
-  const lastGameTime = getLastGameTime(storedGames, storedCurrentGames) 
-  console.log('last game time found: ' + lastGameTime)
-  const { games : newGames, currentGames } = await getGamesFromLichess(user, lastGameTime)
-  const games = deDupeGames(newGames.concat(storedGames)) 
-  setGames(games)
-  setCurrentGames(currentGames)
-  return sortGamesByOpponent(games)
 }
 
 // creates and object keyed by opponent names with each of their games
@@ -160,7 +158,8 @@ function getLastGameTime(games, currentGames) {
   return lastGameTime
 }
 
-// Using time from last game we have get all games since that game
+// Using time from last game we have get all games since that game, this
+// function is a mess and should refctored and split up, it's doing way to much
 async function getGamesFromLichess(user, lastGameTime) {
   console.log(`Attempting to get all games for ${user} since ${lastGameTime}`)
 
@@ -185,36 +184,48 @@ async function getGamesFromLichess(user, lastGameTime) {
   const abortedGames = []
   const opponentlessGames = []
   const currentGames = []
+  const storedCurrentGames = getCurrentGames()
+
   
   for (const gameStr of gamesNdjson.split('\n')) {
+    
+    // last input will be a end of line char or some such, stop the loop
+    // to keep things from exploding
     if (!gameStr) break
-    // const game = JSON.parse(gameStr)
-    // games.push(game) 
+    
     const {id, createdAt, status, players, winner } = JSON.parse(gameStr)
     
-    // none of these games should be aborted but if one is it should be ignored
     if (status === 'aborted') {
       // clear aborted game from current games
-      const currentGames = getCurrentGames()
       deleteCurrentGame(id)
-
       abortedGames.push(id) 
-       continue
-    }
-    if (status === 'started') {
-      currentGames.push({id, createdAt, status })
       continue
     }
+    
+    // if this game is cached in localstorage current games from before we 
+    // get the oppoent from there, no need for html chat hacking
+    let opponent = ''
+    if (storedCurrentGames[id]) {
+      opponent = storedCurrentGames[id].opponent
+    } else {
+      opponent = await getOpponentFromChat(id)
+    }
 
-    let opponent = await getOpponentFromChat(id)
+    // we were unbale to find a opponent, skip this game and record it
     if (!opponent) {
       opponentlessGames.push(id)
       continue
     }
 
-    // Make sure the opponent has it's proper cmpObj name
+    // now make sure the opponent has it's proper cmpObj name
     opponent = getProperName(opponent)
-        
+
+    if (status === 'started') {
+      currentGames.push({id, createdAt, status, opponent })
+      continue
+    }
+    
+    // This is an actual completed game to be stored in long storage 
     const conclusion = parseGameConclusion(players, winner)
     games.push({id, createdAt, status, conclusion, opponent})
   }
@@ -237,18 +248,6 @@ function parseGameConclusion(players, winner) {
 // Check the spectator chat (via HTML page) for a Wiz Player setting
 async function getOpponentFromChat(gameId) {
 
-  // before we make a call let's see if this was a previously cached currentGame
-  const currentGames = getCurrentGames()
-  if (currentGames[gameId]) {
-    const opponent = currentGames[gameId].opponent
-    
-    // not well abstracded but while we're here let's get rid of this old 
-    // cached 'current game'
-    deleteCurrentGame(gameId)
-    
-    return opponent
-  }
-  
   console.log(`Getting opponent for game ${gameId}`)
   const req = await fetch(`${yowProxyUrl}/games/${gameId}`)
   
