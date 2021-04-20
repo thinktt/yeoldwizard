@@ -76,14 +76,10 @@ async function setCurrentGames(games) {
     console.error('Cannot set current games, no user found')
     return
   }
-
-  const gameMap = getCurrentGames()
-
-  // check each game and add it to the game map if it doesn't exist
+  
+  const gameMap = {}
   for (const game of games) {
-    if (!gameMap[game.id]) {
-      gameMap[game.id] = game
-    }    
+    gameMap[game.id] = game 
   }
 
   localStorage[user + '_currentGames'] = JSON.stringify(gameMap)
