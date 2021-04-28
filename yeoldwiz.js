@@ -25,12 +25,16 @@ doAccountFlow()
 
 async function doAccountFlow() {
 
-  // User is already signed in and stored in
+  // User is already signed in and stored in localstorage
   if (window.localStorage.user) {
     console.log('User ' + window.localStorage.user + ' found')
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
+        
     app.loadUserGames()
+    if (!app.slectionIsLocked && localStorage.lastCmp) {
+      window.location.hash = `#${localStorage.lastCmp}` 
+    }
     return
   }
 
@@ -192,6 +196,7 @@ async function startApp(user) {
         
         this.navIsOn = false
         this.selected = cmpsObj[cmp.name]
+        localStorage.lastCmp = cmp.name
 
         
         if (this.infoMode === 'browsing') {
@@ -204,7 +209,7 @@ async function startApp(user) {
       setSelectionLock() {
         this.infoMode = 'selected'
         this.selectionIsLocked = true
-        this.scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
+        localStorage.scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
         this.lockBody()
       },
       stopSelectionLock(){
@@ -212,8 +217,12 @@ async function startApp(user) {
         this.selectionIsLocked = false
         this.unlockBody()
         if (isInPhoneMode()) {
-          document.documentElement.scrollTop = document.body.scrollTop = this.scrollPosition;
+          this.scrollReturn()
         }
+      },
+      scrollReturn() {
+        document.documentElement.scrollTop = document.body.scrollTop = 
+          parseInt(localStorage.scrollPosition) || 0
       },
       lockBody() {
         if  (isInPhoneMode()) document.body.style.position = 'fixed'
