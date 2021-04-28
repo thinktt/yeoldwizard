@@ -87,7 +87,17 @@ async function startApp(user) {
   
   const res = await fetch('personalities.json')
   const cmpsObj = await res.json()
-  const cmps = Object.entries(cmpsObj).map(e => e[1]).reverse()
+
+  // Map the CMP Object to an array, sort them by rating, reverse them 
+  // for top to bottom flow when building layout
+  let cmps = Object.entries(cmpsObj).map(e => e[1])
+
+  cmps.sort((cmp0, cmp1) => {
+    if ( cmp0.rating < cmp1.rating ) return -1
+    if ( cmp0.rating > cmp1.rating ) return 1
+    if ( cmp0.rating === cmp1.rating ) return 0
+  })
+  cmps = cmps.reverse()
 
   window.cmpsObj = cmpsObj
 
