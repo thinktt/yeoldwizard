@@ -48,10 +48,17 @@ function clearCurrentGames() {
  delete localStorage[user + '_currentGames']
 }
 
-function getGames() {
+function getGames(opponent) {
   const storedGamesStr = localStorage[user + '_games'] || '[]'
   const storedGames = JSON.parse(storedGamesStr)
-  return storedGames
+  let games = []
+  for (const game of storedGames) {
+    if (opponent && game.opponent !== opponent) continue
+    game.link = 'https://lichess.org/' + game.id
+    games.push(game)
+  }
+
+  return games
 }
 
 function setGames(games) {
