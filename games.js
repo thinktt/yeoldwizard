@@ -224,7 +224,7 @@ async function getGamesFromLichess(user, lastGameTime) {
     opponent = getProperName(opponent)
 
     if (status === 'started') {
-      currentGames.push({id, createdAt, status, opponent })
+      currentGames.push({ id, createdAt, status, opponent })
       continue
     }
     

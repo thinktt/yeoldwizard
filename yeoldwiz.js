@@ -1,14 +1,20 @@
 import games from './games.js'
 window.games = games
 
-const oauthUrl = 'https://oauth.lichess.org/oauth/authorize' 
+// const oauthUrl = 'https://oauth.lichess.org/oauth/authorize'
+const oauthUrl = 'https://lichess.org/oauth' 
 const oauthQuery = '?response_type=code'
 const scope = 'board:play'
 
-const clientId = 'L47TqpZn7iaJppGM'
 let yowProxyUrl = 'https://yowproxy.herokuapp.com'
-let redirectUri = 'https://thinktt.github.io/yeoldwizard'
 // yowProxyUrl = 'http://localhost:5000'
+const clientId = 'L47TqpZn7iaJppGM'
+let redirectUri = 'https://thinktt.github.io/yeoldwizard'
+// let redirectUri = 'http://localhost:8080'
+// let { codeVerifier, codeChallenge } = await generatePKCECodes()
+let codeChallenge = 'JGrp5Yhr6TGb-FDKSGe29mCvPNbxcwemmOF_gxFJ4E0'
+let codeVerifier = 'c1g4WFR2LXp5QVBSNWttfjhMN1c0VDVpNkdqbVhtYUlyanhIRU1RSVJUTWZ4dEZQMnZ0X2VtLUZhQ053c2pCQU11X1I3Y09TX1VtN1FlNWNnUX45c2NXdUphLnN1TVBv'
+console.log(codeVerifier, codeChallenge)
 
 
 let tokens
@@ -39,9 +45,11 @@ async function doAccountFlow() {
   }
 
   // first check if this is a Athorization callback
-  const authCodeRegex = /code\=([a-f0-9]*)/
+  const authCodeRegex = /code\=([_a-zA-Z0-9]*)/
   const match = authCodeRegex.exec(window.location.search.substr(1))
   if (match) {
+    console.log('Match: ' + match )
+
     // go ahead and clear the query string as we no longer need it
     window.history.replaceState({}, null, window.location.origin + window.location.pathname)
     
@@ -52,8 +60,31 @@ async function doAccountFlow() {
     const code = match[1]
     const query =  `?code=${code}&redirect_uri=${redirectUri}`
     try {
-      let url = yowProxyUrl + '/token' + query
-      let res = await fetch(url)
+      // let url = yowProxyUrl + '/token' + query
+      let body = {
+        grant_type : 'authorization_code',
+        code: code,
+        code_verifier: codeVerifier,
+        redirect_uri: redirectUri,
+        client_id: clientId,
+      }
+
+      console.log(body)
+      console.log(await codeChallenge)
+
+      let url = 'https://lichess.org/api/token'
+      let res = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+        method: 'POST',
+        body: new URLSearchParams(body)
+      })
+      
+      // let res = await fetch(url)
+          
+      
+      
       console.log('response: ', res.status, res.statusText)
       const tokens = await res.json() 
       console.log('Setting tokens in local storage')
@@ -126,7 +157,9 @@ async function startApp(user) {
       gameUrl: '',
       scrollPosition: 0,
       errorMessage: 'Things fall apart',
-      signInLink: oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + clientId + '&redirect_uri=' + redirectUri,
+      signInLink: oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + clientId + '&redirect_uri=' + redirectUri + 
+        '&code_challenge_method=S256' + '&code_challenge=' + codeChallenge +
+        '&state=12345',
       groups : [
         {
           title: 'The Wizard',
@@ -436,3 +469,59 @@ function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
 }
 
+async function sha256UrlEnc(message) {
+  // encode as UTF-8
+  const msgBuffer = new TextEncoder().encode(message)
+
+  // hash the message
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
+
+  // convert ArrayBuffer to Array
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+
+  const urlBase64 = btoa(hashBuffer)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+
+  return urlBase64
+}
+
+
+async function generatePKCECodes() {
+  const PKCE_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const RECOMMENDED_CODE_VERIFIER_LENGTH = 96
+  const output = new Uint32Array(RECOMMENDED_CODE_VERIFIER_LENGTH);
+  crypto.getRandomValues(output);
+  const codeVerifier = base64urlEncode(Array
+    .from(output)
+    .map((num) => PKCE_CHARSET[num % PKCE_CHARSET.length])
+    .join(''));
+
+  let codes = crypto
+    .subtle
+    .digest('SHA-256', (new TextEncoder()).encode(codeVerifier))
+    .then((buffer) => {
+      let hash = new Uint8Array(buffer);
+      let binary = '';
+      let hashLength = hash.byteLength;
+      for (let i = 0; i < hashLength; i++) {
+        binary += String.fromCharCode(hash[i]);
+      }
+      return binary;
+    })
+    .then(base64urlEncode)
+    .then((codeChallenge) => ({ codeChallenge, codeVerifier }));
+  
+  console.log(await codes)
+
+  return codes;
+}
+
+function base64urlEncode(value) {
+  let base64 = btoa(value);
+  base64 = base64.replace(/\+/g, '-');
+  base64 = base64.replace(/\//g, '_');
+  base64 = base64.replace(/=/g, '');
+  return base64;
+}
