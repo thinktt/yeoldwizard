@@ -6,20 +6,22 @@ const oauthUrl = 'https://lichess.org/oauth'
 const oauthQuery = '?response_type=code'
 const scope = 'board:play'
 
-let yowProxyUrl = 'https://yowproxy.herokuapp.com'
+// let redirectUri = 'http://localhost:8080'
 // yowProxyUrl = 'http://localhost:5000'
+
+let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 const clientId = 'L47TqpZn7iaJppGM'
 let redirectUri = 'https://thinktt.github.io/yeoldwizard'
-// let redirectUri = 'http://localhost:8080'
-// let { codeVerifier, codeChallenge } = await generatePKCECodes()
-let codeVerifier = 'c1g4WFR2LXp5QVBSNWttfjhMN1c0VDVpNkdqbVhtYUlyanhIRU1RSVJUTWZ4dEZQMnZ0X2VtLUZhQ053c2pCQU11X1I3Y09TX1VtN1FlNWNnUX45c2NXdUphLnN1TVBv'
-let codeChallenge = 'JGrp5Yhr6TGb-FDKSGe29mCvPNbxcwemmOF_gxFJ4E0'
-console.log(await generatePKCECodes(codeVerifier))
-
-
-
 let tokens
-window.greeting = 'Howdy'
+
+// Will always keep the same code in local storage but generate a new one if none
+// exist. Uncertain security, probably proper way is generate for every oauth call
+localStorage.codeVerifier = localStorage.codeVerifier || genRandomString()
+let codeChallenge = await genChallengeCode(localStorage.codeVerifier)
+
+console.log(localStorage.codeVerifier)
+console.log(codeChallenge) 
+
 
 // a way to get dev to work using the same lichess client id
 if (localStorage.redirectToDev === 'true' && window.location.search && 
@@ -68,7 +70,7 @@ async function doAccountFlow() {
       let body = {
         grant_type : 'authorization_code',
         code: code,
-        code_verifier: codeVerifier,
+        code_verifier: localStorage.codeVerifier,
         redirect_uri: redirectUri,
         client_id: clientId,
       }
@@ -84,10 +86,6 @@ async function doAccountFlow() {
         method: 'POST',
         body: new URLSearchParams(body)
       })
-      
-      // let res = await fetch(url)
-          
-      
       
       console.log('response: ', res.status, res.statusText)
       tokens = await res.json() 
@@ -117,7 +115,7 @@ async function doAccountFlow() {
     }
     return     
   }
-  
+ 
   // startApp with no user starts app in a singed out state
   startApp()
 }
@@ -276,6 +274,7 @@ async function startApp(user) {
         delLichessToken()
         delete window.localStorage.user
         delete window.localStorage.tokens
+        this.games = {}
       },
       setError(message) {
         this.selected = cmpsObj.Chessmaster
@@ -508,19 +507,21 @@ async function sha256UrlEnc(message) {
   return urlBase64
 }
 
-
-async function generatePKCECodes(codeVerifier) {
+function genRandomString() {
   const PKCE_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
   const RECOMMENDED_CODE_VERIFIER_LENGTH = 96
-  // const output = new Uint32Array(RECOMMENDED_CODE_VERIFIER_LENGTH);
-  // crypto.getRandomValues(output);
-  // const codeVerifier = base64urlEncode(Array
-  //   .from(output)
-  //   .map((num) => PKCE_CHARSET[num % PKCE_CHARSET.length])
-  //   .join(''));
+  const output = new Uint32Array(RECOMMENDED_CODE_VERIFIER_LENGTH);
+  crypto.getRandomValues(output);
+  const randStr = base64urlEncode(Array
+    .from(output)
+    .map((num) => PKCE_CHARSET[num % PKCE_CHARSET.length])
+    .join(''));
+ 
+  return randStr
+}
 
 
-
+async function genChallengeCode(codeVerifier) {
   let codes = crypto
     .subtle
     .digest('SHA-256', (new TextEncoder()).encode(codeVerifier))
@@ -535,8 +536,6 @@ async function generatePKCECodes(codeVerifier) {
     })
     .then(base64urlEncode)
     .then((codeChallenge) => ({ codeChallenge, codeVerifier }));
-  
-  // console.log(await codes)
 
   return (await codes).codeChallenge;
 }
