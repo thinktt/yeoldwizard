@@ -12,22 +12,25 @@ const clientId = 'L47TqpZn7iaJppGM'
 let redirectUri = 'https://thinktt.github.io/yeoldwizard'
 // let redirectUri = 'http://localhost:8080'
 // let { codeVerifier, codeChallenge } = await generatePKCECodes()
-let codeChallenge = 'JGrp5Yhr6TGb-FDKSGe29mCvPNbxcwemmOF_gxFJ4E0'
 let codeVerifier = 'c1g4WFR2LXp5QVBSNWttfjhMN1c0VDVpNkdqbVhtYUlyanhIRU1RSVJUTWZ4dEZQMnZ0X2VtLUZhQ053c2pCQU11X1I3Y09TX1VtN1FlNWNnUX45c2NXdUphLnN1TVBv'
-console.log(codeVerifier, codeChallenge)
+let codeChallenge = 'JGrp5Yhr6TGb-FDKSGe29mCvPNbxcwemmOF_gxFJ4E0'
+console.log(await generatePKCECodes(codeVerifier))
+
 
 
 let tokens
+window.greeting = 'Howdy'
 
 // a way to get dev to work using the same lichess client id
 if (localStorage.redirectToDev === 'true' && window.location.search && 
-  window.location.hostname !== 'localhost') {
+window.location.hostname !== 'localhost') {
   console.log('Forwarding to dev')
   const query = window.location.search 
   window.location = "http://localhost:8080" + query
 }
 
-doAccountFlow()
+await doAccountFlow()
+window.tokens = tokens
 
 async function doAccountFlow() {
 
@@ -36,6 +39,7 @@ async function doAccountFlow() {
     console.log('User ' + window.localStorage.user + ' found')
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
+    // console.log(tokens)
         
     app.loadUserGames()
     if (!app.slectionIsLocked && localStorage.lastCmp) {
@@ -86,7 +90,7 @@ async function doAccountFlow() {
       
       
       console.log('response: ', res.status, res.statusText)
-      const tokens = await res.json() 
+      tokens = await res.json() 
       console.log('Setting tokens in local storage')
       tokens.fetchTime = Math.floor(Date.now() / 1000)
       window.localStorage.tokens = JSON.stringify(tokens)
@@ -269,6 +273,7 @@ async function startApp(user) {
       signOut() {
         this.user = undefined
         this.signInFailed = false;
+        delLichessToken()
         delete window.localStorage.user
         delete window.localStorage.tokens
       },
@@ -465,6 +470,22 @@ async function startStream(endpoint, callback) {
   }
 }
 
+// killToken deletes the token from lichess
+async function delLichessToken() {
+  const res = await fetch(`https://lichess.org/api/token`, {
+    headers: {
+      'Authorization' : 'Bearer ' + tokens.access_token,
+    },
+    method: 'DELETE',
+  })
+  if ( res.status === 204 ) {
+    console.log('Successfully deleted token from lichess')
+  } else {
+    console.log("Unable to delete token from lichess:", res.status, res.statusText )
+  }
+
+}
+
 function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
 }
@@ -488,15 +509,17 @@ async function sha256UrlEnc(message) {
 }
 
 
-async function generatePKCECodes() {
+async function generatePKCECodes(codeVerifier) {
   const PKCE_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
   const RECOMMENDED_CODE_VERIFIER_LENGTH = 96
-  const output = new Uint32Array(RECOMMENDED_CODE_VERIFIER_LENGTH);
-  crypto.getRandomValues(output);
-  const codeVerifier = base64urlEncode(Array
-    .from(output)
-    .map((num) => PKCE_CHARSET[num % PKCE_CHARSET.length])
-    .join(''));
+  // const output = new Uint32Array(RECOMMENDED_CODE_VERIFIER_LENGTH);
+  // crypto.getRandomValues(output);
+  // const codeVerifier = base64urlEncode(Array
+  //   .from(output)
+  //   .map((num) => PKCE_CHARSET[num % PKCE_CHARSET.length])
+  //   .join(''));
+
+
 
   let codes = crypto
     .subtle
@@ -513,9 +536,9 @@ async function generatePKCECodes() {
     .then(base64urlEncode)
     .then((codeChallenge) => ({ codeChallenge, codeVerifier }));
   
-  console.log(await codes)
+  // console.log(await codes)
 
-  return codes;
+  return (await codes).codeChallenge;
 }
 
 function base64urlEncode(value) {
