@@ -1,7 +1,6 @@
 import games from './games.js'
 window.games = games
 
-// const oauthUrl = 'https://oauth.lichess.org/oauth/authorize'
 const oauthUrl = 'https://lichess.org/oauth' 
 const oauthQuery = '?response_type=code'
 const scope = 'board:play'
@@ -19,10 +18,6 @@ let tokens
 localStorage.codeVerifier = localStorage.codeVerifier || genRandomString()
 let codeChallenge = await genChallengeCode(localStorage.codeVerifier)
 
-console.log(localStorage.codeVerifier)
-console.log(codeChallenge) 
-
-
 // a way to get dev to work using the same lichess client id
 if (localStorage.redirectToDev === 'true' && window.location.search && 
 window.location.hostname !== 'localhost') {
@@ -32,7 +27,6 @@ window.location.hostname !== 'localhost') {
 }
 
 await doAccountFlow()
-window.tokens = tokens
 
 async function doAccountFlow() {
 
@@ -41,7 +35,6 @@ async function doAccountFlow() {
     console.log('User ' + window.localStorage.user + ' found')
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
-    // console.log(tokens)
         
     app.loadUserGames()
     if (!app.slectionIsLocked && localStorage.lastCmp) {
@@ -54,7 +47,6 @@ async function doAccountFlow() {
   const authCodeRegex = /code\=([_a-zA-Z0-9]*)/
   const match = authCodeRegex.exec(window.location.search.substr(1))
   if (match) {
-    console.log('Match: ' + match )
 
     // go ahead and clear the query string as we no longer need it
     window.history.replaceState({}, null, window.location.origin + window.location.pathname)
@@ -75,9 +67,6 @@ async function doAccountFlow() {
         client_id: clientId,
       }
 
-      console.log(body)
-      console.log(await codeChallenge)
-
       let url = 'https://lichess.org/api/token'
       let res = await fetch(url, {
         headers: {
@@ -86,8 +75,8 @@ async function doAccountFlow() {
         method: 'POST',
         body: new URLSearchParams(body)
       })
-      
-      console.log('response: ', res.status, res.statusText)
+      if (!res.ok) throw res.error
+
       tokens = await res.json() 
       console.log('Setting tokens in local storage')
       tokens.fetchTime = Math.floor(Date.now() / 1000)
@@ -487,24 +476,6 @@ async function delLichessToken() {
 
 function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
-}
-
-async function sha256UrlEnc(message) {
-  // encode as UTF-8
-  const msgBuffer = new TextEncoder().encode(message)
-
-  // hash the message
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
-
-  // convert ArrayBuffer to Array
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-
-  const urlBase64 = btoa(hashBuffer)
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '')
-
-  return urlBase64
 }
 
 function genRandomString() {
