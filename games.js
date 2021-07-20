@@ -127,12 +127,16 @@ function sortGamesByOpponent(games) {
 
     // if we haven't mapped this opponent yet
     if ( !opponentGames[game.opponent] ) {
-      opponentGames[game.opponent] = {games: [], topFeat: 'lost'}
+      opponentGames[game.opponent] = {games: [], topFeat: 'lost', score: 0}
     }
 
     // if this game is a higher player achievement than any game before we will map it here
+    // also calculate total score by tallying wins and losses
     if (game.conclusion === 'won') {
       opponentGames[game.opponent].topFeat = 'won'
+      opponentGames[game.opponent].score++
+    } else if (game.conclusion === 'lost'){
+      opponentGames[game.opponent].score--
     } else if (game.conclusion === 'draw' && opponentGames[game.opponent].topFeat === 'lost') {
       opponentGames[game.opponent].topFeat = 'draw'
     }

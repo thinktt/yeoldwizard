@@ -343,6 +343,26 @@ a.button.blue.test {
 }
 
 
+.score {
+    font-size: .7rem;
+    width: auto;
+    position: absolute;
+    opacity: .75;
+    top: 9.0rem;
+    left: 1rem;
+    z-index: 4;
+}
+
+.score-even {
+  font-size: .7rem;
+  width: auto;
+  position: absolute;
+  opacity: .75;
+  top: 9.0rem;
+  left: 1.4rem;
+  z-index: 4;
+}
+
 
 @media all and (max-width:25em){
     a.button {
