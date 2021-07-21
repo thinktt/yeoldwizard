@@ -21,8 +21,12 @@ async function updateGameList(user) {
   setUser(user)
   const storedGames = getGames()
   const storedCurrentGames = getCurrentGames()
-  const lastGameTime = getLastGameTime(storedGames, storedCurrentGames) 
+  let lastGameTime = getLastGameTime(storedGames, storedCurrentGames) 
   console.log('last game time found: ' + lastGameTime)
+
+
+  // if (!storedGames[0]?.playedAs || !storedCurrentGames[0]?.playedAs) lastGameTime = 0
+
   const { games : newGames, currentGames } = await getGamesFromLichess(user, lastGameTime)
   const games = deDupeGames(newGames.concat(storedGames)) 
   setGames(games)
@@ -158,6 +162,7 @@ function getLastGameTime(games, currentGames) {
     if (game.createdAt > lastGameTime) lastGameTime = game.createdAt
   }
   
+  // this is making sure last game time stays previous to any current games
   for (const game of Object.values(currentGames)) {
     if (game.createdAt < lastGameTime) lastGameTime = game.createdAt - 1
   }
@@ -234,7 +239,8 @@ async function getGamesFromLichess(user, lastGameTime) {
     
     // This is an actual completed game to be stored in long storage 
     const conclusion = parseGameConclusion(players, winner)
-    games.push({id, createdAt, status, conclusion, opponent})
+    const playedAs = parsePlayedAs(players)
+    games.push({id, createdAt, status, conclusion, opponent, playedAs})
   }
 
 
@@ -250,6 +256,11 @@ function parseGameConclusion(players, winner) {
   if (!winner) return 'draw'
   if (players[winner].user.name === 'yeoldwiz') return 'lost'
   return 'won'
+}
+
+function parsePlayedAs(players) {
+  if (players.white.user.name === 'yeoldwiz') return 'black'
+  return 'white'
 }
 
 // Check the spectator chat (via HTML page) for a Wiz Player setting
