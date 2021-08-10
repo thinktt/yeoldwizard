@@ -119,6 +119,10 @@
           <a v-for="group in groups" :href="'#' + group.title.replace(' ','')" @click="toggleNav">
             {{group.title}}
           </a>
+          <div>
+            <a class="button blue" :class="{grayed: scoreMode !== 'ladder'}" @click="switchScoreMode('ladder')">Ladder Mode</a>
+            <a class="button blue" :class="{grayed: scoreMode !== 'score'}" @click="switchScoreMode('score')">Score Mode</a>
+          </div>
          </nav>
       </div>
       
@@ -133,55 +137,58 @@
 
             <div v-for="cmp of group.cmps" class="cmp-container" :title="cmp.summary">
               
-              <span v-if="games[cmp.name] && games[cmp.name].score >= 1" >
-                <span class="score">{{games[cmp.name].score}}</span>
-                <img 
-                  :title="`You've beaten ${cmp.name}`"
-                  class="king" 
-                  src="images/king-won.png" 
-                  alt="won"
-                >
+              <span v-if="scoreMode == 'score'">
+                <span v-if="games[cmp.name] && games[cmp.name].score >= 1" >
+                  <span class="score">{{games[cmp.name].score}}</span>
+                  <img 
+                    :title="`You've beaten ${cmp.name}`"
+                    class="king" 
+                    src="images/king-won.png" 
+                    alt="won"
+                  >
+                </span>
+                <span v-if="games[cmp.name] && games[cmp.name].score < 0">
+                  <span class="score">{{games[cmp.name].score}}</span>
+                  <img 
+                    :title="`${cmp.name} has always beaten you`"
+                    class="king" 
+                    src="images/king-lost.png" 
+                    alt="lost"
+                  >
+                </span>
+                <span v-if="games[cmp.name] && games[cmp.name].score === 0 ">
+                  <span class="score-even">EVEN</span>
+                  <img
+                    :title="`Your best is a draw with ${cmp.name}`"
+                    class="king" 
+                    src="images/king-draw.png" 
+                    alt="draw"
+                  >
+                </span> 
               </span>
-              <span v-if="games[cmp.name] && games[cmp.name].score < 0">
-                <span class="score">{{games[cmp.name].score}}</span>
-                <img 
+
+              <span v-if="scoreMode == 'ladder'">
+                <span v-if="games[cmp.name] && games[cmp.name].topFeat === 'won'">
+                  <img 
+                    :title="`You've beaten ${cmp.name}`"
+                    class="king" 
+                    src="images/king-won.png" 
+                    alt="won"
+                  >
+                </span>
+                <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'lost'"
                   :title="`${cmp.name} has always beaten you`"
                   class="king" 
                   src="images/king-lost.png" 
                   alt="lost"
                 >
-              </span>
-              <span v-if="games[cmp.name] && games[cmp.name].score === 0 ">
-                <span class="score-even">EVEN</span>
-                <img
+                <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'draw'"
                   :title="`Your best is a draw with ${cmp.name}`"
                   class="king" 
                   src="images/king-draw.png" 
                   alt="draw"
                 >
               </span>
-
-              <!-- <span v-if="games[cmp.name] && games[cmp.name].topFeat === 'won'">
-                <span class="score">+1</span>
-                <img 
-                  :title="`You've beaten ${cmp.name}`"
-                  class="king" 
-                  src="images/king-won.png" 
-                  alt="won"
-                >
-              </span>
-              <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'lost'"
-                :title="`${cmp.name} has always beaten you`"
-                class="king" 
-                src="images/king-lost.png" 
-                alt="lost"
-              >
-              <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'draw'"
-                :title="`Your best is a draw with ${cmp.name}`"
-                class="king" 
-                src="images/king-draw.png" 
-                alt="draw"
-              > -->
 
               <div class="cmp">
                 <a :name="cmp.name"></a>

@@ -15,7 +15,7 @@ let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 // module globals
 let user = ''
 
-// Check is any new games have been played and adds them to the localStoage list
+// Check if any new games have been played and adds them to the localStoage list
 async function updateGameList(user) {
   console.log('Attempting to update the local storage game list')
   setUser(user)

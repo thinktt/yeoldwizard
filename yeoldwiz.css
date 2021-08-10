@@ -328,6 +328,11 @@ a.button.blue.test {
   opacity: 0;
 }
 
+a.button.grayed {
+  color: gray;
+  border-color: gray;
+}
+
 .cmp-container  {
   position: relative;
 }
