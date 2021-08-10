@@ -137,6 +137,7 @@ async function startApp(user) {
       selected: cmpsObj.Chessmaster,
       navIsOn: false,
       infoMode: 'browsing',
+      scoreMode: localStorage.scoreMode || 'ladder',
       currentGame: 'RklLOoMREuDI',
       currentOpponent: '',
       shouldShowSignOut: false,
@@ -198,6 +199,10 @@ async function startApp(user) {
       ]
     },
     methods: {
+      switchScoreMode(mode) {
+        this.scoreMode = mode
+        localStorage.scoreMode = mode
+      },
       switchNav(event) {
          this.navIsOn = true
       },
