@@ -59,6 +59,9 @@ function getGames(opponent) {
   for (const game of storedGames) {
     if (opponent && game.opponent !== opponent) continue
     game.link = 'https://lichess.org/' + game.id
+    
+    // cheap hack for now to clean Chessmaster from local game records
+    if (game.opponent === 'Chessmaster') game.opponent = 'Wizard'
     games.push(game)
   }
 
@@ -315,8 +318,8 @@ function getProperName(opponent) {
     'jw8': 'Josh8',
     'jw9': 'Josh9',
     'jw12': 'Josh12',
-    'wizard': 'Chessmaster',
-    'the wizard': 'Chessmaster',
+    // 'wizard': 'Chessmaster',
+    'the wizard': 'Wizard',
     'pawnmaster': 'Shakespeare',
     'drawmaster': 'Logan',
   }

@@ -134,7 +134,7 @@ async function startApp(user) {
       isHidden: true,
       games: {},
       signInFailed: false,
-      selected: cmpsObj.Chessmaster,
+      selected: cmpsObj.Wizard,
       navIsOn: false,
       infoMode: 'browsing',
       scoreMode: localStorage.scoreMode || 'ladder',
@@ -271,7 +271,7 @@ async function startApp(user) {
         this.games = {}
       },
       setError(message) {
-        this.selected = cmpsObj.Chessmaster
+        this.selected = cmpsObj.Wizard
         this.selectionIsLocked = true
         this.navIsOn = false
         this.infoMode = 'error'
@@ -395,7 +395,7 @@ function getRatingGroup(cmps, high, low) {
 
 function getAlias(opponent) {
  const aliases = {
-    'Chessmaster' : 'Wizard',
+    // 'Chessmaster' : 'Wizard',
     'Josh6': 'JW6',
     'Josh7': 'JW7',
     'Josh8': 'JW8',
