@@ -442,4 +442,9 @@ a.button.grayed {
     left: 1rem;
   }
 
+  .score {
+    top: 11.2rem;
+    left: 1.5rem;
+  }
+
 }
