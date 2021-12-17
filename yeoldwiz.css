@@ -68,7 +68,7 @@ header {
   background-color: rgb(59, 31, 17);
   display: block;
   position: fixed;
-  z-index: 4;
+  z-index: 5;
   line-height: 2rem;
   padding-left: 1rem;
   /* font-family: retro2; */
@@ -447,4 +447,8 @@ a.button.grayed {
     left: 1.5rem;
   }
 
+  .score-even {
+    top: 11.2rem;
+    left: 1.85rem;
+  }
 }
