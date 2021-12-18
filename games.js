@@ -266,8 +266,40 @@ function parsePlayedAs(players) {
   return 'white'
 }
 
-// Check the spectator chat (via HTML page) for a Wiz Player setting
 async function getOpponentFromChat(gameId) {
+  const tokens = JSON.parse(localStorage.tokens)
+  
+  const res = await fetch(`https://lichess.org/api/board/game/${gameId}/chat`, {    
+    headers: {
+      'Authorization' : 'Bearer ' + tokens.access_token,
+      'Accept': 'application/x-ndjson',
+    }
+  })
+  if (!res.ok) {
+    console.log(`Error getting chat logs for ${gameId}`)
+    return null
+  }
+  const chatLines = await res.json()
+
+  // we need to ask them who they wan to play
+  const wizMessages = chatLines.filter(
+    line => line.user === 'yeoldwiz' && line.text.includes('Playing as')
+  )
+
+  if (wizMessages.length === 0) {
+    console.log(`no opponent found for game ${gameId}`)
+    return null
+  } 
+
+  const opponent = 
+    wizMessages[0].text.match(/Playing as [A-Za-z0-9]*/)[0].replace('Playing as ', '')
+
+  console.log(`${gameId} was played by ${opponent}`)
+  return opponent
+}
+
+// Check the spectator chat (via HTML page) for a Wiz Player setting
+async function getOpponentFromChatOld(gameId) {
 
   console.log(`Getting opponent for game ${gameId}`)
   const req = await fetch(`${yowProxyUrl}/games/${gameId}`)
