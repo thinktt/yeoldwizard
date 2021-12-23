@@ -17,6 +17,7 @@ let tokens
 // exist. Uncertain security, probably proper way is generate for every oauth call
 localStorage.codeVerifier = localStorage.codeVerifier || genRandomString()
 let codeChallenge = await genChallengeCode(localStorage.codeVerifier)
+// let codeChallenge =  'abdefg'
 
 // a way to get dev to work using the same lichess client id
 if (localStorage.redirectToDev === 'true' && window.location.search && 
@@ -26,7 +27,7 @@ window.location.hostname !== 'localhost') {
   window.location = "http://localhost:8080" + query
 }
 
-await doAccountFlow()
+doAccountFlow()
 
 async function doAccountFlow() {
 
