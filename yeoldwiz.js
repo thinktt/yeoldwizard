@@ -107,6 +107,7 @@ async function doAccountFlow() {
       app.signInFailed = true
       app.setError("There was an error signing into Lichess")
       console.log(err)
+      window.err = err
     }
     return     
   }
