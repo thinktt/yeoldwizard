@@ -16,8 +16,9 @@ let tokens
 // Will always keep the same code in local storage but generate a new one if none
 // exist. Uncertain security, probably proper way is generate for every oauth call
 localStorage.codeVerifier = localStorage.codeVerifier || genRandomString()
-let codeChallenge = await genChallengeCode(localStorage.codeVerifier)
-// let codeChallenge =  'abdefg'
+// let codeChallenge = await genChallengeCode(localStorage.codeVerifier)
+let codeChallenge = 'JGrp5Yhr6TGb-FDKSGe29mCvPNbxcwemmOF_gxFJ4E0'
+
 
 // a way to get dev to work using the same lichess client id
 if (localStorage.redirectToDev === 'true' && window.location.search && 
