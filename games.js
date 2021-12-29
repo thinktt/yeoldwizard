@@ -76,8 +76,9 @@ function getColorToPlay(opponent) {
     colorRatio[game.playedAs] ++
   }
   let colorToPlay = 'random'
-  if (opponentGames[0]?.playedAs === 'white') colorToPlay = 'black'
-  if (opponentGames[0]?.playedAs === 'black') colorToPlay = 'white'
+  if (!opponentGames[0]) return 'random'
+  if (opponentGames[0].playedAs === 'white') colorToPlay = 'black'
+  if (opponentGames[0].playedAs === 'black') colorToPlay = 'white'
   if (colorRatio['white'] > colorRatio['black']) colorToPlay = 'black'
   if (colorRatio['white'] < colorRatio['black']) colorToPlay = 'white'
   console.log(`${opponent} Color Ratio is w:${colorRatio.white} b:${colorRatio.black}`)
