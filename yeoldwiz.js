@@ -292,11 +292,13 @@ async function startApp(user) {
       openGame() {
         window.open('https://lichess.org/' + this.currentGame, '_blank')
       },
+      
       async startGame(opponent) {
-  
         // be sure to send our alias to lichess to stay consistent
         opponent = getAlias(opponent)
-      
+        
+        const colorToPlay = games.getColorToPlay(opponent)
+
         this.infoMode = 'starting'
       
         console.log(`Attempting to start a game with ${opponent}`)
@@ -306,8 +308,16 @@ async function startApp(user) {
       
         const res = await fetch('https://lichess.org/api/challenge/yeoldwiz', {
           method: 'POST',
-          body: { rated: false, message: `yoeldwiz {game} started with ${opponent}` },
-          headers: { 'Authorization' : 'Bearer ' + tokens.access_token}
+          headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization' : 'Bearer ' + tokens.access_token
+          },
+          body: new URLSearchParams({
+            rated: false, 
+            color: colorToPlay,
+            message: `yoeldwiz {game} started with ${opponent}` 
+          }),
         })
       
         if (!res.ok) {
@@ -341,6 +351,7 @@ async function startApp(user) {
 
         return true
       },
+
       async loadUserGames() {
         this.games = await games.updateGameList(window.localStorage.user)
         const currentGame =  await games.getCurrentLatestGame() || {}

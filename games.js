@@ -1,6 +1,7 @@
 export default { 
   updateGameList,
   getGames, 
+  getColorToPlay,
   getCurrentGames,
   getCurrentLatestGame,
   addCurrentGame,
@@ -66,6 +67,22 @@ function getGames(opponent) {
   }
 
   return games
+}
+
+function getColorToPlay(opponent) {
+  const opponentGames = getGames(opponent)
+  const colorRatio = {black: 0, white: 0}
+  for (const game of opponentGames ) {
+    colorRatio[game.playedAs] ++
+  }
+  let colorToPlay = 'random'
+  if (opponentGames[0]?.playedAs === 'white') colorToPlay = 'black'
+  if (opponentGames[0]?.playedAs === 'black') colorToPlay = 'white'
+  if (colorRatio['white'] > colorRatio['black']) colorToPlay = 'black'
+  if (colorRatio['white'] < colorRatio['black']) colorToPlay = 'white'
+  console.log(`${opponent} Color Ratio is w:${colorRatio.white} b:${colorRatio.black}`)
+  console.log(`Color balancing determines user will play as ${colorToPlay}`)
+  return colorToPlay
 }
 
 function setGames(games) {
