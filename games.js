@@ -161,7 +161,7 @@ function sortGamesByOpponent(games) {
     if (game.conclusion === 'won') {
       opponentGames[game.opponent].topFeat = 'won'
       opponentGames[game.opponent].score++
-    } else if (game.conclusion === 'lost'){
+    } else if (game.conclusion === 'lost' && opponentGames[game.opponent].score > -5){
       opponentGames[game.opponent].score--
     } else if (game.conclusion === 'draw' && opponentGames[game.opponent].topFeat === 'lost') {
       opponentGames[game.opponent].topFeat = 'draw'
