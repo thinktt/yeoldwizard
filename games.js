@@ -149,7 +149,7 @@ function deleteCurrentGame(gameId) {
 // creates and object keyed by opponent names with each of their games
 function sortGamesByOpponent(games) {
   let opponentGames = {}
-  for (const game of games) {
+  for (const game of games.slice().reverse()) {
 
     // if we haven't mapped this opponent yet
     if ( !opponentGames[game.opponent] ) {
@@ -166,7 +166,7 @@ function sortGamesByOpponent(games) {
     } else if (game.conclusion === 'draw' && opponentGames[game.opponent].topFeat === 'lost') {
       opponentGames[game.opponent].topFeat = 'draw'
     }
-
+    
     opponentGames[game.opponent].games.push(game)
 
     // this deletes opponent in gamesByOpponent due to JS object by reference
