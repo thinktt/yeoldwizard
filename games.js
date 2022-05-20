@@ -1,3 +1,5 @@
+import yowApi from './yowApi.js'
+
 export default { 
   updateGameList,
   getGames, 
@@ -26,12 +28,14 @@ async function updateGameList(user) {
   console.log('last game time found: ' + lastGameTime)
 
 
-  // if (!storedGames[0]?.playedAs || !storedCurrentGames[0]?.playedAs) lastGameTime = 0
-
   const { games : newGames, currentGames } = await getGamesFromLichess(user, lastGameTime)
   const games = deDupeGames(newGames.concat(storedGames)) 
   setGames(games)
   setCurrentGames(currentGames)
+
+  // everytime game list is update we will forward missing games to the YOW API
+  fowardGamesToYowApi()
+
   return sortGamesByOpponent(games)
 }
 
@@ -94,6 +98,7 @@ function setGames(games) {
   }
   
   localStorage[user + '_games'] = JSON.stringify(games)
+  // console.log(JSON.parse(localStorage[user + '_games']))
 }
 
 function deDupeGames(gamesToDeDupe) {
@@ -213,7 +218,6 @@ async function getGamesFromLichess(user, lastGameTime) {
   }
 
   const gamesNdjson = await res.text()
-  // const games = gamesNdjson.split('\n')
   const games = [] 
   const abortedGames = []
   const opponentlessGames = []
@@ -242,7 +246,8 @@ async function getGamesFromLichess(user, lastGameTime) {
     if (storedCurrentGames[id]) {
       opponent = storedCurrentGames[id].opponent
     } else {
-      opponent = await getOpponentFromChat(id)
+      // opponent = await getOpponentFromChat(id)
+      opponent = await getOpponentFromYowApi(id)
     }
 
     // we were unbale to find a opponent, skip this game and record it
@@ -285,6 +290,17 @@ function parsePlayedAs(players) {
   return 'white'
 }
 
+async function getOpponentFromYowApi(gameId) {
+  const res = await yowApi.getGame(gameId)
+
+  if(!res.ok) {
+    console.log(`Unable to get game ${gameId} from yowApi`)
+    return
+  }
+  const game = await res.json() 
+  return game.opponent
+}
+
 async function getOpponentFromChat(gameId) {
   const tokens = JSON.parse(localStorage.tokens)
   
@@ -300,7 +316,7 @@ async function getOpponentFromChat(gameId) {
   }
   const chatLines = await res.json()
 
-  // we need to ask them who they wan to play
+  // we need to ask them who they want to play
   const wizMessages = chatLines.filter(
     line => line.user === 'yeoldwiz' && line.text.includes('Playing as')
   )
@@ -349,6 +365,41 @@ async function getOpponentFromChatOld(gameId) {
   }
   opponent = opponentData[0].replace('"u":"yeoldwiz","t":"Playing as ', '')
   return opponent
+}
+
+// forward gameIds and opponent names to long term YOW API so we no longer 
+// depend on chat messages to remember who the opponents of games are
+// this may not be used in the future but will help us record opponent
+// currently only stored on local storage
+async function fowardGamesToYowApi() {
+  const games = getGames()
+
+  let gamesForwarded = []
+  let gamesFailedToForward = [] 
+
+  for (const game of games) {
+    // first just skip any games that have already been forwarded
+    if (game.wasForwardedToYowApi) continue
+    
+    const { id, opponent } = game
+    const gameToSend = {id, opponent}
+    const res = await yowApi.addGame(gameToSend)
+    if (!res.ok) {
+      console.log(`Error forwarding game data for ${id}`)
+      console.log(res)
+      gamesFailedToForward.push(game)
+      continue
+    }
+    // const data = await res.json()
+    game.wasForwardedToYowApi = true
+    gamesForwarded.push(game) 
+  }
+  
+  // console.log(games)
+  // console.log(gamesForwarded)
+  setGames(games)
+  console.log(gamesForwarded.length, 'games forwarded to yowApi')
+  console.log(gamesFailedToForward.length, 'games failed to forward to yowApi')
 }
 
 function getProperName(opponent) {

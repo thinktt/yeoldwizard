@@ -355,15 +355,14 @@ async function startApp(user) {
       async loadUserGames() {
         this.games = await games.updateGameList(window.localStorage.user)
         const currentGame =  await games.getCurrentLatestGame() || {}
-        
         if (currentGame.id) {
           this.currentGame = currentGame.id
           this.toggleSelectionLock({name: currentGame.opponent })
           this.infoMode = "started"
           this.connectToStream(currentGame.id)
-          // await new Promise(resolve => setTimeout(resolve, 50))
         } 
       },
+      
       connectToStream(gameId) {
         startStream(`/board/game/stream/${gameId}`, (data) => {
           switch(data.type) {
@@ -379,7 +378,6 @@ async function startApp(user) {
                 this.loadUserGames()
               }
             default: 
-              //  console.log(data)
           } 
         })
       },
