@@ -359,7 +359,7 @@ async function fowardGamesToYowApi() {
     const gameToSend = {id, opponent}
     const res = await yowApi.addGame(gameToSend)
     if (!res.ok) {
-      console.log(`Error forwarding game data for ${id}`)
+      // console.log(`Error forwarding game data for ${id}`)
       // console.log(res)
       gamesFailedToForward.push(game)
       continue
