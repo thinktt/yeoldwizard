@@ -222,7 +222,6 @@ async function getGamesFromLichess(user, lastGameTime) {
   const abortedGames = []
   const opponentlessGames = []
   const currentGames = []
-  const storedCurrentGames = getCurrentGames()
 
   
   for (const gameStr of gamesNdjson.split('\n')) {
@@ -240,15 +239,7 @@ async function getGamesFromLichess(user, lastGameTime) {
       continue
     }
     
-    // if this game is cached in localstorage current games from before we 
-    // get the oppoent from there, no need for html chat hacking
-    let opponent = ''
-    if (storedCurrentGames[id]) {
-      opponent = storedCurrentGames[id].opponent
-    } else {
-      // opponent = await getOpponentFromChat(id)
-      opponent = await getOpponentFromYowApi(id)
-    }
+    let opponent = await getOpponent(id)
 
     // we were unbale to find a opponent, skip this game and record it
     if (!opponent) {
@@ -288,6 +279,28 @@ function parseGameConclusion(players, winner) {
 function parsePlayedAs(players) {
   if (players.white.user.name === 'yeoldwiz') return 'black'
   return 'white'
+}
+
+async function getOpponent(id) {
+  // first let's try to get the opponent from any game currently being played
+  const storedCurrentGames = getCurrentGames()
+  let opponent = ''
+  if (storedCurrentGames[id]) {
+    opponent = storedCurrentGames[id].opponent
+  }
+
+  // we don't have an opponent for this game locally, try yowApi
+  if (!opponent) {
+    opponent = await getOpponentFromYowApi(id)
+  }
+
+  // we also didn't find this opponent the yowApi. Last resort let's try
+  // checking lichess chat logs
+  if (!opponent) {
+    opponent = await getOpponentFromChat(id)
+  }
+
+  return opponent
 }
 
 async function getOpponentFromYowApi(gameId) {
