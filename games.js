@@ -1,4 +1,5 @@
 import yowApi from './yowApi.js'
+import lichessApi from './lichessApi.js'
 
 export default { 
   updateGameList,
@@ -202,15 +203,7 @@ function getLastGameTime(games, currentGames) {
 async function getGamesFromLichess(user, lastGameTime) {
   console.log(`Attempting to get all games for ${user} since ${lastGameTime}`)
 
-  const lichessEndpoint = 'https://lichess.org/api/games/user/yeoldwiz'
-  const query = `?since=${lastGameTime}&vs=${user}&opening=false&rated=false&perfType=correspondence&ongoing=true`
-  const tokens = JSON.parse(localStorage.tokens)
-  const res = await fetch(lichessEndpoint + query, {    
-    headers: {
-      'Authorization' : 'Bearer ' + tokens.access_token,
-      'Accept': 'application/x-ndjson',
-    }
-  })
+  const res = await lichessApi.getGames(user, lastGameTime)
 
   if (!res.ok) {
     console.log('Error getting games:') 
@@ -366,7 +359,7 @@ async function fowardGamesToYowApi() {
     const res = await yowApi.addGame(gameToSend)
     if (!res.ok) {
       console.log(`Error forwarding game data for ${id}`)
-      console.log(res)
+      // console.log(res)
       gamesFailedToForward.push(game)
       continue
     }

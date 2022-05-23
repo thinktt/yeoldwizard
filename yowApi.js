@@ -13,7 +13,10 @@ async function addGame(game) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(game)
-  }) 
+  }).catch((err) =>  {
+    return {ok: false, status: 502, message: 'connection to yowApi refused' }
+  })
+
   return res
 } 
 
@@ -24,6 +27,9 @@ async function getGame(id) {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
     },
+  }).catch((err) => {
+    return {ok: false, status: 502, message: 'connection to yowApi refused' }
   })
+
   return res
 }
