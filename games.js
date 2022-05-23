@@ -346,39 +346,6 @@ async function getOpponentFromChat(gameId) {
   return opponent
 }
 
-// Check the spectator chat (via HTML page) for a Wiz Player setting
-async function getOpponentFromChatOld(gameId) {
-
-  console.log(`Getting opponent for game ${gameId}`)
-  const req = await fetch(`${yowProxyUrl}/games/${gameId}`)
-  
-  if (!req.ok) {
-    console.log(`Failed to fetch lichess game ${gameId} with status ${req.status}`)
-    console.log(`Error: ${req.statusText}`)
-    return null
-  }
-
-  const gamePage = await req.text()
- 
-  // caputre and count messagse, if no messages have been sent respond with string
-  // no opponent was set for this game
-  const wizMessagesRx = /"u":"yeoldwiz","t":".*?"/g
-  const wizMessages = gamePage.match(wizMessagesRx) || []
-  if (wizMessages.length === 0) {
-    return null
-  }
-  
-  // Next we check for a "Playing as string" if one exist we will capture it
-  // and try to parse out the opponent name and return it
-  const playingAsRx = /"u":"yeoldwiz","t":"Playing as [A-Za-z0-9\.]*/g
-  const opponentData = gamePage.match(playingAsRx)
-  let opponent = ''
-  if (opponentData == null) {
-    return null
-  }
-  opponent = opponentData[0].replace('"u":"yeoldwiz","t":"Playing as ', '')
-  return opponent
-}
 
 // forward gameIds and opponent names to long term YOW API so we no longer 
 // depend on chat messages to remember who the opponents of games are
