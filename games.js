@@ -25,10 +25,11 @@ async function updateGameList(user) {
   setUser(user)
   const storedGames = getGames()
   const storedCurrentGames = getCurrentGames()
-  let lastGameTime = getLastGameTime(storedGames, storedCurrentGames) 
+  let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
   console.log('last game time found: ' + lastGameTime)
-
-
+  
+  // we'll add one so we will only get new games
+  lastGameTime = lastGameTime + 1
   const { games : newGames, currentGames } = await getGamesFromLichess(user, lastGameTime)
   const games = deDupeGames(newGames.concat(storedGames)) 
   setGames(games)
