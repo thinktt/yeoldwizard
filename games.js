@@ -12,6 +12,7 @@ export default {
   clearGames,
   clearCurrentGames,
   deDupeGames,
+  clearWasForwardedToYowApi,
 }
 
 let yowProxyUrl = 'https://yowproxy.herokuapp.com'
@@ -35,7 +36,7 @@ async function updateGameList(user) {
   setGames(games)
   setCurrentGames(currentGames)
 
-  // everytime game list is update we will forward missing games to the YOW API
+  // everytime game list is updated we will forward missing games to the YOW API
   fowardGamesToYowApi()
 
   return sortGamesByOpponent(games)
@@ -57,6 +58,16 @@ function clearGames(numberOfGames = 5) {
 // wipe the entire current game object, used for dev testing
 function clearCurrentGames() {
  delete localStorage[user + '_currentGames']
+}
+
+// clear the yowApi flag on all the games, used in dev to force the game
+// updater to resend all the games to the yowApi
+function clearWasForwardedToYowApi() {
+  const games = getGames()
+  for (const game of games) {
+    delete game.wasForwardedToYowApi 
+  }
+  setGames(games)
 }
 
 function getGames(opponent) {
@@ -356,7 +367,7 @@ async function fowardGamesToYowApi() {
     if (game.wasForwardedToYowApi) continue
     
     const { id, opponent } = game
-    const gameToSend = {id, opponent}
+    const gameToSend = {id, user, opponent}
     const res = await yowApi.addGame(gameToSend)
     if (!res.ok) {
       // console.log(`Error forwarding game data for ${id}`)
@@ -375,6 +386,7 @@ async function fowardGamesToYowApi() {
   console.log(gamesForwarded.length, 'games forwarded to yowApi')
   console.log(gamesFailedToForward.length, 'games failed to forward to yowApi')
 }
+
 
 function getProperName(opponent) {
   const properNames = {
