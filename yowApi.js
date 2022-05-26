@@ -8,7 +8,8 @@ export default {
 // if yowApi is down for now
 let yowApiIsDown = false
 
-const yowApiUrl = 'http://localhost:5000'
+// const yowApiUrl = 'http://localhost:5000'dock
+const yowApiUrl = 'http://yeoldwiz.duckdns.org:64355'
 const apiIsDownRes = {ok: false, status: 502, message: 'yowApi is marked as down' }
 
 async function addGame(game) {
