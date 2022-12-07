@@ -113,6 +113,7 @@ header {
   width: 1em;
   font-size: 1.25em;
   font-family: enigmax;
+  padding-left: 0.5rem;
 }
 
 .error {
@@ -141,6 +142,7 @@ header {
 .hamburger { 
   cursor: pointer; 
   line-height: 1.25em;
+  padding-right: 0.5rem;
 }
 
 main {
