@@ -1,3 +1,5 @@
+import {createApp }from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+// import { loadModule } from 'https://cdn.jsdelivr.net/npm/vue3-sfc-loader@0.8.4/dist/vue3-sfc-loader.esm.js'
 import games from './games.js'
 window.games = games
 
@@ -135,7 +137,7 @@ async function startApp(user) {
 
   window.cmpsObj = cmpsObj
 
-  const app = Vue.createApp({
+  const app = createApp({
     data() {
       const data = {
         user: user,
