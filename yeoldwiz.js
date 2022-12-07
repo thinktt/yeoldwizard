@@ -11,6 +11,7 @@ const scope = 'board:play'
 let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 const clientId = 'L47TqpZn7iaJppGM'
 let redirectUri = 'https://thinktt.github.io/yeoldwizard'
+let devHost = localStorage.devHost || 'localhost:8080'
 let tokens, codeChallenge
 
 // Will always keep the same code in local storage but generate a new one if none
@@ -24,10 +25,10 @@ let tokens, codeChallenge
 
 // a way to get dev to work using the same lichess client id
 if (localStorage.redirectToDev === 'true' && window.location.search && 
-window.location.hostname !== 'localhost') {
-  console.log('Forwarding to dev')
-  const query = window.location.search 
-  window.location = "http://localhost:8080" + query
+    window.location.host !== devHost) {
+      console.log('Forwarding to dev')
+      const query = window.location.search 
+      window.location = `http://${devHost}` + query
 }
 
 doAccountFlow()
@@ -381,7 +382,7 @@ async function startApp(user) {
       })
     },
     }
-}).mount('#app')
+  }).mount('#app')
 
   window.app = app
 
