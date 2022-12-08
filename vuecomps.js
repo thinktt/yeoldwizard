@@ -1,4 +1,4 @@
-import * as Vue from 'https://cdn.jsdelivr.net/npm/vue@3.2.20/dist/vue.esm-browser.js'
+import * as Vue from 'https://cdn.jsdelivr.net/npm/vue@3.2.45/dist/vue.esm-browser.js'
 import { loadModule } from 'https://cdn.jsdelivr.net/npm/vue3-sfc-loader@0.8.4/dist/vue3-sfc-loader.esm.js'
 
 
@@ -16,25 +16,22 @@ const options = {
     return text
   }, 
   addStyle: (textContent) => {
-    const style = Object.assign(document.createElement('style'), { textContent });
-    const ref = document.head.getElementsByTagName('style')[0] || null;
-    document.head.insertBefore(style, ref);
+    const style = Object.assign(document.createElement('style'), { textContent })
+    const ref = document.head.getElementsByTagName('style')[0] || null
+    document.head.insertBefore(style, ref)
   },
 }
-
-const myComp = await loadModule('./myComp.vue', options)
-
+const myComp = await loadModule('./header.vue', options)
 window.vu = Vue.createApp({
   data() {
     return { greeting: 'Howdy' }
   }
 })
-
-vu.component('my-comp', myComp)
+vu.component('wiz-header', myComp)
 vu.mount('#app')
 
 
 
 // const app = Vue.createApp(myComp).mount('#app')
 
-// Vue.createApp(Vue.defineAsyncComponent(() => loadModule('./myComp.vue', options))).mount(document.body);
+// Vue.createApp(Vue.defineAsyncComponent(() => loadModule('./myComp.vue', options))).mount(document.body)

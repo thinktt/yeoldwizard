@@ -1,6 +1,4 @@
-// import * as Vue from from 'https://unpkg.com/vue@3.2.45/dist/vue.esm-browser.js'
-// import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
-import * as Vue from 'https://cdn.jsdelivr.net/npm/vue@3.2.45/dist/vue.esm-browser.js'
+import {createApp }from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import { loadModule } from 'https://cdn.jsdelivr.net/npm/vue3-sfc-loader@0.8.4/dist/vue3-sfc-loader.esm.js'
 import games from './games.js'
 window.games = games
@@ -27,22 +25,8 @@ let tokens, codeChallenge
 // window.genChallengeCode = genChallengeCode
 
 
-const options = {
-  moduleCache: { vue: Vue },
-  getFile (url) {
-    const text = fetch(url).then(res => res.text())
-    return text
-  }, 
-  addStyle: (textContent) => {
-    const style = Object.assign(document.createElement('style'), { textContent });
-    const ref = document.head.getElementsByTagName('style')[0] || null;
-    document.head.insertBefore(style, ref);
-  },
-}
 const myComp = await loadModule('./header.vue', options)
-window.app = Vue.createApp({data() {}})
-app.component('wiz-header', myComp)
-app.mount('#app')
+
 
 // a way to get dev to work using the same lichess client id
 if (localStorage.redirectToDev === 'true' && window.location.search && 
@@ -52,7 +36,7 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
       window.location = `http://${devHost}` + query
 }
 
-// doAccountFlow()
+doAccountFlow()
 
 async function doAccountFlow() {
   localStorage.codeVerifier = localStorage.codeVerifier || genRandomString()
@@ -156,7 +140,254 @@ async function startApp(user) {
 
   window.cmpsObj = cmpsObj
 
+  const app = createApp({
+    data() {
+      const data = {
+        user: user,
+        isHidden: true,
+        games: {},
+        signInFailed: false,
+        selected: cmpsObj.Wizard,
+        navIsOn: false,
+        infoMode: 'browsing',
+        scoreMode: localStorage.scoreMode || 'ladder',
+        currentGame: 'RklLOoMREuDI',
+        currentOpponent: '',
+        shouldShowSignOut: false,
+        selectionIsLocked: false,
+        isInPlayMode: false,
+        isStartingGame: false,
+        isSignedIn: Boolean(user),
+        gameIsStarted: false,
+        gameUrl: '',
+        scrollPosition: 0,
+        errorMessage: 'Things fall apart',
+        signInLink: oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + clientId + '&redirect_uri=' + redirectUri + 
+          '&code_challenge_method=S256' + '&code_challenge=' + codeChallenge +
+          '&state=12345',
+        groups : [
+          {
+            title: 'The Wizard',
+            high: 3000,
+            low: 2701,
+            cmps: [],
+          }, 
+          {
+            title: 'The Grandmasters',
+            high: 2701,
+            low: 2700,
+            cmps: [],
+            isGms: true,
+          }, 
+          {
+            title: 'The Masters',
+            high: 2650,
+            low: 2000,
+            cmps: [],
+          },
+          {
+            title: 'Club Players',
+            high: 2000,
+            low: 1500,
+            cmps: [],
+          },
+          {
+            title: 'Casual Players',
+            high: 1500,
+            low: 1000,
+            cmps: [],
+          },
+          {
+            title: 'Beginners',
+            high: 1000,
+            low: 500,
+            cmps: [],
+          },
+          {
+            title: 'Noobs',
+            high: 500,
+            low: 0,
+            cmps: [],
+          },
+        ]
+      }
+      return data
+    },
+    methods : {
+      switchScoreMode(mode) {
+      this.scoreMode = mode
+      localStorage.scoreMode = mode
+    },
+    switchNav(event) {
+      this.navIsOn = true
+    },
+    toggleNav() {
+      if (isInPhoneMode()) {
+        this.navIsOn = false
+        this.infoMode = "browsing"
+      } 
+    },
+    showCmp(cmp) {
+      this.navIsOn = false
+      if (!this.selectionIsLocked) {
+        this.selected = cmpsObj[cmp.name]
+      }
+    },
+    toggleSelectionLock(cmp) {
+      // do nothing if infoMode has gone past 'selected', in this 
+      // case we are in a state that should not unlock the selection 
+      if (this.infoMode !== 'selected' && this.infoMode !== 'browsing') return
+      
+      this.navIsOn = false
+      this.selected = cmpsObj[cmp.name]
+      localStorage.lastCmp = cmp.name
 
+      
+      if (this.infoMode === 'browsing') {
+        this.setSelectionLock()
+        return
+      }
+
+      this.stopSelectionLock()
+    },
+    setSelectionLock() {
+      this.infoMode = 'selected'
+      this.selectionIsLocked = true
+      localStorage.scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
+      this.lockBody()
+    },
+    stopSelectionLock(){
+      this.infoMode = 'browsing'
+      this.selectionIsLocked = false
+      this.unlockBody()
+      if (isInPhoneMode()) {
+        this.scrollReturn()
+      }
+    },
+    scrollReturn() {
+      document.documentElement.scrollTop = document.body.scrollTop = 
+        parseInt(localStorage.scrollPosition) || 0
+    },
+    lockBody() {
+      if  (isInPhoneMode()) document.body.style.position = 'fixed'
+    },
+    unlockBody() {
+      document.body.style.position = ''
+    },
+    toggleSignOut(shouldShow) {
+      this.shouldShowSignOut = shouldShow
+    },
+    signOut() {
+      this.user = undefined
+      this.signInFailed = false;
+      delLichessToken()
+      delete window.localStorage.user
+      delete window.localStorage.tokens
+      this.games = {}
+    },
+    setError(message) {
+      this.selected = cmpsObj.Wizard
+      this.selectionIsLocked = true
+      this.navIsOn = false
+      this.infoMode = 'error'
+      this.errorMessage = message
+    },
+    clearError() {
+      this.selectionIsLocked = false
+      this.infoMode = "browsing"
+      if (this.signInFailed) this.signOut()
+    },
+    openGame() {
+      window.open('https://lichess.org/' + this.currentGame, '_blank')
+    },
+    async startGame(opponent) {
+      // be sure to send our alias to lichess to stay consistent
+      opponent = getAlias(opponent)
+      
+      const colorToPlay = games.getColorToPlay(opponent)
+
+      this.infoMode = 'starting'
+    
+      console.log(`Attempting to start a game with ${opponent}`)
+      const tokens = JSON.parse(window.localStorage.tokens)
+      this.isStartingGame = true
+      // console.log(tokens.access_token)
+    
+      const res = await fetch('https://lichess.org/api/challenge/yeoldwiz', {
+        method: 'POST',
+        headers: { 
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization' : 'Bearer ' + tokens.access_token
+        },
+        body: new URLSearchParams({
+          rated: false, 
+          color: colorToPlay,
+          message: `yoeldwiz {game} started with ${opponent}` 
+        }),
+      })
+    
+      if (!res.ok) {
+        this.isStartingGame = false
+        return false
+      }
+      const challenge = await res.json()
+      const gameId = challenge.challenge.id
+    
+      // give some time for the game to start, this is crappy but hopefuly works
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      if ( !(await checkGame(gameId)) ) {
+        console.log('Game did not start')
+        this.setError('Game did not start')
+        return false
+      }
+    
+      console.log(`${gameId} started!`)
+      if (!await setOpponent(gameId, opponent)) {
+        console.log('Game started unalbe to set opponent')
+        this.setError('Game started but unalbe to set opponent')
+        return false
+      }
+    
+      games.addCurrentGame({id: gameId, opponent, })
+      this.currentGame = gameId
+      this.infoMode = 'started'
+
+      this.connectToStream(gameId)
+
+      return true
+    },
+    async loadUserGames() {
+      this.games = await games.updateGameList(window.localStorage.user)
+      const currentGame =  await games.getCurrentLatestGame() || {}
+      if (currentGame.id) {
+        this.currentGame = currentGame.id
+        this.toggleSelectionLock({name: currentGame.opponent })
+        this.infoMode = "started"
+        this.connectToStream(currentGame.id)
+      } 
+    },
+    connectToStream(gameId) {
+      startStream(`/board/game/stream/${gameId}`, (data) => {
+        switch(data.type) {
+          case 'gameFull': 
+            console.log(`Succefully connected to Game:`)
+            console.log(data.id, data.createdAt, data.state.status) 
+            break;
+          case 'gameState':
+            const endStates = ['mate', 'resign', 'stalemate', 'aborted']
+            if (endStates.includes(data.status)) {
+              console.log('Game ended!')
+              this.infoMode = 'ended'
+              this.loadUserGames()
+            }
+          default: 
+        } 
+      })
+    },
+    }
+  }).mount('#app')
 
   window.app = app
 
