@@ -15,8 +15,6 @@ export default {
   clearWasForwardedToYowApi,
 }
 
-let yowProxyUrl = 'https://yowproxy.herokuapp.com'
-
 // module globals
 let user = ''
 

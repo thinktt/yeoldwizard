@@ -1,9 +1,10 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import games from './games.js'
 import WizFace from './WizFace.js'
+import { cssLoader } from './pageTools.js'
 window.games = games
 
-
+cssLoader.render()
 
 const oauthUrl = 'https://lichess.org/oauth' 
 const oauthQuery = '?response_type=code'

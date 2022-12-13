@@ -1,5 +1,4 @@
-import html from './html.js'
-
+import {html, css} from './pageTools.js'
 
 
 const ladderKing = html`
@@ -86,141 +85,57 @@ export default {
   name: 'WizFace',
   props: ['cmp', 'selectedName', 'selectionIsLocked', 'score', 'scoreMode', 'topFeat'],
   template,
+  style: css,
   functional: true,
-  // data() {
-  //   return {
-  //     selected: {name: 'Joey'},
-  //     selectionIsLocked : false,
-  //   }
-  // },
-  // methods: {
-  //   showCmp(cmp) {
-  //     console.log('showCmp')
-  //   },
-  //   toggleSelectionLock(cmp) {
-  //     console.log('toggleSelectionLock')
-  //   }
-  // }
 }
 
 
+// const style = css`
+//   .king {
+//     height: 2.5rem;
+//     width: auto;
+//     position: absolute;
+//     opacity: .90;
+//     top: 7.7rem;
+//     left: 0.5rem;
+//     z-index: 3;
+//   }
 
+//   .score {
+//       font-size: .7rem;
+//       width: auto;
+//       position: absolute;
+//       opacity: .75;
+//       top: 9.0rem;
+//       left: 1rem;
+//       z-index: 4;
+//   }
 
+//   .score-even {
+//     font-size: .7rem;
+//     width: auto;
+//     position: absolute;
+//     opacity: .75;
+//     top: 9.0rem;
+//     left: 1.4rem;
+//     z-index: 4;
+//   }
 
+//   @media screen and (max-width: 1080px) {
+//     .king {
+//       top: 9.9rem;
+//       left: 1rem;
+//     }
 
+//     .score {
+//       top: 11.2rem;
+//       left: 1.5rem;
+//     }
 
-
-
-
-
-
-
-
-// const litFace = html`
-//   <div class="cmp">
-//     <a :name="cmp.name"></a>
-//     <img class="face" src=${'images/faces/' + cmp.face} alt=${cmp.name}
-//       @mouseover=${() => showCmp(cmp)} 
-//       @click=${() => toggleSelectionLock(cmp)}
-
-//     >
-//     <span>${cmp.name}</span>
-//     <span>${cmp.rating}</span>
-//   </div>
+//     .score-even {
+//       top: 11.2rem;
+//       left: 1.85rem;
+//     }
+//   }
 // `
-
-// const wizFace = document.querySelector('wiz-header') 
-// function doRender() {
-//   render(html, wizFace)
-// }
-
-
-
-// // figure conditonal class stuff later
-// // :class="{
-// //   selected: selected.name === cmp.name,
-// //   inPlayMode: selectionIsLocked && selected.name == cmp.name,
-// // }"
-
-
-
-// function showCmp(cmp) {
-//   console.log('showCmp triggered') 
-// }
-
-// function toggleSelectionLock(cmp) {
-//   console.log('toggleSelectionLock triggerd')
-// }
-
-// const template = html`
-//   <div v-for="cmp of group.cmps" class="cmp-container" :title="cmp.summary">
-                
-//   <span v-if="scoreMode == 'score'">
-//     <span v-if="games[cmp.name] && games[cmp.name].score >= 1" >
-//       <span class="score">{{games[cmp.name].score}}</span>
-//       <img 
-//         :title="\`You've beaten \${cmp.name}\`"
-//         class="king" 
-//         src="images/king-won.png" 
-//         alt="won"
-//       >
-//     </span>
-//     <span v-if="games[cmp.name] && games[cmp.name].score < 0">
-//       <span class="score">{{games[cmp.name].score}}</span>
-//       <img 
-//         :title="\`\${cmp.name} has always beaten you\`"
-//         class="king" 
-//         src="images/king-lost.png" 
-//         alt="lost"
-//       >
-//     </span>
-//     <span v-if="games[cmp.name] && games[cmp.name].score === 0 ">
-//       <span class="score-even">EVEN</span>
-//       <img
-//         :title="\`Your best is a draw with \${cmp.name}\`"
-//         class="king" 
-//         src="images/king-draw.png" 
-//         alt="draw"
-//       >
-//     </span> 
-//   </span>
-
-//   <span v-if="scoreMode == 'ladder'">
-//     <span v-if="games[cmp.name] && games[cmp.name].topFeat === 'won'">
-//       <img 
-//         :title="\`You've beaten \${cmp.name}\`"
-//         class="king" 
-//         src="images/king-won.png" 
-//         alt="won"
-//       >
-//     </span>
-//     <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'lost'"
-//       :title="\`\${cmp.name} has always beaten you\`"
-//       class="king" 
-//       src="images/king-lost.png" 
-//       alt="lost"
-//     >
-//     <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'draw'"
-//       :title="\`Your best is a draw with \${cmp.name}\`"
-//       class="king" 
-//       src="images/king-draw.png" 
-//       alt="draw"
-//     >
-//   </span>
-
-//   <div class="cmp">
-//     <a :name="cmp.name"></a>
-//     <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name"
-//       @mouseover="showCmp(cmp)" 
-//       @click="toggleSelectionLock(cmp)"
-//       :class="{
-//         selected: selected.name === cmp.name,
-//         inPlayMode: selectionIsLocked && selected.name == cmp.name,
-//       }"
-//     >
-//     <span>{{cmp.name}}</span>
-//     <span>{{cmp.rating}}</span>
-//   </div>
-
-//   </div>
-// `
+// cssLoader.addStyle(style)
