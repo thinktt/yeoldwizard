@@ -1,7 +1,9 @@
-import {createApp }from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
-import { loadModule } from 'https://cdn.jsdelivr.net/npm/vue3-sfc-loader@0.8.4/dist/vue3-sfc-loader.esm.js'
+import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import games from './games.js'
+import WizFace from './WizFace.js'
 window.games = games
+
+
 
 const oauthUrl = 'https://lichess.org/oauth' 
 const oauthQuery = '?response_type=code'
@@ -138,7 +140,7 @@ async function startApp(user) {
 
   window.cmpsObj = cmpsObj
 
-  const app = createApp({
+  const app1= createApp({
     data() {
       const data = {
         user: user,
@@ -385,7 +387,12 @@ async function startApp(user) {
       })
     },
     }
-  }).mount('#app')
+  })
+  // app1.config.compilerOptions.isCustomElement = tag => tag.startsWith('wiz-')
+  app1.component('WizFace', WizFace)
+  const app = app1.mount('#app')
+
+
 
   window.app = app
 

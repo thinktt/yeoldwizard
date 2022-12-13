@@ -130,31 +130,100 @@
         <section v-for="group in groups" class="group"> 
           <a :name="group.title.replace(' ','')"></a>
           <h1>{{group.title}}</h1> 
-          
           <div class="cmps" :class="{gms: group.isGms}">
-
+  
             <div v-for="cmp of group.cmps" class="cmp-container" :title="cmp.summary">
               
-              <div>
-                <wiz-face 
-                  :score-mode="scoreMode"
-                  :score="games[cmp.name] ? games[cmp.name].score : null"
-                  :top-feat="games[cmp.name] ? games[cmp.name].topFeat : null"
-                  :cmp="cmp" 
-                  :selected-name="selected.name"
-                  :selection-is-locked="selectionIsLocked"
+              <span v-if="scoreMode == 'score'">
+                <span v-if="games[cmp.name] && games[cmp.name].score >= 1" >
+                  <span class="score">{{games[cmp.name].score}}</span>
+                  <img 
+                    :title="`You've beaten ${cmp.name}`"
+                    class="king" 
+                    src="images/king-won.png" 
+                    alt="won"
+                  >
+                </span>
+                <span v-if="games[cmp.name] && games[cmp.name].score < 0">
+                  <span class="score">{{games[cmp.name].score}}</span>
+                  <img 
+                    :title="`${cmp.name} has always beaten you`"
+                    class="king" 
+                    src="images/king-lost.png" 
+                    alt="lost"
+                  >
+                </span>
+                <span v-if="games[cmp.name] && games[cmp.name].score === 0 ">
+                  <span class="score-even">EVEN</span>
+                  <img
+                    :title="`Your best is a draw with ${cmp.name}`"
+                    class="king" 
+                    src="images/king-draw.png" 
+                    alt="draw"
+                  >
+                </span> 
+              </span>
+
+              <span v-if="scoreMode == 'ladder'">
+                <span v-if="games[cmp.name] && games[cmp.name].topFeat === 'won'">
+                  <img 
+                    :title="`You've beaten ${cmp.name}`"
+                    class="king" 
+                    src="images/king-won.png" 
+                    alt="won"
+                  >
+                </span>
+                <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'lost'"
+                  :title="`${cmp.name} has always beaten you`"
+                  class="king" 
+                  src="images/king-lost.png" 
+                  alt="lost"
+                >
+                <img v-if="games[cmp.name] && games[cmp.name].topFeat === 'draw'"
+                  :title="`Your best is a draw with ${cmp.name}`"
+                  class="king" 
+                  src="images/king-draw.png" 
+                  alt="draw"
+                >
+              </span>
+
+              <div class="cmp">
+                <a :name="cmp.name"></a>
+                <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name"
                   @mouseover="showCmp(cmp)" 
-                  @click="toggleSelectionLock(cmp)">
-                </wiz-face>
+                  @click="toggleSelectionLock(cmp)"
+                  :class="{
+                    selected: selected.name === cmp.name,
+                    inPlayMode: selectionIsLocked && selected.name == cmp.name,
+                  }"
+                >
+                <span>{{cmp.name}}</span>
+                <span>{{cmp.rating}}</span>
               </div>
-           
+
             </div>
 
           </div>
         </section>
         <a @click="infoMode = 'ended'" class="button blue test">testy</a>
+        <!-- <img class="king lost" src="images/king-red.svg" alt="">
+        <span class="draw-container">
+          <img class="king left" src="images/king-gray.svg" alt="">
+          <img class="king right" src="images/king-gray.svg" alt="">
+        </span>
+        <img class="king won" src="images/king-green.svg" alt=""> -->
+      </div>
     </main>
   </div>
+  <!-- Serive worker setup-->
+  <!-- <script> 
+    if (!navigator.serviceWorker.controller) {
+        navigator.serviceWorker.register("sw.js")
+        .then(function(reg) {
+            console.log("Service worker has been registered for scope: " + reg.scope);
+        });
+    }
+  </script> -->
 
   <script src="yeoldwiz.js" type="module"></script>
 </body>
