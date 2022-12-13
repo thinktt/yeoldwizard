@@ -1,6 +1,7 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import games from './games.js'
 import WizFace from './WizFace.js'
+import WizKing from './WizKing.js'
 import { cssLoader } from './pageTools.js'
 window.games = games
 
@@ -384,6 +385,7 @@ async function startApp(user) {
   })
   // app1.config.compilerOptions.isCustomElement = tag => tag.startsWith('wiz-')
   app1.component('WizFace', WizFace)
+  app1.component('WizKing', WizKing)
   const app = app1.mount('#app')
 
 

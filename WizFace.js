@@ -1,69 +1,15 @@
 import {html, css} from './pageTools.js'
 
 
-const ladderKing = html`
-  <span v-if="scoreMode == 'ladder'">
-    <span v-if="topFeat === 'won'">
-    
-      <img :title="'Youve beaten ' + cmp.name"
-        class="king" 
-        src="images/king-won.png" 
-        alt="won">
-  
-      <img v-if="topFeat === 'lost'"
-        :title="cmp.name + ' has always beaten you'"
-        class="king" 
-        src="images/king-lost.png" 
-        alt="lost">
-
-      <img v-if="topFeat === 'draw'"
-        :title="'Your best is a draw with ' + cmp.name"
-        class="king" 
-        src="images/king-draw.png" 
-        alt="draw">
-
-    </span>
-  </span>
-`
-
-const scoreKing = html`
-  <span v-if="scoreMode == 'score'">
-    <span v-if="score >= 1" >
-      <span class="score">{{score}}</span>
-      <img 
-        :title="'Your Wiz Score against ' + cmp.name + ' is ' + score"
-        class="king" 
-        src="images/king-won.png" 
-        alt="postive win score"
-      >
-    </span>
-
-    <span v-if="score < 0">
-      <span class="score">{{score}}</span>
-      <img 
-      :title="'Your Wiz Score against ' + cmp.name + ' is ' + score"
-        class="king" 
-        src="images/king-lost.png" 
-        alt="negative score"
-      >
-    </span>
-
-    <span v-if="score === 0 ">
-      <span class="score-even">EVEN</span>
-      <img
-      :title="'Your Wiz Score against ' + cmp.name + ' is ' + score"
-        class="king" 
-        src="images/king-draw.png" 
-        alt="even score"
-      >
-    </span> 
-  </span>
-`
-
 const template =  html`
   <div> 
-    ${ scoreKing }
-    ${ ladderKing }
+    <wiz-king 
+      :cmpName="cmp.name"
+      :score="score"
+      :score-mode="scoreMode"
+      :top-feat="topFeat"
+      >
+    </wiz-king>
 
     <div class="cmp">
       <a :name="cmp.name"></a>
