@@ -18,15 +18,6 @@ let redirectUri = 'https://thinktt.github.io/yeoldwizard'
 let devHost = localStorage.devHost || 'localhost:8080'
 let tokens, codeChallenge
 
-// Will always keep the same code in local storage but generate a new one if none
-// exist. Uncertain security, probably proper way is generate for every oauth call
-// localStorage.codeVerifier = localStorage.codeVerifier || genRandomString()
-// let codeChallenge = await genChallengeCode(localStorage.codeVerifier)
-// localStorage.codeVerifier = 'c1g4WFR2LXp5QVBSNWttfjhMN1c0VDVpNkdqbVhtYUlyanhIRU1RSVJUTWZ4dEZQMnZ0X2VtLUZhQ053c2pCQU11X1I3Y09TX1VtN1FlNWNnUX45c2NXdUphLnN1TVBv'
-// let codeChallenge = 'JGrp5Yhr6TGb-FDKSGe29mCvPNbxcwemmOF_gxFJ4E0'
-// window.genChallengeCode = genChallengeCode
-
-
 
 // a way to get dev to work using the same lichess client id
 if (localStorage.redirectToDev === 'true' && window.location.search && 
@@ -41,6 +32,8 @@ doAccountFlow()
 async function doAccountFlow() {
   localStorage.codeVerifier = localStorage.codeVerifier || genRandomString()
   codeChallenge = await genChallengeCode(localStorage.codeVerifier)
+  // codeChallenge = 'EzUA-uZDIDR-E6-8XZgnvVpr0KvYQwWAjiVUk3E7ZoY'
+  // console.log(codeChallenge)
 
   // User is already signed in and stored in localstorage
   if (window.localStorage.user) {

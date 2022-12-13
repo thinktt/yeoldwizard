@@ -1,9 +1,4 @@
-// import { html, render } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js'
 import html from './html.js'
-const res = await fetch('personalities.json')
-const cmpsObj = await res.json()
-
-const cmp = cmpsObj['Joey']
 
 
 
