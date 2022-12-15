@@ -27,7 +27,7 @@ const ladderKing = html`
 
 const scoreKing = html`
   <span v-if="scoreMode == 'score'">
-    <span v-if="score >= 1" class="king-box" >
+    <span v-if="score >= 1" class="badge-box" >
       <img 
       class="king" 
       src="images/king-won.png" 
@@ -38,17 +38,13 @@ const scoreKing = html`
         :title="'Your Wiz Score against ' + cmpName + ' is +' + score" class="score">
           +{{score}}
       </span>
-      <!-- <img class="shield" src="images/shield.png"> -->
-      <!-- <img class="coolguy" src="images/cool2.svg"> -->
-      <!-- <img class="flag" src="images/redflag.png">  -->
-      <!-- <span class="badge-icon">♙</span> -->
       <span v-if="score >= 2" class="trophy" :title="'You have conqured ' + cmpName">
         t
       </span>
     </span>
 
 
-    <span v-if="score < 0" class="king-box score-down">
+    <span v-if="score < 0" class="badge-box score-down">
       <img 
       class="king" 
       src="images/king-lost.png" 
@@ -63,7 +59,7 @@ const scoreKing = html`
 
     </span>
 
-    <span v-if="score === 0" class="king-box score-even">
+    <span v-if="score === 0" class="badge-box score-even">
       <img
       class="king" 
       src="images/king-draw.png" 

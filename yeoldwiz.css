@@ -349,7 +349,7 @@ a.button.grayed {
   position: relative;
 }
 
-.king-box{
+.badge-box{
   /* top: 7.7rem; */
   /* left: -0.7rem; */
   width: auto;
@@ -366,22 +366,6 @@ a.button.grayed {
   height: 3.5rem;
   z-index: 3;
   border-radius: 2rem;
-}
-
-.shield {
-  height: 3.5rem;
-  margin-left: -1.2rem;
-}
-
-.flag {
-  height: 3.5rem;
-  margin-left: -1.2rem;
-}
-
-.coolguy {
-  height: 3.5rem;
-  margin-left: -1.2rem;
-  fill: yellow;
 }
 
 
@@ -438,24 +422,6 @@ a.button.grayed {
   50% { color: magenta; }
   100% { color: gold; }
 }
-
-.icon-cool:before {
-  content: "\e9eb";
-}
-.icon-cool2:before {
-  content: "\e9ec";
-}
-
-/* .score-even {
-  font-size: .7rem;
-  width: auto;
-  position: absolute;
-  opacity: .75;
-  top: 9.0rem;
-  left: 1.4rem;
-  z-index: 4;
-} */
-
 
 @media all and (max-width:25em){
     a.button {
@@ -530,14 +496,13 @@ a.button.grayed {
     display: block;
   }
 
-  /* .king {
-    top: 9.9rem;
-    left: 1rem;
-  } */
-
-  .king-box {
+  .badge-box {
     right: 1.5rem;
     bottom: .3rem;
+  }
+
+  span.badge-box.score-even {
+    visibility: none;
   }
 
   .score {
@@ -545,8 +510,4 @@ a.button.grayed {
     left: 1.5rem;
   }
 
-  .score-even {
-    top: 11.2rem;
-    left: 1.85rem;
-  }
 }
