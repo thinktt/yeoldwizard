@@ -210,24 +210,24 @@ async function startApp(user) {
     },
     methods : {
       switchScoreMode(mode) {
-      this.scoreMode = mode
-      localStorage.scoreMode = mode
-    },
-    switchNav(event) {
-      this.navIsOn = true
-    },
-    toggleNav() {
-      if (isInPhoneMode()) {
+        this.scoreMode = mode
+        localStorage.scoreMode = mode
+      },
+      switchNav(event) {
+        this.navIsOn = true
+      },
+      toggleNav() {
+        if (isInPhoneMode()) {
+          this.navIsOn = false
+          this.infoMode = "browsing"
+        } 
+      },
+      showCmp(cmp) {
         this.navIsOn = false
-        this.infoMode = "browsing"
-      } 
-    },
-    showCmp(cmp) {
-      this.navIsOn = false
-      if (!this.selectionIsLocked) {
-        this.selected = cmpsObj[cmp.name]
-      }
-    },
+        if (!this.selectionIsLocked) {
+          this.selected = cmpsObj[cmp.name]
+        }
+      },
     toggleSelectionLock(cmp) {
       // do nothing if infoMode has gone past 'selected', in this 
       // case we are in a state that should not unlock the selection 

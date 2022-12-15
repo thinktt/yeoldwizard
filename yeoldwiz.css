@@ -4,6 +4,11 @@
 }
 
 @font-face {
+  font-family: iconmoon;
+  src: url(fonts/icomoon.ttf);
+}
+
+@font-face {
   font-family: retro;
   src: url(fonts/setback-tt-brk.ttf);
 }
@@ -339,28 +344,102 @@ a.button.grayed {
   position: relative;
 }
 
-.king {
-  height: 2.5rem;
-  width: auto;
-  position: absolute;
-  opacity: .90;
+.king-box{
   top: 7.7rem;
-  left: 0.5rem;
+  left: -0.7rem;
+  width: auto;
+  height: auto;
+  display: flex;
+  position: absolute;
+  transform: scale(.60);
+  /* background-color: black; */
+}
+
+.king {
+  height: 3.5rem;
   z-index: 3;
+  border-radius: 2rem;
+}
+
+.shield {
+  height: 3.5rem;
+  margin-left: -1.2rem;
+}
+
+.flag {
+  height: 3.5rem;
+  margin-left: -1.2rem;
+}
+
+.coolguy {
+  height: 3.5rem;
+  margin-left: -1.2rem;
+  fill: yellow;
 }
 
 
 .score {
-    font-size: .7rem;
-    width: auto;
-    position: absolute;
-    opacity: .75;
-    top: 9.0rem;
-    left: 1rem;
-    z-index: 4;
+  opacity: 1;
+  padding: .5rem;
+  font-size: 1.5rem;
+  background-color: green;
+  border-radius: 2rem;
+  margin: 1rem;
+  margin-top: 0.7rem;
+  margin-left: 0.2rem;
 }
 
-.score-even {
+.score-down .score{
+  background-color: rgba(220, 20, 60, 1);
+}
+
+.score-even .score {
+  background-color: gray;
+}
+
+.colorize {
+  animation: color-change 15s infinite;
+}
+
+.trophy {
+  font-size: 2.6rem;
+  font-family: iconmoon;
+  margin-left: -0.5rem;
+  color: gold;
+  padding-top: .6rem;
+}
+
+.badguy {
+  font-size: 2.6rem;
+  font-family: iconmoon;
+  margin-left: -0.5rem;
+  color: crimson;
+  padding-top: .6rem;
+}
+
+.badge-icon {
+  font-size: 3.6rem;
+  /* font-family: enigmax; */
+  font-family: iconmoon;
+  margin-left: -1.1rem;
+  color: gold;
+}
+
+@keyframes color-change {
+  0% { color: yellow; }
+  25% { color: greenyellow; }
+  50% { color: magenta; }
+  100% { color: gold; }
+}
+
+.icon-cool:before {
+  content: "\e9eb";
+}
+.icon-cool2:before {
+  content: "\e9ec";
+}
+
+/* .score-even {
   font-size: .7rem;
   width: auto;
   position: absolute;
@@ -368,7 +447,7 @@ a.button.grayed {
   top: 9.0rem;
   left: 1.4rem;
   z-index: 4;
-}
+} */
 
 
 @media all and (max-width:25em){

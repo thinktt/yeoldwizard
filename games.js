@@ -174,7 +174,7 @@ function sortGamesByOpponent(games) {
 
     // if this game is a higher player achievement than any game before we will map it here
     // also calculate total score by tallying wins and losses
-    if (game.conclusion === 'won') {
+    if (game.conclusion === 'won' && opponentGames[game.opponent].score < 5) {
       opponentGames[game.opponent].topFeat = 'won'
       opponentGames[game.opponent].score++
     } else if (game.conclusion === 'lost' && opponentGames[game.opponent].score > -5){

@@ -1,7 +1,20 @@
-body {
-  background-color: black;
+@font-face {
+  font-family: enigmax;
+  src: url(fonts/enigmax.ttf);
 }
 
+body {
+  background-color: black;
+  color: white;
+  font-family: enigmax;
+  font-weight: lighter;
+}
+
+
+
+h1 {
+  font-size: 5rem;
+}
 
 .king {
   display: visible;
@@ -24,4 +37,81 @@ body {
 .king.right {
   position: relative;
   right: 4rem;
+}
+
+.colorize {
+  animation: color-change 15s infinite;
+}
+
+.badge-icon {
+  font-size: 2rem;
+  font-family: enigmax;
+}
+
+@keyframes color-change {
+  0% { color: yellow; }
+  25% { color: greenyellow; }
+  50% { color: magenta; }
+  100% { color: gold; }
+  /* 60% { color: crimson; }
+  80% {color: gold}
+  80% {color: yellow} */
+
+}
+
+
+
+
+
+
+
+@keyframes masked{
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -10000px 5000px;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translatey(-50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translatey(0px);
+  }
+}
+
+
+.Target{
+  width:100vw;
+  height:50vh;
+  z-index:1;
+}
+
+.Target h1{
+  background: -webkit-linear-gradient(
+      left,
+      rgb(255, 38, 0) 0%,
+      #fb97ce 25%,
+      #e70d0d 50%,
+      rgb(255, 251, 0) 100%
+    )
+    repeat;
+  -webkit-background-clip: text;
+  -ms-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -ms-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  /*Animation  한번에 여러개 적용하기 */
+  animation: masked 20s linear infinite;
+  /* -webkit-animation: masked 5s linear infinite, fadeInDown 1.5s both 1;
+  -moz-animation:masked 5s linear infinite, fadeInDown 1.5s both 1;
+  -o-animation: masked 5s linear infinite, fadeInDown 1.5s both 1; */
 }

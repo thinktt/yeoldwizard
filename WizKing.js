@@ -27,43 +27,62 @@ const ladderKing = html`
 
 const scoreKing = html`
   <span v-if="scoreMode == 'score'">
-    <span v-if="score >= 1" >
-      <span class="score">{{'+' + score}}</span>
+    <span v-if="score >= 1" class="king-box" >
       <img 
-        :title="'Your Wiz Score against ' + cmpName + ' is +' + score"
-        class="king" 
-        src="images/king-won.png" 
-        alt="postive win score"
+      class="king" 
+      src="images/king-won.png" 
+      alt="postive win score"
+      title="You have a positive score against this opponent"
       >
+      <span 
+        :title="'Your Wiz Score against ' + cmpName + ' is +' + score" class="score">
+          +{{score}}
+      </span>
+      <!-- <img class="shield" src="images/shield.png"> -->
+      <!-- <img class="coolguy" src="images/cool2.svg"> -->
+      <!-- <img class="flag" src="images/redflag.png">  -->
+      <!-- <span class="badge-icon">♙</span> -->
+      <span v-if="score >= 2" class="trophy" :title="'You have conqured ' + cmpName">
+        t
+      </span>
     </span>
 
-    <span v-if="score < 0">
-      <span class="score">{{score}}</span>
+
+    <span v-if="score < 0" class="king-box score-down">
       <img 
-      :title="'Your Wiz Score against ' + cmpName + ' is ' + score"
-        class="king" 
-        src="images/king-lost.png" 
-        alt="negative score"
+      class="king" 
+      src="images/king-lost.png" 
+      alt="negative score"
+      title="You have a negative score against this opponent"
       >
+      <span 
+        :title="'Your Wiz Score against ' + cmpName + ' is ' + score" class="score">
+          {{score}}
+      </span>
+      <span v-if="score <= -3" class="badguy" :title="cmpName + ' is you Nemesis'">d</span>
+
     </span>
 
-    <span v-if="score === 0 ">
-      <span class="score-even">EVEN</span>
+    <span v-if="score === 0" class="king-box score-even">
       <img
-      :title="'Your Wiz Score against ' + cmpName + ' is ' + score"
-        class="king" 
-        src="images/king-draw.png" 
-        alt="even score"
+      class="king" 
+      src="images/king-draw.png" 
+      alt="even score"
+      title="You have an even score against this opponent"
       >
+      <span 
+        :title="'Your score is even with ' + cmpName" class="score">
+          EVEN
+      </span>
     </span> 
   </span>
 `
 
 const template = html`
-  <span> 
+  <div>
     ${ scoreKing }
     ${ ladderKing }
-  </span> 
+  </div> 
 `
 
 export default {
