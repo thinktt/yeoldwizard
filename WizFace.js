@@ -2,27 +2,24 @@ import {html, css} from './pageTools.js'
 
 
 const template =  html`
-  <div> 
+  <div class="cmp">
+    <a :name="cmp.name"></a>
+    <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name"
+
+      :class="{
+        selected: selectedName === cmp.name,
+        inPlayMode: selectionIsLocked && selectedName == cmp.name,
+      }"
+    >
     <wiz-king 
       :cmpName="cmp.name"
       :score="score"
       :score-mode="scoreMode"
       :top-feat="topFeat"
-      >
+    >
     </wiz-king>
-
-    <div class="cmp">
-      <a :name="cmp.name"></a>
-      <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name"
-
-        :class="{
-          selected: selectedName === cmp.name,
-          inPlayMode: selectionIsLocked && selectedName == cmp.name,
-        }"
-      >
-      <span>{{cmp.name}}</span>
-      <span>{{cmp.rating}}</span>
-    </div>
+    <span>{{cmp.name}}</span>
+    <span>{{cmp.rating}}</span>
   </div>
 `
 

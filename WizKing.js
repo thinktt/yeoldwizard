@@ -59,7 +59,7 @@ const scoreKing = html`
         :title="'Your Wiz Score against ' + cmpName + ' is ' + score" class="score">
           {{score}}
       </span>
-      <span v-if="score <= -3" class="badguy" :title="cmpName + ' is you Nemesis'">d</span>
+      <span v-if="score <= -3" class="badguy" :title="cmpName + ' is your Nemesis'">d</span>
 
     </span>
 
@@ -79,10 +79,10 @@ const scoreKing = html`
 `
 
 const template = html`
-  <div>
+  <span>
     ${ scoreKing }
     ${ ladderKing }
-  </div> 
+  </span> 
 `
 
 export default {
