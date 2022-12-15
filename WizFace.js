@@ -16,6 +16,7 @@ const template =  html`
       :score="score"
       :score-mode="scoreMode"
       :top-feat="topFeat"
+      :is-nemesis="isNemesis"
     >
     </wiz-king>
     <span>{{cmp.name}}</span>
@@ -26,7 +27,15 @@ const template =  html`
 
 export default {
   name: 'WizFace',
-  props: ['cmp', 'selectedName', 'selectionIsLocked', 'score', 'scoreMode', 'topFeat'],
+  props: [
+    'cmp',
+    'selectedName',
+    'selectionIsLocked',
+    'score',
+    'isNemesis',
+    'scoreMode',
+    'topFeat',
+  ],
   template,
   style: css,
   functional: true,

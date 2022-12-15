@@ -182,11 +182,19 @@ function sortGamesByOpponent(games) {
     } else if (game.conclusion === 'draw' && opponentGames[game.opponent].topFeat === 'lost') {
       opponentGames[game.opponent].topFeat = 'draw'
     }
-    
     opponentGames[game.opponent].games.push(game)
 
     // this deletes opponent in gamesByOpponent due to JS object by reference
     delete game.opponent
+  }
+
+  // find and mark game groups where the oppoent is a "Nemesis", meaning you've
+  // tried playing them a lot but can't get a positive score on them
+  for (const opponent in opponentGames) {
+    const numberOfGames = opponentGames[opponent].games.length
+    const score = opponentGames[opponent].score
+    if(score < -2 && numberOfGames > 10) opponentGames[opponent].isNemesis = true
+      else opponentGames[opponent].isNemesis = false
   }
   return opponentGames
 }

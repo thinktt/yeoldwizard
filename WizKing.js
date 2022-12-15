@@ -55,7 +55,7 @@ const scoreKing = html`
         :title="'Your Wiz Score against ' + cmpName + ' is ' + score" class="score">
           {{score}}
       </span>
-      <span v-if="score <= -3" class="badguy" :title="cmpName + ' is your Nemesis'">d</span>
+      <span v-if="isNemesis" class="badguy" :title="cmpName + ' is your Nemesis'">d</span>
 
     </span>
 
@@ -83,7 +83,7 @@ const template = html`
 
 export default {
   name: 'WizKing',
-  props: ['cmpName', 'score', 'scoreMode', 'topFeat'],
+  props: ['cmpName', 'score', 'isNemesis', 'scoreMode', 'topFeat'],
   template,
   functional: true,
 }

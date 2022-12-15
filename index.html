@@ -139,6 +139,7 @@
                 <wiz-face 
                   :score-mode="scoreMode"
                   :score="games[cmp.name] ? games[cmp.name].score : null"
+                  :is-nemesis="games[cmp.name] ? games[cmp.name].isNemesis : null"
                   :top-feat="games[cmp.name] ? games[cmp.name].topFeat : null"
                   :cmp="cmp" 
                   :selected-name="selected.name"
