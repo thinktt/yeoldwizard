@@ -400,13 +400,65 @@ a.button.grayed {
   padding-top: .6rem;
 }
 
-.badguy {
-  font-size: 2.6rem;
-  font-family: iconmoon;
-  margin-left: -0.5rem;
-  color: crimson;
-  padding-top: .6rem;
+.badge-box-2 {
+  display: flex;
+  /* background-color: black; */
+  /* width: 7.75rem; */
+  height: auto;
+  transform: scale(1.25);
+  position: absolute;
+  bottom: 2.8rem;
+  left: .6rem;
 }
+
+.badge-container {
+  width: 25%;
+  z-index: 1;
+  /* padding-left: .25rem; */
+  /* padding-right: .25rem; */
+  /* background-color: red; */
+}
+
+.pawn-won {
+  font-family: enigmax;
+  color: ivory;
+  width: 1rem;
+  font-size: 2rem;
+  z-index: 2;
+}
+
+
+.cool-guy {
+  font-size: .6rem;
+  font-family: iconmoon;
+  color: ivory;
+  position: absolute;
+  top: 0.5rem;
+  left: .70rem;
+  z-index: 4;
+}
+
+.pawn-head {
+  font-size: .6rem;
+  font-family: iconmoon;
+  color: ivory;
+  position: absolute;
+  top: 0.5rem;
+  left: .70rem;
+  z-index: 4;
+}
+
+.circle {
+  height: .5rem;
+  width: .5rem;
+  background-color: black;
+  border-radius: 50%;
+  display: inline-block;
+  position: absolute;
+  top: 0.6rem;
+  left: .75rem;
+}
+
 
 .badge-icon {
   font-size: 3.6rem;

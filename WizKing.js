@@ -2,27 +2,31 @@ import { html } from './pageTools.js'
 
 const ladderKing = html`
   <span v-if="scoreMode == 'ladder'">
-    <span v-if="topFeat === 'won'">
-    
-      <img :title="'Youve beaten ' + cmpName"
-        class="king" 
-        src="images/king-won.png" 
-        alt="won">
-  
-      <img v-if="topFeat === 'lost'"
-        :title="cmpName + ' has always beaten you'"
-        class="king" 
-        src="images/king-lost.png" 
-        alt="lost">
+    <span class="badge-box-2">
+      
+      <span v-if="topFeat === 'won'" class="badge-container"> 
+        <span  class="pawn-won" style="color: green" 
+          :title="'Legend tells of a time you beat ' + cmpName">♙</span>
+        <span  class="pawn-head" style="color: green">b</span>
+        <span class="circle"></span>
+      </span>
 
-      <img v-if="topFeat === 'draw'"
-        :title="'Your best is a draw with ' + cmpName"
-        class="king" 
-        src="images/king-draw.png" 
-        alt="draw">
+      <span v-if="topFeat === 'draw'" class="badge-container"> 
+        <span  class="pawn-won" style="color: gray" 
+        :title="'The best you have ever done is draw against ' + cmpName">♙</span>
+        <span  class="pawn-head" style="color: gray">f</span>
+        <span class="circle"></span>
+      </span>
+
+      <span v-if="topFeat === 'lost'" class="badge-container"> 
+        <span  class="pawn-won" style="color: crimson" 
+          :title="'You’ve tried but never beaten ' + cmpName">♙</span>
+        <span  class="pawn-head" style="color: crimson">e</span>
+        <span class="circle"></span>
+      </span>
 
     </span>
-  </span>
+</span>
 `
 
 const scoreKing = html`
