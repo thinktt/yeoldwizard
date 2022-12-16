@@ -448,6 +448,14 @@ a.button.grayed {
   z-index: 4;
 }
 
+.badguy {
+  font-size: 2.6rem;
+  font-family: iconmoon;
+  margin-left: -0.5rem;
+  color: crimson;
+  padding-top: .6rem;
+}
+
 .circle {
   height: .5rem;
   width: .5rem;
