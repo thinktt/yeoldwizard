@@ -113,7 +113,7 @@ header {
   cursor: pointer;
 }
 
-.knight {
+.icon.knight {
   display: inline-block;
   width: 1em;
   font-size: 1.25em;
@@ -211,7 +211,7 @@ nav a {
 .start-message {
   margin-top: 2rem;
 }
-.start-message .knight {
+.start-message .icon.knight {
   font-size: 2rem;
   margin-top: 1rem;
 }
@@ -220,7 +220,7 @@ nav a {
   font-size: 1rem;
   margin-top: 1rem;
 }
-.error-message .knight {
+.error-message .icon.knight {
   font-size: 2rem;
   margin-bottom: 1rem;
 }
@@ -285,7 +285,7 @@ nav a {
   /* image-rendering: pixelated; */
 }
 
-.selected {
+button.selected {
   border: .375rem solid goldenrod;
 }
 

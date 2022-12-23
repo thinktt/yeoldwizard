@@ -7,6 +7,10 @@
   <meta name="description" content="Ye Old Wizard">
   <meta name="viewport" content="width=device-width, initial-scale=.82, maximum-scale=1, user-scalable=no"/>
   <link rel="icon" type="image/png" href="images/favicon.ico"/>
+  <link rel="stylesheet" type="text/css" href="/lib/chessground/css/chessground.base.css">
+  <link rel="stylesheet" type="text/css" href="/lib/chessground/css/chessground.brown.css">
+  <link rel="stylesheet" href="maestro.css">
+  <link rel="stylesheet" href="chessboard.css">
   <link rel="stylesheet" href="yeoldwiz.css">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
@@ -22,12 +26,12 @@
 
       <span v-if="signInFailed" class="sign-in error" @click=signOut>
         <span> Failed to Sign in! </span>
-        <div class="knight dead">♞</div>
+        <div class="icon knight dead">♞</div>
       </span>
 
       <span v-else-if="user" class="sign-in">
         <span @mouseover="toggleSignOut(true)">Signed in as {{user}}</span>
-        <div class="knight">♞</div>
+        <div class="icon knight">♞</div>
         <div @mouseout="toggleSignOut(false)" v-if="shouldShowSignOut">
           <div @click="signOut" class="sign-out">Sign Out</div>
         </div>
@@ -35,16 +39,16 @@
       
       <span v-else-if="user === null" class="sign-in">
         <span> Connecting to Lichess </span>
-        <div class="knight spin">♞</div>
+        <div class="icon knight spin">♞</div>
       </span>
 
       
       <span v-else class="sign-in">
         <a :href="signInLink">Sign In With Lichess</a>
-        <div class="knight">♞</div>
+        <div class="icon knight">♞</div>
       </span>
-
     </header>
+
     <main>
       <div class="spacer"></div>
       <div class="nav-and-info" :class="{focus: infoMode !== 'browsing' || navIsOn}">
@@ -57,7 +61,7 @@
           </div>
 
           <span v-if="infoMode === 'error'" class="error-message" >
-            <div  class="knight dead">♞</div>
+            <div  class="icon knight dead">♞</div>
             <h3>Error</h3>
             <p>{{errorMessage}}</p>
             <p>Please contact your Wizard Admin</p>
@@ -78,7 +82,7 @@
           
           <span v-if="infoMode === 'selected' && user === null" class="start-message" >
             <div>Connecting to Lichess...</div>
-            <div  class="knight spin">♞</div>
+            <div  class="icon knight spin">♞</div>
           </span>
 
           <div v-if="infoMode === 'selected' && user" class="buttons">
@@ -90,7 +94,7 @@
         
           <span v-if="infoMode === 'starting'" class="start-message" >
             <div>Starting game...</div>
-            <div  class="knight spin">♞</div>
+            <div  class="icon knight spin">♞</div>
           </span>
 
           <span v-if="infoMode === 'started'" class="start-message" >
@@ -126,7 +130,12 @@
          </nav>
       </div>
       
-      <div class="groups" :class="{focus: infoMode == 'browsing' && !navIsOn}">
+
+      <div class="groups">
+        <wiz-board id="xyzzy"></wiz-board>
+      </div>
+
+      <!-- <div class="groups" :class="{focus: infoMode == 'browsing' && !navIsOn}">
         <section v-for="group in groups" class="group"> 
           <a :name="group.title.replace(' ','')"></a>
           <h1>{{group.title}}</h1> 
@@ -153,10 +162,13 @@
 
           </div>
         </section>
-        <!-- <a @click="infoMode = 'ended'" class="button blue test">testy</a> -->
-      </main>
+      </div> -->
+    </main>
+
+    
   </div>
 
   <script src="yeoldwiz.js" type="module"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.js"></script>
 </body>
 </html>
