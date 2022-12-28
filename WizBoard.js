@@ -48,7 +48,7 @@ const template =  html`
 
 
 export default {
-  props : [ 'navIsOn', 'id', 'moves' ],
+  props : [ 'navIsOn', 'id', 'moves', 'colorSide' ],
   data() {
     const { 
       color, 
@@ -89,7 +89,7 @@ export default {
     window.gameHistory = this.gameHistory
     this.navIndex = this.gameHistory.length
     this.cg = Chessground(document.getElementById(this.id), {
-      orientation: 'white',  
+      orientation: this.colorSide,  
       // turnColor: 'white',
       // viewOnly: true,
       coordinates: false,

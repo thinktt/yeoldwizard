@@ -13,9 +13,10 @@
   width: 20vw;
   height: 20vw;
   position: relative;
-  border-style: solid;
-  border-color: rgb(59, 31, 17);
-  border-width: .25rem;
+  /* border-style: solid; */
+  /* border-color: rgb(59, 31, 17); */
+  /* border-width: .25rem; */
+  /* border-collapse: collapse; */
   margin: 1rem;
 }
 
@@ -98,8 +99,8 @@ cg-board {
 }
 
 .pgn-viewer {
-  width: 250px;
-  height: 250px;
+  width: 15rem;
+  height: 15rem;
   padding: 1rem;
   background-color: black;
   border-color: goldenrod;
@@ -116,6 +117,8 @@ cg-board {
 
 .cg-wrap {
   height: 100%;
+  border-style: solid;
+  border-color: rgb(59, 31, 17);
 }
 
 .hidden {
@@ -124,4 +127,19 @@ cg-board {
 
 .board-and-nav-box {
   display: flex;
+}
+
+.board-and-nav-box a {
+  color: white;
+  text-decoration: none;
+}
+
+.board-and-nav-box a:visited {
+  color:white;
+}
+
+
+
+.game-info-box {
+  margin: 1rem;
 }
