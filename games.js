@@ -4,6 +4,7 @@ import lichessApi from './lichessApi.js'
 export default { 
   updateGameList,
   getGames, 
+  getGamesWithMoves,
   getColorToPlay,
   getCurrentGames,
   getCurrentLatestGame,
@@ -68,6 +69,18 @@ function clearWasForwardedToYowApi() {
   setGames(games)
 }
 
+async function getGamesWithMoves(opponent) {
+  const games = getGames(opponent)
+  const gameIds = games.map(game => game.id)  
+  const lichessGames = await lichessApi.getGamesByIds(gameIds)
+  for (let i = 0; i < games.length; i++) {
+    if (!lichessGames[i]) continue
+    games[i].moves = lichessGames[i].moves.split(' ')
+  }
+  return games
+}
+
+
 function getGames(opponent) {
   const storedGamesStr = localStorage[user + '_games'] || '[]'
   const storedGames = JSON.parse(storedGamesStr)
@@ -80,7 +93,8 @@ function getGames(opponent) {
     if (game.opponent === 'Chessmaster') game.opponent = 'Wizard'
     games.push(game)
   }
-
+  
+  // console.log(games)
   return games
 }
 

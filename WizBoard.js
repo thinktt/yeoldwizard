@@ -8,18 +8,20 @@ const { color, queenTop, roookTop, knightTop, bishopTop, leftOffset } = config
 const pgnViewer = html`<div class="pgn-viewer"></div>`
 
 const pgnNav = html`
-  <div class="pgn-viewer">
-    <template v-for="(move, index) in gameHistory">
-      <span v-if="index % 2 === 0">{{index / 2 + 1}}.&nbsp</span>
-      <span :class="{highlight: navIndex - 1 === index}">
-        {{move}}&nbsp
-      </span> 
-    </template>
+  <div v-if="navIsOn"> 
+    <div class="pgn-viewer">
+      <template v-for="(move, index) in gameHistory">
+        <span v-if="index % 2 === 0" class="move-number">{{index / 2 + 1}}.</span>
+        <span :class="{highlight: navIndex - 1 === index}" class="half-move">
+          {{move}}
+        </span> 
+      </template>
+    </div>
+    <button @click="goStart" id="go-start-button">Go Start</button>
+    <button @click="goBack" id="go-back-button">Go Back</button>
+    <button @click="goForward" id="go-forward-button">Go Forward</button>
+    <button @click="goEnd" id="go-end-button">Go End</button>
   </div>
-  <button @click="goStart" id="go-start-button">Go Start</button>
-  <button @click="goBack" id="go-back-button">Go Back</button>
-  <button @click="goForward" id="go-forward-button">Go Forward</button>
-  <button @click="goEnd" id="go-end-button">Go End</button>
 `
 
 
@@ -46,6 +48,7 @@ const template =  html`
 
 
 export default {
+  props : [ 'navIsOn', 'id', 'moves' ],
   data() {
     const { 
       color, 
@@ -68,16 +71,30 @@ export default {
       promoteFromSquare: null,
       promoteToSquare: null,
       navIndex: 0,
+      checkSquare: null,
     }
   },
   mounted: function() {
     this.game = new Chess()
+    for (const move of this.moves) {
+      this.game.move(move) 
+    }
+    let checkColor = null
+    if (this.game.in_check()) {
+      checkColor = this.game.turn() === 'w' ? 'white' : 'black'
+    }
+    window.chess = this.game
+    this.checkSquare = this.game.fen()
+    this.gameHistory = this.game.history()
     window.gameHistory = this.gameHistory
+    this.navIndex = this.gameHistory.length
     this.cg = Chessground(document.getElementById(this.id), {
       orientation: 'white',  
-      turnColor: 'white',
+      // turnColor: 'white',
       // viewOnly: true,
       coordinates: false,
+      fen: this.game.fen(),
+      check: checkColor, 
       movable: {
         free: false,
         color: 'white',
@@ -169,6 +186,7 @@ export default {
       this.game.move(nextMove)
       this.navIndex = this.game.history().length
       updateBoard(this.game, this.cg)
+      this.checkSquare = this.game.fen()
     },
     goEnd() {
       this.game.reset()
@@ -181,7 +199,6 @@ export default {
     }
   },
   name: 'WizBoard',
-  props: ['id'],
   template,
 }
 

@@ -3,6 +3,7 @@ import games from './games.js'
 import WizFace from './WizFace.js'
 import WizKing from './WizKing.js'
 import WizBoard from './WizBoard.js'
+import WizGames from './WizGames.js'
 import { cssLoader } from './pageTools.js'
 window.games = games
 
@@ -391,6 +392,7 @@ async function startApp(user) {
   app1.component('WizFace', WizFace)
   app1.component('WizKing', WizKing)
   app1.component('WizBoard', WizBoard)
+  app1.component('WizGames', WizGames)
   const app = app1.mount('#app')
 
 
