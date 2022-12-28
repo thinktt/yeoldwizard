@@ -3,7 +3,7 @@ import games from './games.js'
 
 
 const template = html`
-  <div v-if="games.length">
+  <div v-if="games.length" class="games">
     <h1>Games with {{cmpName}}</h1>
     <div v-for="game in games" class="board-and-nav-box">
       <a :href="game.link" target="_blank" rel="noopener noreferrer">
@@ -11,6 +11,15 @@ const template = html`
         </wiz-board> 
       </a>
       <div class="game-info-box">
+        <div v-if="game.conclusion ==='draw'">
+          <img class="king" src="images/king-draw.png">
+        </div>
+        <div v-if="game.conclusion === 'won'">
+          <img class="king" src="images/king-won.png">
+        </div>
+        <div v-if="game.conclusion === 'lost'">
+          <img class="king" src="images/king-lost.png">
+        </div>
         <p>You played as {{game.playedAs}}</p>
         <p v-if="game.status === 'resign'">
             You
@@ -28,6 +37,10 @@ const template = html`
         <a :href="game.link" target="_blank" rel="noopener noreferrer">View on Lichess</a>
       </div>
     </div>
+  </div>
+  <div v-else class="games">
+    <h1> Loading your games with {{cmpName}}...</h1>
+    <div class="icon knight spin">♞</div>
   </div>
 `
 

@@ -10,8 +10,8 @@
 }
 
 .board-container {
-  width: 20vw;
-  height: 20vw;
+  width: 20rem;
+  height: 20rem;
   position: relative;
   /* border-style: solid; */
   /* border-color: rgb(59, 31, 17); */
@@ -117,8 +117,8 @@ cg-board {
 
 .cg-wrap {
   height: 100%;
-  border-style: solid;
-  border-color: rgb(59, 31, 17);
+  /* border-style: solid;
+  border-color: rgb(59, 31, 17); */
 }
 
 .hidden {
@@ -126,7 +126,9 @@ cg-board {
 }
 
 .board-and-nav-box {
+  background-color: rgb(49, 32, 7, .5);
   display: flex;
+  margin-bottom: 1.5rem;
 }
 
 .board-and-nav-box a {
@@ -139,7 +141,13 @@ cg-board {
 }
 
 
-
 .game-info-box {
+  font-size: 1.25rem;
   margin: 1rem;
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.game-info-box .king {
+  margin-left: -1rem;
 }
