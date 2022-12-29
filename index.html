@@ -50,7 +50,6 @@
     </header>
 
     <main>
-      <div class="spacer"></div>
       <div class="nav-and-info" :class="{focus: infoMode !== 'browsing' || navIsOn}">
         <section v-if="!navIsOn" class="info">
           
@@ -131,10 +130,13 @@
       </div>
       
 
-      <wiz-games v-if="infoMode === 'selected'" :cmp-name="this.selected.name"></wiz-games>
-      <!-- :class="{hidden: infoMode !== 'browsing' && !navIsOn}  -->
+      <!-- <wiz-games v-if="infoMode === 'selected'" :cmp-name="this.selected.name">
+      </wiz-games> -->
+      <wiz-games :cmp-name="this.selected.name">
+      </wiz-games>
 
-      <div v-if="infoMode === 'browsing'" class="groups">
+
+      <div class="groups noshow" :class="{noshow: infoMode !== 'browsing'}">
         <section v-for="group in groups" class="group"> 
           <a :name="group.title.replace(' ','')"></a>
           <h1>{{group.title}}</h1> 

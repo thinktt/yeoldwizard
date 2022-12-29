@@ -46,7 +46,7 @@ body {
   visibility: hidden;
 }
 
-.no-display {
+.noshow {
   display: none;
 }
 
@@ -228,15 +228,6 @@ nav a {
   font-size: 2rem;
   margin-bottom: 1rem;
 }
-
-.games {
-  margin-top: 3rem;
-  margin-left: 25rem;
-  margin-bottom: 25rem;
-  width: 40rem;
-  text-align: center;
-}
-
 
 .groups {
   margin-top: 3rem;
@@ -521,19 +512,15 @@ a.button.grayed {
     margin-right: 3.3rem;
   }
 
-  h1 {
+  .groups h1 {
     width: 80%;
     padding-top: 1rem;
   }
 
-  .groups {
-    visibility: hidden;
-  }
 
   .nav-and-info {
     width: 100%;
     margin-right: 5rem;
-    display: none;
   }
 
   nav {
@@ -550,6 +537,19 @@ a.button.grayed {
     margin-right: 0rem;
   }
 
+  .groups.focus {
+    visibility: visible;
+  }
+
+  .games {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+
   .info .face {
     width: 11rem;
     /* width: 30vw; */
@@ -560,9 +560,6 @@ a.button.grayed {
     transform: scale(1.3);
   }
 
-  .groups.focus {
-    visibility: visible;
-  }
 
   .nav-and-info.focus{
     display: block;
@@ -581,5 +578,14 @@ a.button.grayed {
     top: 11.2rem;
     left: 1.5rem;
   }
+
+  .info {
+    display: none;
+  }
+
+  .nav-and-info {
+    display: none;
+  }
+
 
 }

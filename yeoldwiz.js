@@ -146,7 +146,7 @@ async function startApp(user) {
         isHidden: true,
         games: {},
         signInFailed: false,
-        selected: cmpsObj.Wizard,
+        selected: cmpsObj.Orin,
         navIsOn: false,
         infoMode: 'browsing',
         scoreMode: localStorage.scoreMode || 'ladder',
@@ -253,7 +253,7 @@ async function startApp(user) {
       this.infoMode = 'selected'
       this.selectionIsLocked = true
       localStorage.scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
-      this.lockBody()
+      // this.lockBody()
     },
     stopSelectionLock(){
       this.infoMode = 'browsing'

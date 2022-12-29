@@ -6,55 +6,66 @@ const template = html`
   <div v-if="games" class="games">
     <h1>Games with {{cmpName}}</h1>
     <div class="game-filter">
-      <img @click="select('won')" :class="{selected: wonIsSelected}"  class="king" src="images/king-won.png">
-      <img @click="select('draw')" :class="{selected: drawIsSelected}" class="king" src="images/king-draw.png">
-      <img @click="select('lost')" :class="{selected: lostIsSelected}" class="king" src="images/king-lost.png">
-      <span class="score">10</span>
+      <span class="selector-box">
+        <img @click="select('won')" :class="{selected: wonIsSelected}"  class="king" src="images/king-won.png">
+        <!-- <span v-if="wonCount">{{wonCount}} won</span> -->
+      </span>
+      <span class="selector-box"> 
+        <img  @click="select('draw')" :class="{selected: drawIsSelected}" class="king" src="images/king-draw.png">
+        <!-- <span v-if="drawCount">{{drawCount}} drawn</span> -->
+      </span>
+      <span class="selector-box"> 
+        <img @click="select('lost')" :class="{selected: lostIsSelected}" class="king" src="images/king-lost.png">
+        <!-- <span v-if="lostCount">{{lostCount}} lost</span> -->
+      </span>
     </div>
-
-    <template v-if="games.length">
-      <template v-for="game in games" :key="game.id">
-        <div class="board-and-nav-box" :class="{ 'no-display': filteredIds.includes(game.id) === false }"> 
-          <a :href="game.link" target="_blank" rel="noopener noreferrer">
-            <wiz-board :nav-is-on="false" :id="game.id" :moves="game.moves" :color-side="game.playedAs">
-            </wiz-board> 
-          </a>
-          <div class="game-info-box">
-            <div v-if="game.conclusion ==='draw'">
-              <img class="king" src="images/king-draw.png">
-            </div>
-            <div v-if="game.conclusion === 'won'">
-              <img class="king" src="images/king-won.png">
-            </div>
-            <div v-if="game.conclusion === 'lost'">
-              <img class="king" src="images/king-lost.png">
-            </div>
-            <p>You played as {{game.playedAs}}</p>
-            <p v-if="game.status === 'resign'">
-                You
-                <span>{{game.conclusion}}</span> 
-                by resignation
-            </p>
-            <p v-else-if="game.status === 'draw'">
-                Game was a draw
-            </p>
-            <p v-else>
-              You
-              <span> {{game.conclusion}}</span> 
-              by {{game.status}}
-            </p>
-            <a :href="game.link" target="_blank" rel="noopener noreferrer">View on Lichess</a>
+    <!-- <div>
+      <span v-if="wonCount">{{wonCount}} won</span>
+      <span v-if="drawCount">{{drawCount}} drawn</span>
+      <span v-if="lostCount">{{lostCount}} lost</span>
+    </div>  -->
+    <p v-if="filteredIds.length">{{filteredIds.length}} games</p>
+    <template v-for="game in games" :key="game.id">
+      <div class="board-and-nav-box" :class="{ noshow: filteredIds.includes(game.id) === false }"> 
+        <a :href="game.link" target="_blank" rel="noopener noreferrer">
+          <wiz-board :nav-is-on="false" :id="game.id" :moves="game.moves" :color-side="game.playedAs">
+          </wiz-board> 
+        </a>
+        <div class="game-info-box">
+          <div v-if="game.conclusion ==='draw'">
+            <img class="king" src="images/king-draw.png">
           </div>
+          <div v-if="game.conclusion === 'won'">
+            <img class="king" src="images/king-won.png">
+          </div>
+          <div v-if="game.conclusion === 'lost'">
+            <img class="king" src="images/king-lost.png">
+          </div>
+          <p>You played as {{game.playedAs}}</p>
+          <p v-if="game.status === 'resign'">
+              You
+              <span>{{game.conclusion}}</span> 
+              by resignation
+          </p>
+          <p v-else-if="game.status === 'draw'">
+              Game was a draw
+          </p>
+          <p v-else>
+            You
+            <span> {{game.conclusion}}</span> 
+            by {{game.status}}
+          </p>
+          <a :href="game.link" target="_blank" rel="noopener noreferrer">View on Lichess</a>
         </div>
+      </div>
     </template>
-    </template>
-    <template v-else> 
+    <template v-if="filteredIds.length === 0"> 
       <p class="filter-message">No games found for selected filters. Click the filter icons above.</p>
     </template>
 
   </div>
   <div v-else class="games loading-message">
-    <h1> Loading your games with {{cmpName}}...</h1>
+    <h3> Loading your games with {{cmpName}}...</h3>
     <div class="icon knight spin">♞</div>
   </div>
 `
@@ -69,6 +80,9 @@ export default {
       wonIsSelected: true, 
       drawIsSelected: true,
       lostIsSelected: true,
+      wonCount: 0,
+      drawCount: 0,
+      lostCount: 0,
       filteredIds: [],
     }
   },
@@ -96,10 +110,13 @@ export default {
       if (this.drawIsSelected) selectedFilters.push('draw')
       if (this.lostIsSelected) selectedFilters.push('lost')
       const filteredIds = []
+      this.wonCount = 0
+      this.lostCount = 0
+      this.drawCount = 0
       for (const game of this.games) {
         if (selectedFilters.includes(game.conclusion)) {
           filteredIds.push(game.id) 
-          console.log(game.id)
+          this[game.conclusion + 'Count'] ++
         }
       }
       this.filteredIds = filteredIds

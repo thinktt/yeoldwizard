@@ -140,6 +140,13 @@ cg-board {
   color:white;
 }
 
+.games {
+  margin-top: 3rem;
+  margin-left: 35%;
+  margin-bottom: 25rem;
+  width: 40rem;
+  text-align: center;
+}
 
 .game-info-box {
   font-size: 1.25rem;
@@ -181,4 +188,10 @@ cg-board {
   font-size: 1.5rem;
   margin-left: 5rem;
   margin-right: 5rem;
+}
+
+.game-filter .selector-box {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
 }
