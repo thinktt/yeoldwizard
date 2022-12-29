@@ -151,3 +151,34 @@ cg-board {
 .game-info-box .king {
   margin-left: -1rem;
 }
+
+.game-filter {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+
+}
+
+.game-filter .king {
+  text-align: center;
+  cursor: pointer;
+  /* opacity: 50%; */
+  box-sizing: border-box;
+}
+
+.game-filter .king.selected {
+  border: solid;
+  border-color: goldenrod;
+  opacity: 100%;
+}
+
+.game-filter h2 {
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.games .filter-message {
+  font-size: 1.5rem;
+  margin-left: 5rem;
+  margin-right: 5rem;
+}

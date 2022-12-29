@@ -46,6 +46,10 @@ body {
   visibility: hidden;
 }
 
+.no-display {
+  display: none;
+}
+
 h1 {
   font-size: 3rem;
   margin-bottom: 10px;
@@ -229,6 +233,8 @@ nav a {
   margin-top: 3rem;
   margin-left: 25rem;
   margin-bottom: 25rem;
+  width: 40rem;
+  text-align: center;
 }
 
 
