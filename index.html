@@ -20,7 +20,8 @@
   <div id="app" v-cloak >
     <header>
       <span> 
-        <span class="hamburger" @mouseover="switchNav">☰</span> 
+        <!-- @mouseover="switchNav" -->
+        <span class="hamburger">☰</span> 
         <span class="main-title">Ye Old Wizard</span>
       </span>
 
@@ -52,12 +53,28 @@
     <main>
       <div class="nav-and-info" :class="{focus: infoMode !== 'browsing' || navIsOn}">
         <section v-if="!navIsOn" class="info">
+
+          <wiz-kid-info :cmp="selected" :is-in-preview="infoMode === 'browsing'" 
+            @deselect="()=> infoMode='browsing'" :user="user">
+          </wiz-kid-info>
           
-          <div>
+          <!-- <div>
             <img class="face" :src="'images/faces/' + selected.face" alt="selected.name">
             <h2>{{selected.name}}</h2>
             <h3>{{selected.rating}}</h3>
           </div>
+          
+          <div v-if="infoMode === 'selected' && user" class="buttons">
+            <a class="button yellow" @click="stopSelectionLock">Cancel</a>
+            <a class="button blue" @click="startGame(selected.name)">Play</a>
+            <p>{{selected.style}}</p> 
+          </div>
+
+          <p v-if="infoMode === 'browsing' || infoMode === 'selected'">
+            {{selected.summary}}
+          </p>
+
+          <p v-if="infoMode === 'browsing'">{{selected.bio}}</p> -->
 
           <span v-if="infoMode === 'error'" class="error-message" >
             <div  class="icon knight dead">♞</div>
@@ -66,12 +83,6 @@
             <p>Please contact your Wizard Admin</p>
             <a class="button yellow" @click="clearError">Ok</a>
           </span>
-          
-          <p v-if="infoMode === 'browsing' || infoMode === 'selected'">
-            {{selected.summary}}
-          </p>
-          
-          <p v-if="infoMode === 'browsing'">{{selected.bio}}</p>
           
           <div v-if="infoMode === 'selected' && user === undefined" class="buttons">
             <a :href="signInLink" class="button blue">Sign in to Play</a>
@@ -83,14 +94,7 @@
             <div>Connecting to Lichess...</div>
             <div  class="icon knight spin">♞</div>
           </span>
-
-          <div v-if="infoMode === 'selected' && user" class="buttons">
-            <a class="button yellow" @click="stopSelectionLock">Cancel</a>
-            <a class="button blue" @click="startGame(selected.name)">Play</a>
-            <p>{{selected.style}}</p> 
-          </div>
-         
-        
+       
           <span v-if="infoMode === 'starting'" class="start-message" >
             <div>Starting game...</div>
             <div  class="icon knight spin">♞</div>
@@ -130,13 +134,13 @@
       </div>
       
 
-      <!-- <wiz-games v-if="infoMode === 'selected'" :cmp-name="this.selected.name">
-      </wiz-games> -->
-      <wiz-games :cmp-name="this.selected.name">
+      <wiz-games v-if="infoMode === 'selected' && user" :cmp-name="this.selected.name">
       </wiz-games>
+      <!-- <wiz-games :cmp-name="this.selected.name">
+      </wiz-games> -->
 
 
-      <div class="groups noshow" :class="{noshow: infoMode !== 'browsing'}">
+      <div class="groups" :class="{noshow: infoMode !== 'browsing' && user}">
         <section v-for="group in groups" class="group"> 
           <a :name="group.title.replace(' ','')"></a>
           <h1>{{group.title}}</h1> 
@@ -155,7 +159,7 @@
                   :selected-name="selected.name"
                   :selection-is-locked="selectionIsLocked"
                   @mouseover="showCmp(cmp)" 
-                  @click="toggleSelectionLock(cmp)">
+                  @click="select(cmp)">
                 </wiz-face>
               </div>
            

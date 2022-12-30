@@ -4,6 +4,7 @@ import WizFace from './WizFace.js'
 import WizKing from './WizKing.js'
 import WizBoard from './WizBoard.js'
 import WizGames from './WizGames.js'
+import WizKidInfo from './WizKidInfo.js'
 import { cssLoader } from './pageTools.js'
 window.games = games
 
@@ -149,6 +150,7 @@ async function startApp(user) {
         selected: cmpsObj.Orin,
         navIsOn: false,
         infoMode: 'browsing',
+        wizKidMode: 'preview',
         scoreMode: localStorage.scoreMode || 'ladder',
         currentGame: 'RklLOoMREuDI',
         currentOpponent: '',
@@ -213,6 +215,10 @@ async function startApp(user) {
       return data
     },
     methods : {
+      select(cmp) {
+        this.selected = cmpsObj[cmp.name]
+        this.infoMode = 'selected'
+      },
       switchScoreMode(mode) {
         this.scoreMode = mode
         localStorage.scoreMode = mode
@@ -393,6 +399,7 @@ async function startApp(user) {
   app1.component('WizKing', WizKing)
   app1.component('WizBoard', WizBoard)
   app1.component('WizGames', WizGames)
+  app1.component('WizKidInfo', WizKidInfo)
   const app = app1.mount('#app')
 
 

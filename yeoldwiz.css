@@ -204,6 +204,7 @@ nav a {
     border: .5rem solid rgb(59, 31, 17);
 }
 
+
 .info h2, h3 {
   margin: 0;
 }
@@ -276,6 +277,10 @@ nav a {
   cursor: pointer;
 }
 
+.cmp .face.selected {
+  border-color: goldenrod;
+}
+
 .face {
   width: 72px;
   height: 93px;
@@ -286,6 +291,16 @@ nav a {
   /* filter: brightness(1.1) contrast(1.5); */
   /* image-rendering: smooth; */
   /* image-rendering: pixelated; */
+}
+
+.info .buttons {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+.info .about {
+  
 }
 
 button.selected {

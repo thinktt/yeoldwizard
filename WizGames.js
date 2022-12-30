@@ -59,10 +59,10 @@ const template = html`
         </div>
       </div>
     </template>
-    <template v-if="filteredIds.length === 0"> 
-      <p class="filter-message">No games found for selected filters. Click the filter icons above.</p>
-    </template>
-
+    <p v-if="games.length === 0" class="filter-message"> 
+      It looks like you haven't played any games with {{cmpName}}. Start a game and when you finish it will appear here. 
+    </p>
+    <p v-else-if="filteredIds.length === 0" class="filter-message">No games found for selected filters. Click the filter icons above.</p>
   </div>
   <div v-else class="games loading-message">
     <h3> Loading your games with {{cmpName}}...</h3>
