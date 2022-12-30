@@ -59,25 +59,7 @@
             @start-game="() => startGame(selected.name)"
             @show-games="showGames">
           </wiz-kid-info>
-          
-          <!-- <div>
-            <img class="face" :src="'images/faces/' + selected.face" alt="selected.name">
-            <h2>{{selected.name}}</h2>
-            <h3>{{selected.rating}}</h3>
-          </div>
-          
-          <div v-if="infoMode === 'selected' && user" class="buttons">
-            <a class="button yellow" @click="stopSelectionLock">Cancel</a>
-            <a class="button blue" @click="startGame(selected.name)">Play</a>
-            <p>{{selected.style}}</p> 
-          </div>
-
-          <p v-if="infoMode === 'browsing' || infoMode === 'selected'">
-            {{selected.summary}}
-          </p>
-
-          <p v-if="infoMode === 'browsing'">{{selected.bio}}</p> -->
-
+      
           <span v-if="infoMode === 'error'" class="error-message" >
             <div  class="icon knight dead">♞</div>
             <h3>Error</h3>
@@ -105,7 +87,6 @@
           <span v-if="infoMode === 'started'" class="start-message" >
             <div>Your game has started!</div>
             <p>Click to GO TO GAME or open the Lichess app on your phone to play.</p>
-            <!-- <a class="button yellow" @click="stopSelectionLock">Done</a> -->
             <a @click="openGame" class="button blue">
               Go to Game
             </a>
@@ -118,10 +99,7 @@
               Click OK to find a new opponent
             </p>
             <a class="button yellow" @click="stopSelectionLock">OK</a>
-            <!-- <a @click="openGame" class="button blue">
-              Go to Game
-            </a> -->
-          </span>
+           </span>
                     
         </section>
         <nav v-if="navIsOn">

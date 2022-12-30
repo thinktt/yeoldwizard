@@ -235,10 +235,13 @@ nav a {
   margin-left: 25rem;
   margin-bottom: 25rem;
   display: none;
+  /* visibility: hidden;
+  position: absolute; */
 }
 
 .groups.focus {
   display: block;
+  /* visibility:visible; */
 }
 
 .group {
@@ -564,12 +567,13 @@ a.phone-nav {
   .groups {
     margin-left: 0rem;
     margin-right: 0rem;
-    display: none;
+    visibility: hidden;
+    /* display: none; */
   }
 
   .groups.focus {
-    /* visibility: visible; */
-    display: block;
+    visibility: visible;
+    /* display: block; */
   }
 
   .games {
