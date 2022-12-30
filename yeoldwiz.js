@@ -145,6 +145,7 @@ async function startApp(user) {
       const data = {
         user: user,
         isHidden: true,
+        groupsAreHidden: false,
         games: {},
         signInFailed: false,
         selected: cmpsObj.Orin,
@@ -221,7 +222,7 @@ async function startApp(user) {
         this.wizKidMode = 'control'
         this.saveScrollPosition()
       },
-      deselect() {
+      async deselect() {
         this.infoMode='browsing'
         this.wizKidMode = 'preview'
         this.scrollReturn()
@@ -286,8 +287,11 @@ async function startApp(user) {
       },
       async scrollReturn() {
         // this is a weird hack to get the scroll to return after the dom
-        // re-renders the page, consequences on slow device? 
+        // re-renders the page, hide teh group and show it to avoid weird
+        // ghost effects, hacky but works for now
+        this.groupsAreHidden = true
         await new Promise(r => setTimeout(r, 0))
+        // this.groupsAreHidden = false
         document.documentElement.scrollTop = document.body.scrollTop = 
           parseInt(localStorage.scrollPosition) || 0
       },

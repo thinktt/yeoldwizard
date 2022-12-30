@@ -119,7 +119,7 @@
         @go-back="infoMode = 'selected'">
       </wiz-games>
 
-      <div class="groups" :class="{focus: infoMode == 'browsing'}">
+      <div class="groups" :class="{focus: infoMode == 'browsing', hidden: groupsAreHidden }">
         <section v-for="group in groups" class="group"> 
           <a :name="group.title.replace(' ','')"></a>
           <h1>{{group.title}}</h1> 
