@@ -20,13 +20,11 @@ const template =  html`
     
     <template v-else-if="mode === 'control' && user">
       <h3 v-if="view === 'top'">Wiz Rating {{cmp.rating}}</h3>
-      <!-- v-if="infoMode === 'selected' && user" -->
       <div v-if="view === 'top'" class="buttons">
-        <!-- <a class="button yellow" @click="stopSelectionLock">Back</a> -->
         <a class="button blue" @click="startGame(cmp.name)">Play</a>
         <a class="button yellow" @click="show('bio')">Bio</a>
         <a class="button yellow" @click="show('about')">Chess Style</a>
-        <!-- <a class="button yellow">Your Stats</a> -->
+        <a class="button yellow phone-nav" @click="showGames()">See Games</a>
         <a @click="goBack" class="button yellow">Back</a>
       </div>
       
@@ -81,6 +79,9 @@ export default {
     goBack() {
       this.$emit('deselect')  
     },
+    showGames() {
+      this.$emit('showGames')
+    }
   },
   template,
 }

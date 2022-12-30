@@ -234,6 +234,11 @@ nav a {
   margin-top: 3rem;
   margin-left: 25rem;
   margin-bottom: 25rem;
+  display: none;
+}
+
+.groups.focus {
+  display: block;
 }
 
 .group {
@@ -361,6 +366,10 @@ a.button.blue.test {
 a.button.grayed {
   color: gray;
   border-color: gray;
+}
+
+a.phone-nav {
+  display: none;
 }
 
 .cmp-container  {
@@ -547,13 +556,20 @@ a.button.grayed {
     margin-right: 7rem;
     margin-left: 4rem;
   }
+
+  a.phone-nav {
+    display: inline-block;
+  }
+
   .groups {
     margin-left: 0rem;
     margin-right: 0rem;
+    display: none;
   }
 
   .groups.focus {
-    visibility: visible;
+    /* visibility: visible; */
+    display: block;
   }
 
   .games {
@@ -563,6 +579,10 @@ a.button.grayed {
     display: flex;
     flex-direction: column;
     display: none;
+  }
+
+  .games.focus {
+    display: block;
   }
 
 

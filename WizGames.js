@@ -4,6 +4,7 @@ import games from './games.js'
 
 const template = html`
   <div v-if="games" class="games">
+    <a class="button yellow phone-nav" @click="goBack">Back</a>
     <h1>Games with {{cmpName}}</h1>
     <div class="game-filter">
       <span class="selector-box">
@@ -122,11 +123,13 @@ export default {
       this.filteredIds = filteredIds
     },
     select(selection) {
-      console.log(selection)
       const filterToToggle = selection + 'IsSelected'
       this[filterToToggle] = !this[filterToToggle] 
       this.doFilter()
-    }
+    },
+    goBack() {
+      this.$emit('goBack')
+    },
   },
   template,
 }

@@ -51,12 +51,13 @@
     </header>
 
     <main>
-      <div class="nav-and-info" :class="{focus: infoMode !== 'browsing' || navIsOn}">
+      <div class="nav-and-info" :class="{focus: infoMode == 'selected' || navIsOn}">
         <section v-if="!navIsOn" class="info">
 
           <wiz-kid-info :cmp="selected" :mode="wizKidMode" 
             @deselect="deselect" :user="user" 
-            @start-game="() => startGame(selected.name)">
+            @start-game="() => startGame(selected.name)"
+            @show-games="showGames">
           </wiz-kid-info>
           
           <!-- <div>
@@ -135,13 +136,12 @@
       </div>
       
 
-      <wiz-games v-if="infoMode === 'selected' && user" :cmp-name="this.selected.name">
+      <wiz-games v-if="(infoMode === 'selected' || infoMode === 'games') && user" 
+        :cmp-name="this.selected.name" :class="{focus: infoMode == 'games'}" 
+        @go-back="infoMode = 'selected'">
       </wiz-games>
-      <!-- <wiz-games :cmp-name="this.selected.name">
-      </wiz-games> -->
 
-
-      <div class="groups" :class="{noshow: infoMode !== 'browsing' && user}">
+      <div class="groups" :class="{focus: infoMode == 'browsing'}">
         <section v-for="group in groups" class="group"> 
           <a :name="group.title.replace(' ','')"></a>
           <h1>{{group.title}}</h1> 

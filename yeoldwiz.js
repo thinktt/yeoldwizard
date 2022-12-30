@@ -224,6 +224,10 @@ async function startApp(user) {
         this.infoMode='browsing'
         this.wizKidMode = 'preview'
       },
+      showGames() {
+        console.log('show games')
+        this.infoMode = 'games'
+      },
       switchScoreMode(mode) {
         this.scoreMode = mode
         localStorage.scoreMode = mode
