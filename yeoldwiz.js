@@ -280,7 +280,7 @@ async function startApp(user) {
         parseInt(localStorage.scrollPosition) || 0
     },
     lockBody() {
-      if  (isInPhoneMode()) document.body.style.position = 'fixed'
+      // if (isInPhoneMode()) document.body.style.position = 'fixed'
     },
     unlockBody() {
       document.body.style.position = ''
