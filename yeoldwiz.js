@@ -218,6 +218,11 @@ async function startApp(user) {
       select(cmp) {
         this.selected = cmpsObj[cmp.name]
         this.infoMode = 'selected'
+        this.wizKidMode = 'control'
+      },
+      deselect() {
+        this.infoMode='browsing'
+        this.wizKidMode = 'preview'
       },
       switchScoreMode(mode) {
         this.scoreMode = mode
@@ -262,6 +267,7 @@ async function startApp(user) {
       // this.lockBody()
     },
     stopSelectionLock(){
+      this.wizKidMode = 'preview'
       this.infoMode = 'browsing'
       this.selectionIsLocked = false
       this.unlockBody()
@@ -307,6 +313,7 @@ async function startApp(user) {
     },
     async startGame(opponent) {
       // be sure to send our alias to lichess to stay consistent
+      this.wizKidMode = 'receiver'
       opponent = getAlias(opponent)
       
       const colorToPlay = games.getColorToPlay(opponent)

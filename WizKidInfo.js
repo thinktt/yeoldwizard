@@ -6,17 +6,19 @@ const template =  html`
     <div>
       <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name">
       <h2>{{cmp.name}}</h2>
-      
     </div>
 
-
-    <div v-if="isInPreview">
+    <div v-if="mode === 'preview'">
       <h3>{{cmp.rating}}</h3>
       <p>{{cmp.summary}} </p>
       <p>{{cmp.bio}}</p>
     </div>
+
+    <div v-else-if="mode === 'receiver'">
+      <h3>{{cmp.rating}}</h3>
+    </div>
     
-    <template v-else-if="user">
+    <template v-else-if="mode === 'control' && user">
       <h3 v-if="view === 'top'">Wiz Rating {{cmp.rating}}</h3>
       <!-- v-if="infoMode === 'selected' && user" -->
       <div v-if="view === 'top'" class="buttons">
@@ -56,7 +58,7 @@ export default {
   },
   props: [
     'cmp',
-    'isInPreview',
+    'mode',
     'user',
     // 'selectedName',
     // 'selectionIsLocked',
@@ -71,6 +73,7 @@ export default {
     },
     startGame(cmpName) {
       console.log('Start game with ' + cmpName)
+      this.$emit('startGame')
     },
     show(view) {
       this.view = view
