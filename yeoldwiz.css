@@ -235,13 +235,10 @@ nav a {
   margin-left: 25rem;
   margin-bottom: 25rem;
   display: none;
-  /* visibility: hidden;
-  position: absolute; */
 }
 
 .groups.focus {
   display: block;
-  /* visibility:visible; */
 }
 
 .group {

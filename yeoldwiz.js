@@ -225,14 +225,15 @@ async function startApp(user) {
       async deselect() {
         this.infoMode='browsing'
         this.wizKidMode = 'preview'
-        
+
         // this is a weird hack to get the scroll to return after the dom
         // re-renders the page, hide teh group and show it to avoid weird
         // ghost effects, hacky but works for now
-        this.groupsAreHidden = true
-        await new Promise(r => setTimeout(r, 50))
+        await new Promise(r => setTimeout(r, 0))
         this.scrollReturn()
-        this.groupsAreHidden = false
+        
+        // this.groupsAreHidden = true
+        // this.groupsAreHidden = false
       },
       showGames() {
         console.log('show games')
