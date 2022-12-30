@@ -225,7 +225,14 @@ async function startApp(user) {
       async deselect() {
         this.infoMode='browsing'
         this.wizKidMode = 'preview'
+        
+        // this is a weird hack to get the scroll to return after the dom
+        // re-renders the page, hide teh group and show it to avoid weird
+        // ghost effects, hacky but works for now
+        this.groupsAreHidden = true
+        await new Promise(r => setTimeout(r, 50))
         this.scrollReturn()
+        this.groupsAreHidden = false
       },
       showGames() {
         console.log('show games')
@@ -285,13 +292,7 @@ async function startApp(user) {
       saveScrollPosition() {
         localStorage.scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
       },
-      async scrollReturn() {
-        // this is a weird hack to get the scroll to return after the dom
-        // re-renders the page, hide teh group and show it to avoid weird
-        // ghost effects, hacky but works for now
-        this.groupsAreHidden = true
-        await new Promise(r => setTimeout(r, 0))
-        // this.groupsAreHidden = false
+      scrollReturn() {
         document.documentElement.scrollTop = document.body.scrollTop = 
           parseInt(localStorage.scrollPosition) || 0
       },
