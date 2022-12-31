@@ -37,7 +37,7 @@ window.addEventListener('popstate', (event) => {
 
 function route(view, cmpName) {
   if (!view) {
-    window.history.pushState({}, '', '/')
+    window.location.hash = '#'
     return
   }
 
