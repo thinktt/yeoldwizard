@@ -14,25 +14,44 @@ window.addEventListener('popstate', (event) => {
   // console.log(`location: ${document.location}, state: ${JSON.stringify(event.state)}`);
   const hashRoute = window.location.hash
   const routePieces = hashRoute.slice(1).split('/')
-  const cmp = cmpsObj[routePieces[0]]
-  const view = routePieces[1]
+  const view = routePieces[0]
+  const cmp = cmpsObj[routePieces[1]]
 
-  console.log(hashRoute)
+  console.log('hash route is:', hashRoute)
   
-  // if (!hashRoute) {
-  //   console.log('no route')
-  //   app.deselect()
-  //   return
-  // }
+  if (!hashRoute) {
+    console.log('no route')
+    app.deselect()
+    return
+  }
 
-  // if (cmp) {
-  //   console.log(view, cmp.name)
-  //   goToView(view, cmp) 
-  //   return
-  // }
-  // console.log(`Could not parse route ${hashRoute}`)
+  if (cmp) {
+    console.log(view, cmp.name)
+    goToView(view, cmp) 
+    return
+  }
+  
+  console.log(`Could not parse route ${hashRoute}`)
   
 })
+
+function route(view, cmpName) {
+  if (!view) {
+    window.history.pushState({}, '', '/')
+    return
+  }
+
+  if (view === 'back') {
+    back()
+    return 
+  }
+
+  window.location.hash = `#${view}/${cmpName}`
+}
+
+function back() {
+  window.history.back()
+}
 
 function goToView(view, cmp) {
   switch(view) { 
@@ -50,10 +69,7 @@ function goToView(view, cmp) {
 }
 
 
-
-
-
-
 export default {
   loadApp,
+  route, 
 }

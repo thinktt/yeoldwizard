@@ -5,7 +5,7 @@ import WizKing from './WizKing.js'
 import WizBoard from './WizBoard.js'
 import WizGames from './WizGames.js'
 import WizKidInfo from './WizKidInfo.js'
-import wizHistory from './history.js'
+import router from './router.js'
 import { cssLoader } from './pageTools.js'
 window.games = games
 
@@ -438,8 +438,11 @@ async function startApp(user) {
   app1.component('WizGames', WizGames)
   app1.component('WizKidInfo', WizKidInfo)
   const app = app1.mount('#app')
+  router.loadApp(app, cmpsObj)
+  app.route = router.route
+  // clear any previous routes, aint nobody got time for that
+  app.route()
   window.app = app
-  wizHistory.loadApp(app, cmpsObj)
 
   for (const group of app.groups) {
     group.cmps = getRatingGroup(cmps, group.high, group.low)

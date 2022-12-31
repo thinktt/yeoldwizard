@@ -55,9 +55,9 @@
         <section v-if="!navIsOn" class="info">
 
           <wiz-kid-info :cmp="selected" :mode="wizKidMode" 
-            @deselect="deselect" :user="user" 
+            @deselect="route('back')" :user="user" 
             @start-game="() => startGame(selected.name)"
-            @show-games="showGames">
+            @show-games="route('games', selected.name)">
           </wiz-kid-info>
       
           <span v-if="infoMode === 'error'" class="error-message" >
@@ -116,7 +116,7 @@
 
       <wiz-games v-if="(infoMode === 'selected' || infoMode === 'games') && user" 
         :cmp-name="this.selected.name" :class="{focus: infoMode == 'games'}" 
-        @go-back="infoMode = 'selected'">
+        @go-back="route('back')">
       </wiz-games>
 
       <div class="groups" :class="{focus: infoMode == 'browsing', hidden: groupsAreHidden }">
@@ -138,7 +138,7 @@
                   :selected-name="selected.name"
                   :selection-is-locked="selectionIsLocked"
                   @mouseover="showCmp(cmp)" 
-                  @click="select(cmp)">
+                  @click="route('selected', cmp.name)">
                 </wiz-face>
               </div>
            
