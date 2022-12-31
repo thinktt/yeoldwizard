@@ -34,13 +34,19 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
       window.location = `http://${devHost}` + query
 }
 
+// more dev env shenanigins 
+let dummyCode
+if (window.location.host.includes('192.168')) {
+  console.log('Using dummy account for local dev address')
+  dummyCode = 'EzUA-uZDIDR-E6-8XZgnvVpr0KvYQwWAjiVUk3E7ZoY'
+  window.localStorage.user = 'dummyjoe'
+}
+
 doAccountFlow()
 
 async function doAccountFlow() {
   localStorage.codeVerifier = localStorage.codeVerifier || genRandomString()
-  codeChallenge = await genChallengeCode(localStorage.codeVerifier)
-  // codeChallenge = 'EzUA-uZDIDR-E6-8XZgnvVpr0KvYQwWAjiVUk3E7ZoY'
-  // console.log(codeChallenge)
+  codeChallenge = dummyCode || await genChallengeCode(localStorage.codeVerifier)
 
   // User is already signed in and stored in localstorage
   if (window.localStorage.user) {
@@ -148,7 +154,7 @@ async function startApp(user) {
         groupsAreHidden: false,
         games: {},
         signInFailed: false,
-        selected: cmpsObj.Orin,
+        selected: cmpsObj.Wizard,
         navIsOn: false,
         infoMode: 'browsing',
         wizKidMode: 'preview',
