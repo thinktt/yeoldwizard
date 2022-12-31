@@ -306,10 +306,6 @@ nav a {
   user-select: none;
 }
 
-.info p {
-  font-size: 1.25em;
-}
-
 button.selected {
   border: .375rem solid goldenrod;
 }
@@ -557,6 +553,10 @@ a.phone-nav {
   .info {
     margin-right: 7rem;
     margin-left: 4rem;
+  }
+
+  .info p {
+    font-size: 1.25em;
   }
 
   a.phone-nav {
