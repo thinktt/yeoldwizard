@@ -306,8 +306,8 @@ nav a {
   user-select: none;
 }
 
-.info .about {
-
+.info p {
+  font-size: 1.25em;
 }
 
 button.selected {
