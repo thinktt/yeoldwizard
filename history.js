@@ -16,20 +16,21 @@ window.addEventListener('popstate', (event) => {
   const routePieces = hashRoute.slice(1).split('/')
   const cmp = cmpsObj[routePieces[0]]
   const view = routePieces[1]
+
+  console.log(hashRoute)
   
-  if (!hashRoute) {
-    console.log('no route')
-    app.deselect()
-    return
-  }
+  // if (!hashRoute) {
+  //   console.log('no route')
+  //   app.deselect()
+  //   return
+  // }
 
-  if (cmp) {
-    console.log(view, cmp.name)
-    goToView(view, cmp) 
-    return
-  }
-
-  console.log(`Could not parse route ${hashRoute}`)
+  // if (cmp) {
+  //   console.log(view, cmp.name)
+  //   goToView(view, cmp) 
+  //   return
+  // }
+  // console.log(`Could not parse route ${hashRoute}`)
   
 })
 

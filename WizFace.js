@@ -2,9 +2,8 @@ import {html, css} from './pageTools.js'
 
 
 const template =  html`
-  <div class="cmp">
-    <a :name="cmp.name"></a>
-    <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name"
+  <div class="cmp" :name="cmp.name">
+    <img class="face" :src="'images/faces/' + cmp.face" :alt="cmp.name"
 
       :class="{
         selected: selectedName === cmp.name,

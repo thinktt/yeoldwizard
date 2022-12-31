@@ -57,7 +57,7 @@ async function doAccountFlow() {
         
     await app.loadUserGames()
     if (localStorage.lastCmp) {
-      const selector = "a[name='" + localStorage.lastCmp + "']"
+      const selector = 'div[name='  + localStorage.lastCmp + ']'
       document.querySelector(selector).scrollIntoView({block: 'center'})
       await new Promise(r => setTimeout(r, 10))
       app.groupsAreHidden = false
