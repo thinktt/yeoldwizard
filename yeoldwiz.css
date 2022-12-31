@@ -258,7 +258,7 @@ nav a {
 .cmps {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap-reverse;
+  flex-wrap: wrap;
   /* align-content: row-reverse; */
   justify-content: center;
 }

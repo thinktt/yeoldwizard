@@ -186,28 +186,9 @@ async function startApp(user) {
             cmps: [],
           }, 
           {
-            title: 'The Grandmasters',
-            high: 2701,
-            low: 2700,
-            cmps: [],
-            isGms: true,
-          }, 
-          {
-            title: 'The Masters',
-            high: 2650,
-            low: 2000,
-            cmps: [],
-          },
-          {
-            title: 'Club Players',
-            high: 2000,
-            low: 1500,
-            cmps: [],
-          },
-          {
-            title: 'Casual Players',
-            high: 1500,
-            low: 1000,
+            title: 'Noobs',
+            high: 500,
+            low: 0,
             cmps: [],
           },
           {
@@ -217,11 +198,30 @@ async function startApp(user) {
             cmps: [],
           },
           {
-            title: 'Noobs',
-            high: 500,
-            low: 0,
+            title: 'Casual Players',
+            high: 1500,
+            low: 1000,
             cmps: [],
           },
+          {
+            title: 'Club Players',
+            high: 2000,
+            low: 1500,
+            cmps: [],
+          },
+          {
+            title: 'The Masters',
+            high: 2650,
+            low: 2000,
+            cmps: [],
+          },
+          {
+            title: 'The Grandmasters',
+            high: 2701,
+            low: 2700,
+            cmps: [],
+            isGms: true,
+          }, 
         ]
       }
       return data
