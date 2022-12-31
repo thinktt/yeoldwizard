@@ -5,6 +5,7 @@ import WizKing from './WizKing.js'
 import WizBoard from './WizBoard.js'
 import WizGames from './WizGames.js'
 import WizKidInfo from './WizKidInfo.js'
+import wizHistory from './history.js'
 import { cssLoader } from './pageTools.js'
 window.games = games
 
@@ -54,9 +55,12 @@ async function doAccountFlow() {
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
         
-    app.loadUserGames()
-    if (!app.slectionIsLocked && localStorage.lastCmp) {
-      window.location.hash = `#${localStorage.lastCmp}` 
+    await app.loadUserGames()
+    if (localStorage.lastCmp) {
+      const selector = "a[name='" + localStorage.lastCmp + "']"
+      document.querySelector(selector).scrollIntoView({block: 'center'})
+      await new Promise(r => setTimeout(r, 10))
+      app.groupsAreHidden = false
     }
     return
   }
@@ -113,7 +117,8 @@ async function doAccountFlow() {
       app.user = account.username
 
       // now that we have an account we can connnect to users games
-      app.loadUserGames()
+      await app.loadUserGames()
+      app.groupsAreHidden = false
 
     } catch (err) {
       app.signInFailed = true
@@ -151,7 +156,7 @@ async function startApp(user) {
       const data = {
         user: user,
         isHidden: true,
-        groupsAreHidden: false,
+        groupsAreHidden: true,
         games: {},
         signInFailed: false,
         selected: cmpsObj.Wizard,
@@ -227,10 +232,12 @@ async function startApp(user) {
         this.infoMode = 'selected'
         this.wizKidMode = 'control'
         this.saveScrollPosition()
+        localStorage.lastCmp = cmp.name
       },
-      async deselect() {
+      async deselect(cmp) {
         this.infoMode='browsing'
         this.wizKidMode = 'preview'
+        // if(cmp) this.selected = cmp
 
         // this is a weird hack to get the scroll to return after the dom
         // re-renders the page, hide teh group and show it to avoid weird
@@ -242,7 +249,6 @@ async function startApp(user) {
         // this.groupsAreHidden = false
       },
       showGames() {
-        console.log('show games')
         this.infoMode = 'games'
       },
       switchScoreMode(mode) {
@@ -432,10 +438,8 @@ async function startApp(user) {
   app1.component('WizGames', WizGames)
   app1.component('WizKidInfo', WizKidInfo)
   const app = app1.mount('#app')
-
-
-
   window.app = app
+  wizHistory.loadApp(app, cmpsObj)
 
   for (const group of app.groups) {
     group.cmps = getRatingGroup(cmps, group.high, group.low)
