@@ -26,40 +26,42 @@ const template = html`
       <span v-if="lostCount">{{lostCount}} lost</span>
     </div>  -->
     <p v-if="filteredIds.length">{{filteredIds.length}} games</p>
-    <template v-for="game in games" :key="game.id">
-      <div class="board-and-nav-box" :class="{ noshow: filteredIds.includes(game.id) === false }"> 
-        <a :href="game.link" target="_blank" rel="noopener noreferrer">
-          <wiz-board :nav-is-on="false" :id="game.id" :moves="game.moves" :color-side="game.playedAs">
-          </wiz-board> 
-        </a>
-        <div class="game-info-box">
-          <div v-if="game.conclusion ==='draw'">
-            <img class="king" src="images/king-draw.png">
-          </div>
-          <div v-if="game.conclusion === 'won'">
-            <img class="king" src="images/king-won.png">
-          </div>
-          <div v-if="game.conclusion === 'lost'">
-            <img class="king" src="images/king-lost.png">
-          </div>
-          <p>You played as {{game.playedAs}}</p>
-          <p v-if="game.status === 'resign'">
+    <div class="game-list">
+      <template v-for="game in games" :key="game.id">
+        <div class="board-and-nav-box" :class="{ noshow: filteredIds.includes(game.id) === false }"> 
+          <a :href="game.link" target="_blank" rel="noopener noreferrer">
+            <wiz-board :nav-is-on="false" :id="game.id" :moves="game.moves" :color-side="game.playedAs">
+            </wiz-board> 
+          </a>
+          <div class="game-info-box">
+            <div v-if="game.conclusion ==='draw'">
+              <img class="king" src="images/king-draw.png">
+            </div>
+            <div v-if="game.conclusion === 'won'">
+              <img class="king" src="images/king-won.png">
+            </div>
+            <div v-if="game.conclusion === 'lost'">
+              <img class="king" src="images/king-lost.png">
+            </div>
+            <p>You played as {{game.playedAs}}</p>
+            <p v-if="game.status === 'resign'">
+                You
+                <span>{{game.conclusion}}</span> 
+                by resignation
+            </p>
+            <p v-else-if="game.status === 'draw'">
+                Game was a draw
+            </p>
+            <p v-else>
               You
-              <span>{{game.conclusion}}</span> 
-              by resignation
-          </p>
-          <p v-else-if="game.status === 'draw'">
-              Game was a draw
-          </p>
-          <p v-else>
-            You
-            <span> {{game.conclusion}}</span> 
-            by {{game.status}}
-          </p>
-          <a :href="game.link" target="_blank" rel="noopener noreferrer">View on Lichess</a>
+              <span> {{game.conclusion}}</span> 
+              by {{game.status}}
+            </p>
+            <a :href="game.link" target="_blank" rel="noopener noreferrer">View on Lichess</a>
+          </div>
         </div>
-      </div>
-    </template>
+      </template>
+    </div>
     <p v-if="games.length === 0" class="filter-message"> 
       It looks like you haven't played any games with {{cmpName}}. Start a game and when you finish it will appear here. 
     </p>

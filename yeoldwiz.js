@@ -404,9 +404,10 @@ async function startApp(user) {
         this.games = await games.updateGameList(window.localStorage.user)
         const currentGame =  await games.getCurrentLatestGame() || {}
         if (currentGame.id) {
-          this.currentGame = currentGame.id
-          this.toggleSelectionLock({name: currentGame.opponent })
+          this.route('selected', currentGame.opponent)
           this.infoMode = "started"
+          this.wizKidMode = 'receiver'
+          this.currentGame = currentGame.id
           this.connectToStream(currentGame.id)
         } 
       },

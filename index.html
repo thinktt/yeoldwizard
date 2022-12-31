@@ -51,7 +51,8 @@
     </header>
 
     <main>
-      <div class="nav-and-info" :class="{focus: infoMode == 'selected' || navIsOn}">
+      <div class="nav-and-info" 
+        :class="{focus: infoMode == 'selected' || infoMode.includes('start') || infoMode == 'ended' || navIsOn}">
         <section v-if="!navIsOn" class="info">
 
           <wiz-kid-info :cmp="selected" :mode="wizKidMode" 
@@ -98,7 +99,7 @@
               You have completed your game with {{selected.name}}!
               Click OK to find a new opponent
             </p>
-            <a class="button yellow" @click="stopSelectionLock">OK</a>
+            <a class="button yellow" @click="route('back')">OK</a>
            </span>
                     
         </section>

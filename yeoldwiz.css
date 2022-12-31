@@ -580,6 +580,7 @@ a.phone-nav {
     margin-bottom: 0;
     display: flex;
     flex-direction: column;
+    width: 100%;
     display: none;
   }
 
