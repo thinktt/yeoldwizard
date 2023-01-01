@@ -266,8 +266,8 @@ async function startApp(user) {
         // this is a weird hack to get the scroll to return after the dom
         // re-renders the page, hide teh group and show it to avoid weird
         // ghost effects, hacky but works for now
-        await new Promise(r => setTimeout(r, 0))
-        this.scrollReturn()
+        // await new Promise(r => setTimeout(r, 0))
+        // this.scrollReturn()
         // this.groupsAreHidden = true
         // this.groupsAreHidden = false
       },
@@ -336,6 +336,7 @@ async function startApp(user) {
         localStorage.scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
       },
       scrollReturn() {
+        console.log('scroll return')
         document.documentElement.scrollTop = document.body.scrollTop = 
           parseInt(localStorage.scrollPosition) || 0
       },
