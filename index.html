@@ -72,7 +72,7 @@
           
           <div v-if="infoMode === 'selected' && user === undefined" class="buttons">
             <a :href="signInLink" class="button blue">Sign in to Play</a>
-            <a class="button yellow" @click="stopSelectionLock">Cancel</a>
+            <a class="button yellow" @click="route('back')">Back</a>
             <p>{{selected.style}}</p> 
           </div>
           

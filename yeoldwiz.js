@@ -130,7 +130,8 @@ async function doAccountFlow() {
   }
  
   // startApp with no user starts app in a singed out state
-  startApp()
+  const app = await startApp()
+  app.groupsAreHidden = false
 }
 
 async function startApp(user) {
