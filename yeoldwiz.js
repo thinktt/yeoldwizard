@@ -187,38 +187,62 @@ async function startApp(user) {
           }, 
           {
             title: 'Noobs',
-            high: 500,
             low: 0,
+            high: 500,
             cmps: [],
           },
           {
             title: 'Beginners',
-            high: 1000,
             low: 500,
+            high: 1000,
             cmps: [],
           },
           {
             title: 'Casual Players',
-            high: 1500,
             low: 1000,
+            high: 1200,
+            cmps: [],
+          },
+          {
+            title: 'Park Players',
+            low: 1200,
+            high: 1350,
             cmps: [],
           },
           {
             title: 'Club Players',
+            low: 1350,
+            high: 1500,
+            cmps: [],
+          },
+          {
+            title: 'Tournament Players',
+            low: 1600,
+            high: 1800,
+            cmps: [],
+          },
+          {
+            title: 'Advanced Players',
+            low: 1800,
             high: 2000,
-            low: 1500,
+            cmps: [],
+          },
+          {
+            title: 'The Experts',
+            low: 2000,
+            high: 2200,
             cmps: [],
           },
           {
             title: 'The Masters',
-            high: 2650,
-            low: 2000,
+            low: 2200,
+            high: 2700,
             cmps: [],
           },
           {
-            title: 'The Grandmasters',
-            high: 2701,
+            title: 'Classic Grandmasters',
             low: 2700,
+            high: 2701,
             cmps: [],
             isGms: true,
           }, 
@@ -231,25 +255,30 @@ async function startApp(user) {
         this.selected = cmpsObj[cmp.name]
         this.infoMode = 'selected'
         this.wizKidMode = 'control'
+        this.navIsOn = false
         this.saveScrollPosition()
         localStorage.lastCmp = cmp.name
       },
-      async deselect(cmp) {
+      async deselect() {
         this.infoMode='browsing'
         this.wizKidMode = 'preview'
-        // if(cmp) this.selected = cmp
-
+        this.navIsOn = false
         // this is a weird hack to get the scroll to return after the dom
         // re-renders the page, hide teh group and show it to avoid weird
         // ghost effects, hacky but works for now
         await new Promise(r => setTimeout(r, 0))
         this.scrollReturn()
-        
         // this.groupsAreHidden = true
         // this.groupsAreHidden = false
       },
+      goToGroup(groupTitle ) {
+        const selector = 'section[name="'  + groupTitle + '"]'
+        document.querySelector(selector).scrollIntoView({block: 'start'})
+        // this.route('')
+      },
       showGames() {
         this.infoMode = 'games'
+        this.navIsOn = false
       },
       switchScoreMode(mode) {
         this.scoreMode = mode
@@ -257,6 +286,7 @@ async function startApp(user) {
       },
       switchNav(event) {
         this.navIsOn = true
+        this.infoMode = 'browsing'
       },
       toggleNav() {
         if (isInPhoneMode()) {

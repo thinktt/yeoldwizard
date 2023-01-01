@@ -175,7 +175,7 @@ main {
 } 
 
 nav {
-  margin-top: 5rem;
+  margin-top: 1rem;
   text-align: center;
 }
 
@@ -184,10 +184,11 @@ nav a {
   text-decoration: none;
   color: white;
   font-weight: lighter;
-  font-size: 2rem;
-  margin-bottom: 2rem;
+  font-size: 1.7rem;
+  margin-bottom: 1.5rem;
   text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
-  line-height: 1.5rem;
+  line-height: 1.2rem;
+  cursor: pointer;
 }
 
 .info {
@@ -546,6 +547,7 @@ a.phone-nav {
   }
 
   nav {
+    margin-top: 3rem;
     margin-right: 3rem;
     transform: scale(1.1);
   }
@@ -573,6 +575,10 @@ a.phone-nav {
   .groups.focus {
     visibility: visible;
     /* display: block; */
+  }
+
+  .groups.nav-is-on {
+    visibility: hidden;
   }
 
   .games {

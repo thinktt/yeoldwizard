@@ -19,6 +19,12 @@ window.addEventListener('popstate', (event) => {
 
   console.log('hash route is:', hashRoute)
   
+  if(view === 'nav' && !cmp) {
+    // gotToView(view)
+    app.switchNav()
+    return
+  }
+
   if (!hashRoute) {
     console.log('no route')
     app.deselect()
@@ -30,7 +36,7 @@ window.addEventListener('popstate', (event) => {
     goToView(view, cmp) 
     return
   }
-  
+
   console.log(`Could not parse route ${hashRoute}`)
   
 })
@@ -46,6 +52,11 @@ function route(view, cmpName) {
     return 
   }
 
+  if (!cmpName) {
+    window.location.hash = `#${view}`
+    return
+  }
+  
   window.location.hash = `#${view}/${cmpName}`
 }
 
@@ -58,14 +69,18 @@ function goToView(view, cmp) {
     case 'selected': 
       app.select(cmp)
       break
-      case 'games': 
-        app.select(cmp)
-        app.showGames()
-        break
-      case undefined:
-        app.deselect(cmp)
-        break
-  }
+    case 'games': 
+      app.select(cmp)
+      app.showGames()
+      break
+    case 'nav':
+      console.log('Yolo')
+      app.switchNav()
+      break
+    case undefined:
+      app.deselect(cmp)
+      break
+}
 }
 
 

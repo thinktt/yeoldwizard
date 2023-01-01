@@ -21,7 +21,8 @@
     <header>
       <span> 
         <!-- @mouseover="switchNav" -->
-        <span class="hamburger">☰</span> 
+        <span @click="route('nav')" class="hamburger" :class="{noshow: navIsOn}" >☰</span> 
+        <span @click="route('back')" class="hamburger" :class="{noshow: !navIsOn}" >☰</span>
         <span class="main-title">Ye Old Wizard</span>
       </span>
 
@@ -103,15 +104,16 @@
            </span>
                     
         </section>
+
         <nav v-if="navIsOn">
-          <a v-for="group in groups" :href="'#' + group.title.replace(' ','')" @click="toggleNav">
+          <a v-for="group in groups" @click="goToGroup(group.title)">
             {{group.title}}
           </a>
           <div>
-            <a class="button blue" :class="{grayed: scoreMode !== 'ladder'}" @click="switchScoreMode('ladder')">Ladder Mode</a>
-            <a class="button blue" :class="{grayed: scoreMode !== 'score'}" @click="switchScoreMode('score')">Score Mode</a>
+            <a class="button yellow phone-nav" @click="route('back')">Back</a>
           </div>
         </nav>
+      
       </div>
       
 
@@ -120,9 +122,9 @@
         @go-back="route('back')">
       </wiz-games>
 
-      <div class="groups" :class="{focus: infoMode == 'browsing', hidden: groupsAreHidden }">
-        <section v-for="group in groups" class="group"> 
-          <a :name="group.title.replace(' ','')"></a>
+      <div class="groups" :class="{focus: infoMode == 'browsing', 'nav-is-on': navIsOn, hidden: groupsAreHidden }">
+        <section v-for="group in groups" class="group" :name="group.title"> 
+          <!-- <a :name="group.title.replace(' ','')"></a> -->
           <h1>{{group.title}}</h1> 
           
           <div class="cmps" :class="{gms: group.isGms}">
@@ -138,7 +140,7 @@
                   :cmp="cmp" 
                   :selected-name="selected.name"
                   :selection-is-locked="selectionIsLocked"
-                  @mouseover="showCmp(cmp)" 
+                
                   @click="route('selected', cmp.name)">
                 </wiz-face>
               </div>
