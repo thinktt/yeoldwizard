@@ -5,6 +5,7 @@ import WizKing from './WizKing.js'
 import WizBoard from './WizBoard.js'
 import WizGames from './WizGames.js'
 import WizKidInfo from './WizKidInfo.js'
+import WizMessage from './WizMessage.js'
 import router from './router.js'
 import { cssLoader } from './pageTools.js'
 window.games = games
@@ -164,6 +165,8 @@ async function startApp(user) {
         navIsOn: false,
         infoMode: 'browsing',
         wizKidMode: 'preview',
+        messageType: 'none',
+        message: 'Things fall apart',
         scoreMode: localStorage.scoreMode || 'ladder',
         currentGame: 'RklLOoMREuDI',
         currentOpponent: '',
@@ -175,7 +178,6 @@ async function startApp(user) {
         gameIsStarted: false,
         gameUrl: '',
         scrollPosition: 0,
-        errorMessage: 'Things fall apart',
         signInLink: oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + clientId + '&redirect_uri=' + redirectUri + 
           '&code_challenge_method=S256' + '&code_challenge=' + codeChallenge +
           '&state=12345',
@@ -359,30 +361,37 @@ async function startApp(user) {
         this.games = {}
       },
       setError(message) {
+        this.route('')
         this.selected = cmpsObj.Wizard
-        // this.selectionIsLocked = true
-        this.navIsOn = false
-        this.infoMode = 'error'
-        this.wizKidMode = 'receiver'
-        this.errorMessage = message
+        this.wizKidMode = 'message'
+        this.messageType = 'error'
+        this.message = message
+        // this.navIsOn = false
+        // this.infoMode = 'selected'
       },
       clearError() {
-        this.selectionIsLocked = false
+        // this.selectionIsLocked = false
         this.infoMode = 'browsing'
         this.wizKidMode = 'preview'
+        this.messageType = 'none'
         if (this.signInFailed) this.signOut()
+      },
+      clearMessage() {
+        this.wizKidMode = 'control'
+        this.messageType = 'none'
+        this.message = ''
       },
       openGame() {
         window.open('https://lichess.org/' + this.currentGame, '_blank')
       },
       async startGame(opponent) {
         // be sure to send our alias to lichess to stay consistent
-        this.wizKidMode = 'receiver'
+        this.wizKidMode = 'message'
         opponent = getAlias(opponent)
         
         const colorToPlay = games.getColorToPlay(opponent)
 
-        this.infoMode = 'starting'
+        this.messageType = 'starting'
       
         console.log(`Attempting to start a game with ${opponent}`)
         const tokens = JSON.parse(window.localStorage.tokens)
@@ -428,7 +437,7 @@ async function startApp(user) {
       
         games.addCurrentGame({id: gameId, opponent, })
         this.currentGame = gameId
-        this.infoMode = 'started'
+        this.messageType = 'started'
 
         this.connectToStream(gameId)
 
@@ -439,8 +448,8 @@ async function startApp(user) {
         const currentGame =  await games.getCurrentLatestGame() || {}
         if (currentGame.id) {
           this.route('selected', currentGame.opponent)
-          this.infoMode = "started"
-          this.wizKidMode = 'receiver'
+          this.messageType = "started"
+          this.wizKidMode = 'message'
           this.currentGame = currentGame.id
           this.connectToStream(currentGame.id)
         } 
@@ -456,7 +465,8 @@ async function startApp(user) {
               const endStates = ['mate', 'resign', 'stalemate', 'aborted']
               if (endStates.includes(data.status)) {
                 console.log('Game ended!')
-                this.infoMode = 'ended'
+                this.messageType = 'ended'
+                this.message = `You have completed your game with ${this.selected.name}`
                 this.loadUserGames()
               }
             default: 
@@ -472,6 +482,7 @@ async function startApp(user) {
   app1.component('WizBoard', WizBoard)
   app1.component('WizGames', WizGames)
   app1.component('WizKidInfo', WizKidInfo)
+  app1.component('WizMessage', WizMessage)
   const app = app1.mount('#app')
   router.loadApp(app, cmpsObj)
   app.route = router.route

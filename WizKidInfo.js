@@ -14,17 +14,23 @@ const template =  html`
       <p>{{cmp.bio}}</p>
     </div>
 
-    <div v-else-if="mode === 'receiver'">
+    <div v-if="mode === 'minimal'">
+      <h3>{{cmp.rating}}</h3>
+      <p>{{cmp.summary}} </p>
+    </div>
+
+    <div v-else-if="mode === 'message'">
       <h3>{{cmp.rating}}</h3>
     </div>
     
-    <template v-else-if="mode === 'control' && user">
+    <template v-else-if="mode === 'control'">
       <h3 v-if="view === 'top'">Wiz Rating {{cmp.rating}}</h3>
       <div v-if="view === 'top'" class="buttons">
-        <a class="button blue" @click="startGame(cmp.name)">Play</a>
+        <a v-if="user" class="button blue" @click="startGame(cmp.name)">Play</a>
+        <a v-else :href="signInLink" class="button blue">Sign in to Play</a>
         <a class="button yellow" @click="show('bio')">Bio</a>
         <a class="button yellow" @click="show('about')">Chess Style</a>
-        <a class="button yellow phone-nav" @click="showGames()">See Games</a>
+        <a v-if="user" class="button yellow phone-nav" @click="showGames()">See Games</a>
         <a @click="goBack" class="button yellow">Back</a>
       </div>
       
@@ -58,6 +64,7 @@ export default {
     'cmp',
     'mode',
     'user',
+    'signInLink',
     // 'selectedName',
     // 'selectionIsLocked',
     // 'score',

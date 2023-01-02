@@ -53,57 +53,20 @@
 
     <main>
       <div class="nav-and-info" 
-        :class="{focus: infoMode == 'selected' || infoMode.includes('start') ||
-           infoMode == 'ended' || infoMode === 'error' || navIsOn}">
+        :class="{focus: infoMode == 'selected' || messageType !== 'none' || navIsOn}">
+        
         <section v-if="!navIsOn" class="info">
 
-          <wiz-kid-info :cmp="selected" :mode="wizKidMode" 
+          <wiz-kid-info :cmp="selected" :mode="wizKidMode" :sign-in-link="signInLink"
             @deselect="route('back')" :user="user" 
             @start-game="() => startGame(selected.name)"
             @show-games="route('games', selected.name)">
           </wiz-kid-info>
-      
-          <span v-if="infoMode === 'error'" class="error-message" >
-            <div  class="icon knight dead">♞</div>
-            <h3>Error</h3>
-            <p>{{errorMessage}}</p>
-            <p>Please contact your Wizard Admin</p>
-            <a class="button yellow" @click="clearError">Ok</a>
-          </span>
           
-          <div v-if="infoMode === 'selected' && user === undefined" class="buttons">
-            <a :href="signInLink" class="button blue">Sign in to Play</a>
-            <a class="button yellow" @click="route('back')">Back</a>
-            <p>{{selected.style}}</p> 
-          </div>
-          
-          <span v-if="infoMode === 'selected' && user === null" class="start-message" >
-            <div>Connecting to Lichess...</div>
-            <div  class="icon knight spin">♞</div>
-          </span>
-       
-          <span v-if="infoMode === 'starting'" class="start-message" >
-            <div>Starting game...</div>
-            <div  class="icon knight spin">♞</div>
-          </span>
-
-          <span v-if="infoMode === 'started'" class="start-message" >
-            <div>Your game has started!</div>
-            <p>Click to GO TO GAME or open the Lichess app on your phone to play.</p>
-            <a @click="openGame" class="button blue">
-              Go to Game
-            </a>
-          </span>
-
-          <span v-if="infoMode === 'ended'" class="start-message" >
-            <h3>Game Finished</h3>
-            <p>
-              You have completed your game with {{selected.name}}!
-              Click OK to find a new opponent
-            </p>
-            <a class="button yellow" @click="route('back')">OK</a>
-           </span>
-                    
+          <wiz-message @clear-error="clearError()" @open-game="openGame" @clear-message="clearMessage()"
+            :type="messageType" :message="message">
+          </wiz-message>
+               
         </section>
 
         <nav v-if="navIsOn">
@@ -118,12 +81,14 @@
       </div>
       
 
-      <wiz-games v-if="(infoMode === 'selected' || infoMode === 'games') && user" 
+      <wiz-games v-if="(infoMode === 'selected' || infoMode === 'games') && user && messageType === 'none'" 
         :cmp-name="this.selected.name" :class="{focus: infoMode == 'games'}" 
         @go-back="route('back')">
       </wiz-games>
 
-      <div class="groups" :class="{focus: infoMode == 'browsing', 'nav-is-on': navIsOn, hidden: groupsAreHidden }">
+      <div class="groups" :class="{
+        focus: infoMode == 'browsing' && wizKidMode !== 'message', 
+        'nav-is-on': navIsOn, hidden: groupsAreHidden }">
         <section v-for="group in groups" class="group" :name="group.title"> 
           <!-- <a :name="group.title.replace(' ','')"></a> -->
           <h1>{{group.title}}</h1> 
