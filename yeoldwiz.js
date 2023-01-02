@@ -360,14 +360,16 @@ async function startApp(user) {
       },
       setError(message) {
         this.selected = cmpsObj.Wizard
-        this.selectionIsLocked = true
+        // this.selectionIsLocked = true
         this.navIsOn = false
         this.infoMode = 'error'
+        this.wizKidMode = 'receiver'
         this.errorMessage = message
       },
       clearError() {
         this.selectionIsLocked = false
-        this.infoMode = "browsing"
+        this.infoMode = 'browsing'
+        this.wizKidMode = 'preview'
         if (this.signInFailed) this.signOut()
       },
       openGame() {

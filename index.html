@@ -53,7 +53,8 @@
 
     <main>
       <div class="nav-and-info" 
-        :class="{focus: infoMode == 'selected' || infoMode.includes('start') || infoMode == 'ended' || navIsOn}">
+        :class="{focus: infoMode == 'selected' || infoMode.includes('start') ||
+           infoMode == 'ended' || infoMode === 'error' || navIsOn}">
         <section v-if="!navIsOn" class="info">
 
           <wiz-kid-info :cmp="selected" :mode="wizKidMode" 
