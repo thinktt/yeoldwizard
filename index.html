@@ -70,7 +70,7 @@
         </section>
 
         <nav v-if="navIsOn">
-          <a v-for="group in groups" @click="goToGroup(group.title)">
+          <a v-for="group in groups" @click="goToGroup(group.title, group.cmps[0])">
             {{group.title}}
           </a>
           <div>

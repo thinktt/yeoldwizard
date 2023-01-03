@@ -58,7 +58,7 @@ async function doAccountFlow() {
         
     await app.loadUserGames()
     if (localStorage.lastCmp) {
-      const selector = 'div[name='  + localStorage.lastCmp + ']'
+      const selector = 'div[name="'  + localStorage.lastCmp + '"]'
       document.querySelector(selector).scrollIntoView({block: 'center'})
       await new Promise(r => setTimeout(r, 10))
       app.groupsAreHidden = false
@@ -275,10 +275,13 @@ async function startApp(user) {
         // this.groupsAreHidden = true
         // this.groupsAreHidden = false
       },
-      goToGroup(groupTitle ) {
+      goToGroup(groupTitle, cmp) {
+        this.selected = cmp
         const selector = 'section[name="'  + groupTitle + '"]'
         document.querySelector(selector).scrollIntoView({block: 'start'})
-        // this.route('')
+        this.navIsOn = false
+        history.pushState({}, null, '#')
+        this.wizKidMode = 'preview'
       },
       showGames() {
         this.infoMode = 'games'

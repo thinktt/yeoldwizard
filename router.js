@@ -37,9 +37,13 @@ window.addEventListener('popstate', (event) => {
   console.log('hash route is:', hashRoute)
   
   if(view === 'nav' && !cmp) {
-    // gotToView(view)
     app.switchNav()
     return
+  }
+
+  // we're navigating out of nav
+  if (!hashRoute && lastHash === '#nav')  {
+    app.navIsOn = false
   }
 
   if (!hashRoute) {
