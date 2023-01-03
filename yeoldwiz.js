@@ -1,7 +1,7 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import games from './games.js'
 import WizFace from './WizFace.js'
-import WizKing from './WizKing.js'
+import WizBadges from './WizBadges.js'
 import WizBoard from './WizBoard.js'
 import WizGames from './WizGames.js'
 import WizKidInfo from './WizKidInfo.js'
@@ -486,7 +486,7 @@ async function startApp(user) {
   const customElements = ['piece', 'square']
   app1.config.compilerOptions.isCustomElement = tag => customElements.includes(tag)
   app1.component('WizFace', WizFace)
-  app1.component('WizKing', WizKing)
+  app1.component('WizBadges', WizBadges)
   app1.component('WizBoard', WizBoard)
   app1.component('WizGames', WizGames)
   app1.component('WizKidInfo', WizKidInfo)

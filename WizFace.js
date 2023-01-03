@@ -10,14 +10,14 @@ const template =  html`
         inPlayMode: selectionIsLocked && selectedName == cmp.name,
       }"
     >
-    <wiz-king 
+    <wiz-badges 
       :cmpName="cmp.name"
       :score="score"
       :score-mode="scoreMode"
       :top-feat="topFeat"
       :is-nemesis="isNemesis"
     >
-    </wiz-king>
+    </wiz-badges>
     <span>{{cmp.name}}</span>
     <span>{{cmp.rating}}</span>
   </div>
