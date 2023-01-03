@@ -4,15 +4,32 @@ const validViews = ['games', 'selected']
 
 let app
 let cmpsObj 
+let isLocked = false
+let lastHash = "#"
 function loadApp(appToLoad, cmpsObjToLoad) {
   app = appToLoad
   cmpsObj = cmpsObjToLoad
   console.log('app loaded into history router')
 }
 
+function lock() {
+  console.log('locking router')
+  isLocked = true
+}
+
+function unlock() {
+  isLocked = false
+}
+
 window.addEventListener('popstate', (event) => {
+  if (isLocked) {
+    window.location.hash = lastHash 
+    return
+  }
+
   // console.log(`location: ${document.location}, state: ${JSON.stringify(event.state)}`);
   const hashRoute = window.location.hash
+  lastHash = hashRoute
   const routePieces = hashRoute.slice(1).split('/')
   const view = routePieces[0]
   const cmp = cmpsObj[routePieces[1]]
@@ -42,6 +59,8 @@ window.addEventListener('popstate', (event) => {
 })
 
 function route(view, cmpName) {
+  if(isLocked) return 
+
   if (!view) {
     window.location.hash = '#'
     return
@@ -87,4 +106,6 @@ function goToView(view, cmp) {
 export default {
   loadApp,
   route, 
+  lock,
+  unlock,
 }

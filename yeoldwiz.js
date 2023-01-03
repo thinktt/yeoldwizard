@@ -168,7 +168,7 @@ async function startApp(user) {
         messageType: 'none',
         message: 'Things fall apart',
         scoreMode: localStorage.scoreMode || 'ladder',
-        currentGame: 'RklLOoMREuDI',
+        currentGame: null,
         currentOpponent: '',
         shouldShowSignOut: false,
         selectionIsLocked: false,
@@ -263,6 +263,7 @@ async function startApp(user) {
         localStorage.lastCmp = cmp.name
       },
       async deselect() {
+
         this.infoMode='browsing'
         this.wizKidMode = 'preview'
         this.navIsOn = false
@@ -377,9 +378,11 @@ async function startApp(user) {
         if (this.signInFailed) this.signOut()
       },
       clearMessage() {
+        router.unlock()
         this.wizKidMode = 'control'
         this.messageType = 'none'
         this.message = ''
+        // this.route('')
       },
       openGame() {
         window.open('https://lichess.org/' + this.currentGame, '_blank')
@@ -387,6 +390,7 @@ async function startApp(user) {
       async startGame(opponent) {
         // be sure to send our alias to lichess to stay consistent
         this.wizKidMode = 'message'
+        router.lock()
         opponent = getAlias(opponent)
         
         const colorToPlay = games.getColorToPlay(opponent)
@@ -452,6 +456,7 @@ async function startApp(user) {
           this.wizKidMode = 'message'
           this.currentGame = currentGame.id
           this.connectToStream(currentGame.id)
+          router.lock()
         } 
       },
       connectToStream(gameId) {
