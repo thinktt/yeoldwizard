@@ -58,10 +58,12 @@ async function doAccountFlow() {
         
     await app.loadUserGames()
     if (localStorage.lastCmp) {
-      const selector = 'div[name="'  + localStorage.lastCmp + '"]'
-      document.querySelector(selector).scrollIntoView({block: 'center'})
-      await new Promise(r => setTimeout(r, 10))
+      app.gotToCmp(localStorage.lastCmp)
       app.groupsAreHidden = false
+
+      // const selector = 'div[name="'  + localStorage.lastCmp + '"]'
+      // document.querySelector(selector).scrollIntoView({block: 'center'})
+      // await new Promise(r => setTimeout(r, 10))
     }
     return
   }
@@ -119,6 +121,7 @@ async function doAccountFlow() {
 
       // now that we have an account we can connnect to users games
       await app.loadUserGames()
+      app.gotToCmp(localStorage.lastCmp)
       app.groupsAreHidden = false
 
     } catch (err) {
@@ -283,6 +286,10 @@ async function startApp(user) {
         history.pushState({}, null, '#')
         this.wizKidMode = 'preview'
       },
+      gotToCmp(cmpName) {
+        const selector = 'div[name="'  + cmpName + '"]'
+        document.querySelector(selector).scrollIntoView({block: 'center'})
+      },
       showGames() {
         this.infoMode = 'games'
         this.navIsOn = false
@@ -362,6 +369,8 @@ async function startApp(user) {
         delLichessToken()
         delete window.localStorage.user
         delete window.localStorage.tokens
+        window.localStorage.lastCmp = 'Wizard'
+        this.gotToCmp('Wizard')
         this.games = {}
       },
       setError(message) {

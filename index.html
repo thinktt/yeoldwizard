@@ -92,7 +92,8 @@
         'nav-is-on': navIsOn, hidden: groupsAreHidden }">
         <section v-for="group in groups" class="group" :name="group.title"> 
           <!-- <a :name="group.title.replace(' ','')"></a> -->
-          <h1>{{group.title}}</h1> 
+          <!-- <img src="images/goldenrook.png" alt="golden rook">  -->
+          <h1>{{group.title}} </h1>
           
           <div class="cmps" :class="{gms: group.isGms}">
 
