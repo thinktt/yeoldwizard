@@ -1,6 +1,6 @@
 
 
-const validViews = ['games', 'selected']
+const validViews = ['games', 'selected', 'trophies']
 
 let app
 let cmpsObj 
@@ -38,6 +38,11 @@ window.addEventListener('popstate', (event) => {
   
   if(view === 'nav' && !cmp) {
     app.switchNav()
+    return
+  }
+
+  if(view === 'trophies' && !cmp) {
+    app.showTrophies()
     return
   }
 
@@ -97,7 +102,6 @@ function goToView(view, cmp) {
       app.showGames()
       break
     case 'nav':
-      console.log('Yolo')
       app.switchNav()
       break
     case undefined:

@@ -1,3 +1,7 @@
+:root {
+ --wizbrown: rgb(59, 31, 17)
+}
+
 @font-face {
   font-family: dosfont;
   src: url(fonts/LessPerfectDOSVGA.ttf);
@@ -48,7 +52,8 @@ body {
 }
 
 .noshow {
-  display: none;
+
+  display: none !important;
 }
 
 h1 {
@@ -238,6 +243,64 @@ nav a {
   margin-bottom: 25rem;
   display: none;
 }
+
+
+.group .trophy-piece {
+  height: 3em;
+  background-color: black;
+  border-style: solid;
+  padding: .40rem;
+  border-color: goldenrod;
+  border-radius: 3rem;
+  padding-left: .75rem;
+  padding-right: .75rem;
+  cursor: pointer;
+}
+
+.group .trophy-piece img {
+  height: 100%;
+  overflow: hidden;
+}
+
+.group .trophy-piece.short-pawn {
+  padding-left: .25rem;
+  padding-right: 0.25rem;
+  padding-top: 0;
+}
+
+.group .trophy-piece.short-pawn img {
+  height: 83%;
+  margin-top: 25%;
+}
+
+.trophies {
+  margin-top: 3rem;
+  margin-left: 35%;
+  margin-bottom: 25rem;
+  width: 40rem;
+  text-align: center;
+}
+
+.trophies a.button {
+  margin-top: 1rem;
+}
+
+
+.trophy-collection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* background-color: black; */
+  border: .25rem;
+  border-color: goldenrod;
+  /* border-style: solid; */
+  padding: 2rem;
+}
+
+.trophy-collection .trophy-piece {
+  height: 9rem;
+}
+
 
 .groups.focus {
   display: block;
@@ -484,7 +547,7 @@ a.phone-nav {
 @media all and (max-width:25em){
     a.button {
     display:block;
-    margin:0.4em auto;
+    margin: em auto;
   }
 }
 

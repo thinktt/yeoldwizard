@@ -21,7 +21,6 @@
   <div id="app" v-cloak >
     <header>
       <span> 
-        <!-- @mouseover="switchNav" -->
         <span @click="route('nav')" class="hamburger" :class="{noshow: navIsOn}" >☰</span> 
         <span @click="route('back')" class="hamburger" :class="{noshow: !navIsOn}" >☰</span>
         <span class="main-title">Ye Old Wizard</span>
@@ -81,6 +80,9 @@
       
       </div>
       
+      <wiz-trophies v-if="infoMode === 'trophies'" @go-back="route('back')" :groups="groups" 
+        :games="games">
+      </wiz-trophies>
 
       <wiz-games v-if="(infoMode === 'selected' || infoMode === 'games') && user && messageType === 'none'" 
         :cmp-name="this.selected.name" :class="{focus: infoMode == 'games'}" 
@@ -92,9 +94,12 @@
         'nav-is-on': navIsOn, hidden: groupsAreHidden }">
         <section v-for="group in groups" class="group" :name="group.title"> 
           <!-- <a :name="group.title.replace(' ','')"></a> -->
-          <!-- <img src="images/goldenrook.png" alt="golden rook">  -->
           <h1>{{group.title}} </h1>
-          
+
+          <wiz-trophy @click="route('trophies')" :group="group" :games="games" 
+            :short-pawn="true">
+          </wiz-trophy>
+
           <div class="cmps" :class="{gms: group.isGms}">
 
             <div v-for="cmp of group.cmps" class="cmp-container" :title="cmp.summary">

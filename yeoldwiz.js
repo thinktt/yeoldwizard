@@ -6,6 +6,8 @@ import WizBoard from './WizBoard.js'
 import WizGames from './WizGames.js'
 import WizKidInfo from './WizKidInfo.js'
 import WizMessage from './WizMessage.js'
+import WizTrophies from './WizTrophies.js'
+import WizTrophy from './WizTrophy.js'
 import router from './router.js'
 import { cssLoader } from './pageTools.js'
 window.games = games
@@ -187,60 +189,70 @@ async function startApp(user) {
             high: 3000,
             low: 2701,
             cmps: [],
+            trophy: 'goldenqueen'
           }, 
           {
             title: 'Noobs',
             low: 0,
             high: 500,
             cmps: [],
+            trophy: 'goldenpawn'
           },
           {
             title: 'Beginners',
             low: 500,
             high: 1000,
             cmps: [],
+            trophy: 'goldenpawn'
           },
           {
             title: 'Casual Players',
             low: 1000,
             high: 1200,
             cmps: [],
+            trophy: 'goldenknight'
           },
           {
             title: 'Park Players',
             low: 1200,
             high: 1350,
             cmps: [],
+            trophy: 'goldenbishop'
           },
           {
             title: 'Club Players',
             low: 1350,
-            high: 1500,
+            high: 1550,
             cmps: [],
+            trophy: 'goldenknight'
           },
           {
             title: 'Tournament Players',
-            low: 1600,
+            low: 1550,
             high: 1800,
             cmps: [],
+            trophy: 'goldenbishop'
           },
           {
             title: 'Advanced Players',
             low: 1800,
             high: 2000,
             cmps: [],
+            trophy: 'goldenrook'
           },
           {
             title: 'The Experts',
             low: 2000,
             high: 2200,
             cmps: [],
+            trophy: 'goldenrook'
           },
           {
             title: 'The Masters',
             low: 2200,
             high: 2700,
             cmps: [],
+            trophy: 'goldenqueen'
           },
           {
             title: 'Classic Grandmasters',
@@ -248,12 +260,16 @@ async function startApp(user) {
             high: 2701,
             cmps: [],
             isGms: true,
+            trophy: 'goldenking'
           }, 
         ]
       }
       return data
     },
     methods : {
+      hasTrophy(group, games) {
+        return hasTrophy(group, games)
+      },
       select(cmp) {
         this.selected = cmpsObj[cmp.name]
         this.infoMode = 'selected'
@@ -263,7 +279,6 @@ async function startApp(user) {
         localStorage.lastCmp = cmp.name
       },
       async deselect() {
-
         this.infoMode='browsing'
         this.wizKidMode = 'preview'
         this.navIsOn = false
@@ -289,6 +304,10 @@ async function startApp(user) {
       },
       showGames() {
         this.infoMode = 'games'
+        this.navIsOn = false
+      },
+      showTrophies() {
+        this.infoMode = 'trophies'
         this.navIsOn = false
       },
       switchScoreMode(mode) {
@@ -497,6 +516,8 @@ async function startApp(user) {
   app1.component('WizGames', WizGames)
   app1.component('WizKidInfo', WizKidInfo)
   app1.component('WizMessage', WizMessage)
+  app1.component('WizTrophies', WizTrophies)
+  app1.component('WizTrophy', WizTrophy)
   const app = app1.mount('#app')
   router.loadApp(app, cmpsObj)
   app.route = router.route
@@ -506,6 +527,18 @@ async function startApp(user) {
 
   for (const group of app.groups) {
     group.cmps = getRatingGroup(cmps, group.high, group.low)
+  }
+
+
+  function hasTrophy(group, games) {
+    const hasTrophy = true
+    for (const cmp of group.cmps) {
+      if (games[cmp.name].score < 2) {
+        hasTrophy = false
+        break
+      }
+    }
+    return hasTrophy
   }
 
   // // make sure on resize the body is unlocked or locked as it should be

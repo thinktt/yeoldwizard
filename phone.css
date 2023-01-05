@@ -19,6 +19,24 @@
     padding-top: 1rem;
   }
 
+  .trophies a.button {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .trophies {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .trophy-piece {
+    height: 4rem;
+  }
+
 
   .nav-and-info {
     width: 100%;
