@@ -59,7 +59,7 @@ async function doAccountFlow() {
     await app.loadUserGames()
     if (localStorage.lastCmp) {
       app.goToCmp(localStorage.lastCmp)
-      await new Promise(r => setTimeout(r, 10))
+      // await new Promise(r => setTimeout(r, 10))
       app.groupsAreHidden = false
     }
     return
