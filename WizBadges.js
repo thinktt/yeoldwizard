@@ -40,6 +40,7 @@ const template = html`
       <span  class="trophy" :title="'You have conqured ' + cmpName">
         t
       </span>
+      <span class="trophy-num">+1</span>
     </span>
 
   </span>
