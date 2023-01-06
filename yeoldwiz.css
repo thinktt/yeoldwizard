@@ -1,5 +1,6 @@
 :root {
- --wizbrown: rgb(59, 31, 17)
+ --wizbrown: rgb(59, 31, 17);
+ --wizblue: rgb(0, 81, 255);
 }
 
 @font-face {
@@ -496,7 +497,7 @@ a.phone-nav {
   left: 6.8rem;
   bottom: 3.4rem;
   text-shadow: none;
-  color: black;
+  color: var(--wizbrown);
   font-weight: 700;
 }
 
