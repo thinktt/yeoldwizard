@@ -277,6 +277,7 @@ async function startApp(user) {
         this.navIsOn = false
         this.saveScrollPosition()
         localStorage.lastCmp = cmp.name
+        this.scrollToTop()
       },
       async deselect() {
         this.infoMode='browsing'
@@ -364,6 +365,9 @@ async function startApp(user) {
       },
       saveScrollPosition() {
         localStorage.scrollPosition = document.documentElement.scrollTop || document.body.scrollTop
+      },
+      scrollToTop() {
+        document.documentElement.scrollTop = 0
       },
       scrollReturn() {
         console.log('scroll return')

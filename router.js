@@ -13,7 +13,7 @@ function loadApp(appToLoad, cmpsObjToLoad) {
 }
 
 function lock() {
-  console.log('locking router')
+  // console.log('locking router')
   isLocked = true
 }
 
@@ -34,7 +34,7 @@ window.addEventListener('popstate', (event) => {
   const view = routePieces[0]
   const cmp = cmpsObj[routePieces[1]]
 
-  console.log('hash route is:', hashRoute)
+  // console.log('hash route is:', hashRoute)
   
   if(view === 'nav' && !cmp) {
     app.switchNav()
@@ -52,13 +52,13 @@ window.addEventListener('popstate', (event) => {
   }
 
   if (!hashRoute) {
-    console.log('no route')
+    // console.log('no route')
     app.deselect()
     return
   }
 
   if (cmp) {
-    console.log(view, cmp.name)
+    // console.log(view, cmp.name)
     goToView(view, cmp) 
     return
   }

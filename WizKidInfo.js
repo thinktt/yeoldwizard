@@ -73,9 +73,6 @@ export default {
     // 'topFeat',
   ],
   methods: {
-    stopSelectionLock() {
-      console.log('stopLock')
-    },
     startGame(cmpName) {
       console.log('Start game with ' + cmpName)
       this.$emit('startGame')
