@@ -2,7 +2,7 @@ import { html } from './pageTools.js'
 
 
 const template = html`
-  <div  class="trophy-piece" :class="{'short-pawn': shortPawn && group.trophy == 'goldenpawn'}"> 
+  <div v-if="hasTrophy" class="trophy-piece" :class="{'short-pawn': shortPawn && group.trophy == 'goldenpawn'}"> 
     <img :src="getGroupImg(group)" :title="'You conquered all ' + group.title" 
       :alt="group.trophy"> 
   </div>
