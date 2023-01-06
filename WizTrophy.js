@@ -16,7 +16,6 @@ export default {
       let trophyName = group.trophy
       if (this.shortPawn && trophyName == 'goldenpawn') {
         trophyName += '-short'
-        console.log('Howdy')
       }
       return `images/${trophyName}.png`
     }

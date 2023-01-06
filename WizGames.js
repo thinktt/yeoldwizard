@@ -29,7 +29,7 @@ const template = html`
     <div class="game-list">
       <template v-for="game in games" :key="game.id">
         <div class="board-and-nav-box" :class="{ noshow: filteredIds.includes(game.id) === false }"> 
-          <a :href="game.link" target="_blank" rel="noopener noreferrer">
+          <a :href="game.link + '/' + game.playedAs" target="_blank" rel="noopener noreferrer">
             <wiz-board :nav-is-on="false" :id="game.id" :moves="game.moves" :color-side="game.playedAs">
             </wiz-board> 
           </a>
@@ -57,7 +57,7 @@ const template = html`
               <span> {{game.conclusion}}</span> 
               by {{game.status}}
             </p>
-            <a :href="game.link" target="_blank" rel="noopener noreferrer">View on Lichess</a>
+            <a :href="game.link + '/' + game.playedAs" target="_blank" rel="noopener noreferrer">View on Lichess</a>
           </div>
         </div>
       </template>
@@ -68,7 +68,7 @@ const template = html`
     <p v-else-if="filteredIds.length === 0" class="filter-message">No games found for selected filters. Click the filter icons above.</p>
   </div>
   <div v-else class="games loading-message">
-    <h3> Loading your games with {{cmpName}}...</h3>
+    <h2> Loading your games with {{cmpName}}...</h2>
     <div class="icon knight spin">♞</div>
   </div>
 `

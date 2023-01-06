@@ -248,8 +248,8 @@ nav a {
 
 .group .trophy-piece {
   height: 3em;
-  /* background-color: black; */
-  background-color: var(--wizbrown);
+  background-color: black;
+  /* background-color: var(--wizbrown); */
   border-style: solid;
   padding: .40rem;
   border-color: goldenrod;
