@@ -57,7 +57,13 @@
         
         <section v-if="!navIsOn" class="info">
 
-          <wiz-kid-info :cmp="selected" :mode="wizKidMode" :sign-in-link="signInLink"
+          <wiz-kid-info 
+            :cmp="selected"
+            :mode="wizKidMode" 
+            :sign-in-link="signInLink"
+            :score="games[selected.name] ? games[selected.name].score : null"
+            :is-nemesis="games[selected.name] ? games[selected.name].isNemesis : null"
+            :top-feat="games[selected.name] ? games[selected.name].topFeat : null"
             @deselect="route('back')" :user="user" 
             @start-game="() => startGame(selected.name)"
             @show-games="route('games', selected.name)">

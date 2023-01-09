@@ -7,7 +7,7 @@ const template =  html`
       <img class="face" :src="'images/faces/' + cmp.face" alt="cmp.name">
       <h2>{{cmp.name}}</h2>
     </div>
-
+ 
     <div v-if="mode === 'preview'">
       <h3>{{cmp.rating}}</h3>
       <p>{{cmp.summary}} </p>
@@ -22,9 +22,15 @@ const template =  html`
     <div v-else-if="mode === 'message'">
       <h3>{{cmp.rating}}</h3>
     </div>
+
+
     
-    <template v-else-if="mode === 'control'">
-      <h3 v-if="view === 'top'">Wiz Rating {{cmp.rating}}</h3>
+    <template v-if="mode === 'control'">
+      <h3 v-if="view === 'top' || badgeSelection">Wiz Rating {{cmp.rating}}</h3>
+      <wiz-badges-2 v-if="view === 'top' || badgeSelection" 
+        :score="score" :isNemesis="isNemesis" :topFeat="topFeat" 
+        :cmpName="cmp.name" :selection="badgeSelection" @selection-made="doBadgeSelection">
+      </wiz-badges-2>
       <div v-if="view === 'top'" class="buttons">
         <a v-if="user" class="button blue" @click="startGame(cmp.name)">Play</a>
         <a v-else :href="signInLink" class="button blue">Sign in to Play</a>
@@ -32,6 +38,21 @@ const template =  html`
         <a class="button yellow" @click="show('about')">Chess Style</a>
         <a v-if="user" class="button yellow phone-nav" @click="showGames()">See Games</a>
         <a @click="goBack" class="button yellow">Back</a>
+      </div>
+
+      <div v-if="view === 'pawn'">
+        <p>Talk about pawn badge</p>
+        <a class="button yellow" @click="show('top')">Back</a>
+      </div>
+
+      <div v-if="view === 'score'">
+        <p>Talk about score badge</p>
+        <a class="button yellow" @click="show('top')">Back</a>
+      </div>
+
+      <div v-if="view === 'trophy'">
+        <p>Talk about trophy badge</p>
+        <a class="button yellow" @click="show('top')">Back</a>
       </div>
       
       <div v-if="view === 'about'" class="about">
@@ -45,11 +66,7 @@ const template =  html`
         <a class="button yellow" @click="show('top')">Back</a>
       </div>
     </template>
-  </div>
-
-  <!-- v-if="infoMode === 'browsing' || infoMode === 'selected'" -->
-  <!-- v-if="infoMode === 'browsing'" -->
-  
+  </div>  
 `
 
 
@@ -58,6 +75,7 @@ export default {
   data() {
     return {
       view: 'top',
+      badgeSelection: '',
     }
   },
   props: [
@@ -65,12 +83,9 @@ export default {
     'mode',
     'user',
     'signInLink',
-    // 'selectedName',
-    // 'selectionIsLocked',
-    // 'score',
-    // 'isNemesis',
-    // 'scoreMode',
-    // 'topFeat',
+    'score',
+    'isNemesis',
+    'topFeat',
   ],
   methods: {
     startGame(cmpName) {
@@ -79,12 +94,17 @@ export default {
     },
     show(view) {
       this.view = view
+      this.badgeSelection = null
     },
     goBack() {
       this.$emit('deselect')  
     },
     showGames() {
       this.$emit('showGames')
+    },
+    doBadgeSelection(badgeToSelect) {
+      this.badgeSelection = badgeToSelect
+      this.view = badgeToSelect
     }
   },
   template,

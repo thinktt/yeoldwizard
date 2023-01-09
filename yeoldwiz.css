@@ -366,8 +366,8 @@ nav a {
 .info .buttons {
   display: flex;
   flex-direction: column;
-  margin-top: 1rem;
   user-select: none;
+  /* margin-top: 1rem; */
 }
 
 button.selected {
@@ -456,13 +456,13 @@ a.phone-nav {
   transform: scale(50%);
 }
 
-.badge {
+.badge-box .badge {
   width: 3.5rem;
   margin: atuo;
   line-height: 0;
 }
 
-.pawn-won {
+.badge-box .pawn-won {
   position: absolute;
   left: 0.5rem;
   bottom: 3.4rem;
@@ -470,7 +470,7 @@ a.phone-nav {
   font-size: 3.5rem;
 }
 
-.score {
+.badge-box .score {
   position: absolute;
   top: -4.3rem;
   left: 3.4rem;
@@ -483,15 +483,18 @@ a.phone-nav {
 }
 
 .trophy {
-  position: absolute;
-  left: 6.1rem;
-  bottom: 3rem;
-  font-size: 2.6rem;
   font-family: iconmoon;
   color: gold;
 }
 
-.badge .trophy-num {
+.badge-box .trophy {
+  position: absolute;
+  left: 6.1rem;
+  bottom: 3rem;
+  font-size: 2.6rem;
+}
+
+.badge-box .badge .trophy-num {
   position: absolute;
   left: 6.8rem;
   bottom: 3.4rem;
@@ -500,7 +503,8 @@ a.phone-nav {
   font-weight: 700;
 }
 
-.badguy {
+
+.badge-box .badguy {
   position: absolute;
   font-size: 2.3rem;
   left: 6.2rem;
@@ -509,12 +513,118 @@ a.phone-nav {
   color: crimson;
 }
 
-.score-down .score{
+.badge-box .score-down .score{
   background-color: rgba(220, 20, 60, 1);
 }
 
-.score-even .score {
+.badge-box .score-even .score {
   background-color: gray;
+}
+
+
+.badge-box-2 {
+  display: flex;
+  border-color: goldenrod;
+  margin-top: 1rem;
+  padding-right: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.badge-box-2.has-selection .badge {
+  opacity: 25%;
+}
+
+.badge-box-2 .badge.selected {
+  opacity: 100%;
+}
+
+
+.badge-box-2 .badge  {
+  display: inline-block;
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+  padding-left: .25rem;
+  cursor: pointer;
+}
+
+.badge-box-2 .trophy {
+  font-family: iconmoon;
+  color: gold;
+  font-size: 2rem;
+  position: absolute;
+  left: .30rem;
+  top: .2rem;
+}
+
+.badge-box-2 .badge .trophy-num {
+  position: absolute;
+  top: .45rem;
+  left: .8rem;
+  text-shadow: none;
+  font-weight: 700;
+  color: var(--wizbrown);
+  font-size: .8rem;
+}
+
+.badge-box-2 .pawn-won {
+  font-family: enigmax;
+  font-size: 3rem;
+  color: green;
+  position: absolute;
+  top: -.7rem;
+  right: -.9rem;
+}
+
+.badge-box-2 .circle {
+  display: block;
+  height: 2.2rem;
+  width: 2.2rem;
+  background-color: green;
+  border-radius: 2rem;
+  position: absolute;
+  left: .25rem;
+}
+
+.badge-box-2 .badge.score-down .circle {
+  background-color: crimson;
+}
+
+
+.badge-box-2 .score {
+  position: absolute;
+  top: .45rem;
+  left: .50rem;
+  font-size: 1.5rem;
+}
+
+.badge-box-2 .badge.score-even {
+  width: 4rem;
+}
+
+.badge-box-2 .score-even .score {
+  position: absolute;
+  top: -.050rem;
+  left: .25rem;
+  height: 1.25rem;
+  padding: .5rem;
+  font-size: 1.25rem;
+  background-color: gray;
+  border-radius: 2rem;
+  line-height: 1.5rem;
+  margin-right: 1rem;
+}
+
+
+.badge-box-2 .badguy {
+  font-family: iconmoon;
+  color: crimson;
+  font-size: 1.9rem;
+  position: absolute;
+  left: .40rem;
+  top: .18rem;
 }
 
 .cool-guy {

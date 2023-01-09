@@ -13,7 +13,6 @@ const template =  html`
     <wiz-badges 
       :cmpName="cmp.name"
       :score="score"
-      :score-mode="scoreMode"
       :top-feat="topFeat"
       :is-nemesis="isNemesis"
     >

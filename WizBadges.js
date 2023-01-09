@@ -47,8 +47,8 @@ const template = html`
 `
 
 export default {
-  name: 'WizKing',
-  props: ['cmpName', 'score', 'isNemesis', 'scoreMode', 'topFeat'],
+  name: 'WizBadges',
+  props: ['cmpName', 'score', 'isNemesis', 'topFeat'],
   template,
   functional: true,
 }

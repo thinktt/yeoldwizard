@@ -19,6 +19,13 @@
     padding-top: 1rem;
   }
 
+
+  .info .buttons a.button {
+    width: 20rem;
+    margin: auto;
+    margin-bottom: .5rem;
+  }
+
   .trophies a.button {
     margin-left: auto;
     margin-right: auto;
