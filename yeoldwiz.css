@@ -454,6 +454,7 @@ a.phone-nav {
   left: 2rem;
   bottom: 1.7rem;
   transform: scale(50%);
+  -webkit-transform: scale(50%);
 }
 
 .badge-box .badge {
