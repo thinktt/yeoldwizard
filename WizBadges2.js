@@ -33,7 +33,7 @@ const template = html`
         </span>
     </span>
 
-    <span v-if="isNemesis" @click="$emit('selectionMade', 'score')"
+    <span v-if="isNemesis" @click="$emit('selectionMade', 'nemesis')"
       class="badge" :class="{'selected' : selection === 'nemesis'}"> 
         <span  class="badguy" :title="cmpName + ' is your Nemesis'">d</span>
     </span> 

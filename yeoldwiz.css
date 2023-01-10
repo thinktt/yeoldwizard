@@ -555,14 +555,14 @@ a.phone-nav {
   color: gold;
   font-size: 2rem;
   position: absolute;
-  left: .30rem;
+  left: .38rem;
   top: .2rem;
 }
 
 .badge-box-2 .badge .trophy-num {
   position: absolute;
-  top: .45rem;
-  left: .8rem;
+  top: .47rem;
+  left: .9rem;
   text-shadow: none;
   font-weight: 700;
   color: var(--wizbrown);

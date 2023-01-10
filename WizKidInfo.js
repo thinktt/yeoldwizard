@@ -23,13 +23,15 @@ const template =  html`
       <h3>{{cmp.rating}}</h3>
     </div>
 
-
     
     <template v-if="mode === 'control'">
       <h3 v-if="view === 'top' || badgeSelection">Wiz Rating {{cmp.rating}}</h3>
       <wiz-badges-2 v-if="view === 'top' || badgeSelection" 
         :score="score" :isNemesis="isNemesis" :topFeat="topFeat" 
         :cmpName="cmp.name" :selection="badgeSelection" @selection-made="doBadgeSelection">
+        <!-- <div v-if="!badgeSelection">
+          <p>select a badge to learn its meaning</p>
+        </div> -->
       </wiz-badges-2>
       <div v-if="view === 'top'" class="buttons">
         <a v-if="user" class="button blue" @click="startGame(cmp.name)">Play</a>
@@ -41,17 +43,32 @@ const template =  html`
       </div>
 
       <div v-if="view === 'pawn'">
-        <p>Talk about pawn badge</p>
+        <p>The Pawn Badge means you have beaten {{cmp.name}} at least once.</p>
         <a class="button yellow" @click="show('top')">Back</a>
       </div>
 
       <div v-if="view === 'score'">
-        <p>Talk about score badge</p>
+        <p>
+          This is your Wiz Score. Your score goes up when you beat an opponent and down 
+          when you lose to them. The Wiz Score never goes below -5 or higher than +5.
+        </p>
         <a class="button yellow" @click="show('top')">Back</a>
       </div>
 
       <div v-if="view === 'trophy'">
-        <p>Talk about trophy badge</p>
+        <p>
+          Trophy Points are awarded when you conquer an opponent by getting a Wiz
+          Score of +2 or higher. Get a trophy point for every opponent in a group to
+          earn a Group Trophy. 
+        </p>
+        <a class="button yellow" @click="show('top')">Back</a>
+      </div>
+
+      <div v-if="view === 'nemesis'">
+        <p>
+          {{cmp.name}} is your Nemesis. You have played this player many times, won some, but 
+          have not been able to conquor them. 
+        </p>
         <a class="button yellow" @click="show('top')">Back</a>
       </div>
       
