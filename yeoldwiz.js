@@ -4,6 +4,7 @@ import WizFace from './WizFace.js'
 import WizBadges from './WizBadges.js'
 import WizBadges2 from './WizBadges2.js'
 import WizBoard from './WizBoard.js'
+import WizBoardRoom from './WizBoardRoom.js'
 import WizGames from './WizGames.js'
 import WizKidInfo from './WizKidInfo.js'
 import WizMessage from './WizMessage.js'
@@ -518,6 +519,7 @@ async function startApp(user) {
   app1.component('WizFace', WizFace)
   app1.component('WizBadges', WizBadges)
   app1.component('WizBadges2', WizBadges2)
+  app1.component('WizBoardRoom', WizBoardRoom)
   app1.component('WizBoard', WizBoard)
   app1.component('WizGames', WizGames)
   app1.component('WizKidInfo', WizKidInfo)

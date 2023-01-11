@@ -20,11 +20,6 @@ const template = html`
         <!-- <span v-if="lostCount">{{lostCount}} lost</span> -->
       </span>
     </div>
-    <!-- <div>
-      <span v-if="wonCount">{{wonCount}} won</span>
-      <span v-if="drawCount">{{drawCount}} drawn</span>
-      <span v-if="lostCount">{{lostCount}} lost</span>
-    </div>  -->
     <p v-if="filteredIds.length">{{filteredIds.length}} games</p>
     <div class="game-list">
       <template v-for="game in games" :key="game.id">
