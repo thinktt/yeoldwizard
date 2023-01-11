@@ -143,5 +143,27 @@
     display: none;
   }
 
+  .board-room {
+    margin-left: 0;
+  }
+  
+  .board-and-nav-2 {
+    /* display: unset; */
+    width: 100%;
+    justify-content: center;
+  }
+
+  .board-nav {
+    display: none;
+  }
+
+  .board-room .board-container {
+    width: 98vw;
+    height: 98vw;
+    margin: 0;
+    margin-top: 3rem;
+  }
+
+
 
 }
