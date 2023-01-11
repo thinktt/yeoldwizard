@@ -3,9 +3,13 @@ import games from './games.js'
 
 
 const template = html`
-  <div class="right-panel">
-    <wiz-board :nav-is-on="true" id="xyxzzy" :moves="moves" :color-side="w">
-    </wiz-board>
+  <div class="board-room">
+    <div class="board-and-nav-2"> 
+      <wiz-board-2 :nav-is-on="false" id="xyxzzy" :moves="moves" color-side="white">
+      </wiz-board-2>
+      <div class="board-nav">
+      </div>
+    <div>
   </div>
 `
 

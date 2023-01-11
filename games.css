@@ -9,16 +9,41 @@
   src: url(fonts/icomoon.ttf);
 }
 
+
+
 .board-container {
   width: 20rem;
   height: 20rem;
   position: relative;
-  /* border-style: solid; */
-  /* border-color: rgb(59, 31, 17); */
-  /* border-width: .25rem; */
-  /* border-collapse: collapse; */
   margin: 1rem;
 }
+
+.board-room {
+  margin-top: 3.5rem;
+  margin-left: 24rem;
+  margin-bottom: 25rem;
+  width: 100vw;
+  text-align: center;
+}
+
+.board-and-nav-2 {
+  display: flex;
+  width: 100%;
+}
+
+.board-room .board-container {
+  width: 40vw;
+  height: 40vw;
+}
+
+.board-nav {
+  margin-top: 1rem;
+  width: 20vw;
+  height: 40vw;
+  background-color: var(--wizbrown);
+}
+
+
 
 #chessground {
   width: 100%;
@@ -97,6 +122,7 @@ cg-board {
     pointer-events: auto;
     opacity: 1;
 }
+
 
 .pgn-viewer {
   width: 15rem;
