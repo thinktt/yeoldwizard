@@ -9,7 +9,7 @@ const template = html`
       </wiz-board-2>
       <div class="board-nav">
       </div>
-    <div>
+    </div>
   </div>
 `
 

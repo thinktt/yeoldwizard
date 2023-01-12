@@ -314,6 +314,10 @@ async function startApp(user) {
         this.infoMode = 'trophies'
         this.navIsOn = false
       },
+      showBoard() {
+        this.infoMode = 'board'
+        this.navIsOn = false
+      },
       switchScoreMode(mode) {
         this.scoreMode = mode
         localStorage.scoreMode = mode

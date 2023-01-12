@@ -29,8 +29,8 @@ const template = html`
     </span> 
 
     <span v-if="score === 0" @click="$emit('selectionMade', 'score')"
-      :title="'Your score is even with ' + cmpName" class="score"
-      class="badge score-even" :class="{'selected' :selection === 'score'}">
+      :title="'Your score is even with ' + cmpName"
+      class="score badge score-even" :class="{'selected' :selection === 'score'}">
         <span>
             EVEN
         </span>

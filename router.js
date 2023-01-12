@@ -36,12 +36,17 @@ window.addEventListener('popstate', (event) => {
 
   // console.log('hash route is:', hashRoute)
   
-  if(view === 'nav' && !cmp) {
+  if (view === 'board') {
+    app.showBoard(cmp)
+    return
+  }
+
+  if (view === 'nav' && !cmp) {
     app.switchNav()
     return
   }
 
-  if(view === 'trophies' && !cmp) {
+  if (view === 'trophies' && !cmp) {
     app.showTrophies()
     return
   }

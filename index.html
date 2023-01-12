@@ -95,10 +95,10 @@
         @go-back="route('back')">
       </wiz-games>
 
-      <wiz-board-room gameId="xyzzy"></wiz-board-room>
+      <wiz-board-room v-if="infoMode === 'board'" gameId="xyzzy"></wiz-board-room>
 
       <div class="groups" :class="{
-        focus: infoMode == 'browsingno' && wizKidMode !== 'message', 
+        focus: infoMode == 'browsing' && wizKidMode !== 'message', 
         'nav-is-on': navIsOn, hidden: groupsAreHidden }">
         <section v-for="group in groups" class="group" :name="group.title"> 
           <!-- <a :name="group.title.replace(' ','')"></a> -->
