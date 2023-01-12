@@ -5,6 +5,7 @@ import WizBadges from './WizBadges.js'
 import WizBadges2 from './WizBadges2.js'
 import WizBoard from './WizBoard.js'
 import WizBoard2 from './WizBoard2.js'
+import WizBoardNav from './WizBoardNav.js'
 import WizBoardRoom from './WizBoardRoom.js'
 import WizGames from './WizGames.js'
 import WizKidInfo from './WizKidInfo.js'
@@ -175,6 +176,7 @@ async function startApp(user) {
         scoreMode: localStorage.scoreMode || 'ladder',
         currentGame: null,
         currentOpponent: '',
+        boardGame: {id: 'xyzzy', playedAs: 'white', moves: []},
         shouldShowSignOut: false,
         selectionIsLocked: false,
         isInPlayMode: false,
@@ -313,6 +315,10 @@ async function startApp(user) {
       showTrophies() {
         this.infoMode = 'trophies'
         this.navIsOn = false
+      },
+      loadBoard(game) {
+        this.boardGame = game
+        this.route('board', game.id)
       },
       showBoard() {
         this.infoMode = 'board'
@@ -527,6 +533,7 @@ async function startApp(user) {
   app1.component('WizBoardRoom', WizBoardRoom)
   app1.component('WizBoard', WizBoard)
   app1.component('WizBoard2', WizBoard2)
+  app1.component('WizBoardNav', WizBoardNav)
   app1.component('WizGames', WizGames)
   app1.component('WizKidInfo', WizKidInfo)
   app1.component('WizMessage', WizMessage)

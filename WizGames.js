@@ -25,7 +25,8 @@ const template = html`
       <template v-for="game in games" :key="game.id">
         <div class="board-and-nav-box" :class="{ noshow: filteredIds.includes(game.id) === false }"> 
           <!-- <a :href="game.link + '/' + game.playedAs" target="_blank" rel="noopener noreferrer"> -->
-            <a :href="'#board/' + game.id">
+            <!-- <a :href="'#board/' + game.id"> -->
+            <a @click="$emit('showGame', game)">
             <wiz-board :nav-is-on="false" :id="game.id" :moves="game.moves" :color-side="game.playedAs">
             </wiz-board> 
           </a>
@@ -86,7 +87,7 @@ export default {
     }
   },
   async created() {
-    await new Promise(r => setTimeout(r, 1000))
+    // await new Promise(r => setTimeout(r, 1000))
     this.games = await games.getGamesWithMoves(this.cmpName)
     for (const game of this.games) {
       this.filteredIds.push(game.id)

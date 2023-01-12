@@ -90,12 +90,14 @@
         :games="games">
       </wiz-trophies>
 
-      <wiz-games v-if="(infoMode === 'selected' || infoMode === 'games') && user && messageType === 'none'" 
+      <wiz-games v-if="(infoMode === 'selected' || infoMode === 'games') && user && messageType === 'none'"
+        @show-game="(game) => loadBoard(game)"
         :cmp-name="this.selected.name" :class="{focus: infoMode == 'games'}" 
         @go-back="route('back')">
       </wiz-games>
 
-      <wiz-board-room v-if="infoMode === 'board'" gameId="xyzzy"></wiz-board-room>
+      <wiz-board-room :class="{noshow: infoMode !== 'board'}" :game="boardGame">
+      </wiz-board-room>
 
       <div class="groups" :class="{
         focus: infoMode == 'browsing' && wizKidMode !== 'message', 

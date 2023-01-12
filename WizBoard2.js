@@ -43,7 +43,6 @@ const template =  html`
       </square>
     </div>
   </div>
-  ${pgnNav}
 `
 
 
@@ -116,6 +115,23 @@ export default {
       },
     })
     window.cg = this.cg
+  },
+  watch: {
+    moves(moves) {
+      this.game.reset()
+      for (const move of moves) {
+        this.game.move(move) 
+      }
+      // this.navIndex = this.game.history().length
+      this.navIndex = 0
+      // const lastAlgebraMove = this.game.history().slice(-1)[0]
+      this.gameHistory = this.game.history()
+      updateBoard(this.game, this.cg)
+    },
+    colorSide(color) {
+      console.log(color)
+      this.cg.set({ orientation: color, })
+    },
   },
   methods: {
     onMove(from, to) {
