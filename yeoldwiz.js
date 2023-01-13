@@ -316,8 +316,9 @@ async function startApp(user) {
         this.infoMode = 'trophies'
         this.navIsOn = false
       },
-      loadBoard(game) {
+      async loadBoard(game) {
         this.boardGame = game
+        await new Promise(r => setTimeout(r, 0))
         this.route('board', game.id)
       },
       showBoard() {

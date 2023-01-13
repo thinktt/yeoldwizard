@@ -97,7 +97,7 @@ export default {
       movable: {
         free: false,
         color: 'white',
-        dests: getLeglaMoves(this.game),
+        // dests: getLeglaMoves(this.game),
         showDests: false,
         events: {
           after: this.onMove
@@ -118,6 +118,7 @@ export default {
   },
   watch: {
     moves(moves) {
+      console.log('move dude')
       this.game.reset()
       for (const move of moves) {
         this.game.move(move) 
@@ -129,7 +130,6 @@ export default {
       updateBoard(this.game, this.cg)
     },
     colorSide(color) {
-      console.log(color)
       this.cg.set({ orientation: color, })
     },
   },
