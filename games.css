@@ -158,11 +158,13 @@ cg-board {
   border-color: var(--wizbrownfade);
   padding-left: .5rem;
   padding-right: .5rem;
+  display: grid;
+  grid-template-rows: 10% 45% 8% 8% 5% 5%;
 }
 
 .board-nav h2 {
+  margin: 0;
   margin-top: 1rem;
-  margin-bottom: 1rem;
 }
 
 .board-nav a {
@@ -171,34 +173,25 @@ cg-board {
 }
 
 .pgn-viewer::-webkit-scrollbar {
-  width: 15px;               /* width of the entire scrollbar */
+  width: 15px;
 }
 
 .pgn-viewer::-webkit-scrollbar-track {
-  background: var(--wizbrownfade);        /* color of the tracking area */
+  background: var(--wizbrownfade);
 }
 
 .pgn-viewer::-webkit-scrollbar-thumb {
-  background-color: var(--wizblackfade);    /* color of the scroll thumb */
-  /* border-radius: 20px;       roundness of the scroll thumb */
-  /* border: 3px solid orange;  creates padding around scroll thumb */
+  background-color: var(--wizblackfade);
 }
 
 .pgn-viewer {
   width: unset;
-  height: 60%;
-  padding: 1rem;
-  padding-left: 0;
+  padding-top: .5rem;
+  padding-left: 2rem;
   display: grid;
   grid-template-columns: 25% 30% 30%;
   overflow: auto;
   background-color: var(--wizblackfade);
-  padding-left: 1rem;
-  /* margin-left: .25rem; */
-  /* margin-right: .25rem; */
-  /* border-color: darkgoldenrod; */
-  /* border-width: 1px; */
-  /* border-style: solid; */
 }
 
 .pgn-viewer span.half-move {
@@ -210,8 +203,7 @@ cg-board {
 }
 
 .nav-buttons {
-  margin-top: 0rem;
-  margin-bottom: -1rem;
+  margin-top: .5rem;
 }
 
 .nav-buttons button {
