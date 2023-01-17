@@ -4,6 +4,7 @@ import { html } from './pageTools.js'
 
 const template = html`
   <div class="board-nav">
+    <h2>{{game.opponent}}</h2>
     <div class="pgn-viewer">
       <template v-for="(move, index) in gameHistory">
         <span v-if="index % 2 === 0" class="move-number">{{index / 2 + 1}}.</span>
@@ -12,22 +13,26 @@ const template = html`
         </span> 
       </template>
     </div>
-    <button @click="$emit('goStart')" id="go-start-button">Go Start</button>
-    <button @click="$emit('goBack')" id="go-back-button">Go Back</button>
-    <button @click="$emit('goForward')" id="go-forward-button">Go Forward</button>
-    <button @click="$emit('goEnd')" id="go-end-button">Go End</button>
+    <div class="nav-buttons">
+      <button @click="$emit('goStart')" id="go-start-button">s</button>
+      <button @click="$emit('goBack')" id="go-back-button">p</button>
+      <button @click="$emit('goForward')" id="go-forward-button">n</button>
+      <button @click="$emit('goEnd')" id="go-end-button">l</button>
+    </div>
+    <h2>{{userName}}</h2>
+    <wiz-game-status :game="game"></wiz-game-status>
   </div>
 `
 
 export default {
-  props : ['moves', 'navIndex'],
+  props : ['game', 'navIndex', 'userName'],
   data() {
     return {}
   },
   computed: {
     gameHistory() {
       const game = new Chess() 
-      for (const move of this.moves) {
+      for (const move of this.game.moves) {
         game.move(move) 
       }
       return game.history()

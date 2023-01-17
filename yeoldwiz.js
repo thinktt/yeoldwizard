@@ -8,6 +8,7 @@ import WizBoard2 from './WizBoard2.js'
 import WizBoardNav from './WizBoardNav.js'
 import WizBoardRoom from './WizBoardRoom.js'
 import WizGames from './WizGames.js'
+import WizGameStatus from './WizGameStatus.js'
 import WizKidInfo from './WizKidInfo.js'
 import WizMessage from './WizMessage.js'
 import WizTrophies from './WizTrophies.js'
@@ -536,6 +537,7 @@ async function startApp(user) {
   app1.component('WizBoard2', WizBoard2)
   app1.component('WizBoardNav', WizBoardNav)
   app1.component('WizGames', WizGames)
+  app1.component('WizGameStatus', WizGameStatus)
   app1.component('WizKidInfo', WizKidInfo)
   app1.component('WizMessage', WizMessage)
   app1.component('WizTrophies', WizTrophies)

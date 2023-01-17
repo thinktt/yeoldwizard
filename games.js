@@ -75,9 +75,26 @@ async function getGamesWithMoves(opponent) {
   const lichessGames = await lichessApi.getGamesByIds(gameIds)
   for (let i = 0; i < games.length; i++) {
     if (!lichessGames[i]) continue
+    // console.log(lichessGames[i])
+    console.log(games[i])
     games[i].moves = lichessGames[i].moves.split(' ')
+    games[i].drawType = getDrawType(games[i])
   }
   return games
+}
+
+function getDrawType(game) {
+  if (game.conclusion !== 'draw') return null
+  const chess = new Chess() 
+  for (const move of game.moves) {
+    chess.move(move) 
+  }
+  if (chess.insufficient_material()) return "insufficient material"
+  if (chess.in_stalemate()) return "stalemate"
+  if (chess.in_threefold_repetition()) return "three fold repetition"
+  if (chess.in_draw()) return "fifty move rule"
+  return "mutal agreement"
+  
 }
 
 
@@ -93,8 +110,6 @@ function getGames(opponent) {
     if (game.opponent === 'Chessmaster') game.opponent = 'Wizard'
     games.push(game)
   }
-  
-  // console.log(games)
   return games
 }
 

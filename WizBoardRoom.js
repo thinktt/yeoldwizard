@@ -13,8 +13,9 @@ const template = html`
         @go-back="goBack"
         @go-forward="goForward"
         @go-end="goEnd"
-        :moves="game.moves" 
-        :navIndex="navIndex">
+        :game="game"
+        :navIndex="navIndex"
+        userName="thinktt">
       </wiz-board-nav>
     </div>
   </div>

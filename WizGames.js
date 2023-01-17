@@ -1,6 +1,10 @@
 import {html, css} from './pageTools.js'
 import games from './games.js'
 
+const gameInfo = html`
+
+`
+
 
 const template = html`
   <div v-if="games" class="games">
@@ -41,20 +45,7 @@ const template = html`
               <img class="king" src="images/king-lost.png">
             </div>
             <p>You played as {{game.playedAs}}</p>
-            <p v-if="game.status === 'resign'">
-                You
-                <span>{{game.conclusion}}</span> 
-                by resignation
-            </p>
-            <p v-else-if="game.status === 'draw'">
-                Game was a draw
-            </p>
-            <p v-else>
-              You
-              <span> {{game.conclusion}}</span> 
-              by {{game.status}}
-            </p>
-            <a :href="game.link + '/' + game.playedAs" target="_blank" rel="noopener noreferrer">View on Lichess</a>
+            <wiz-game-status :game="game"></wiz-game-status>
           </div>
         </div>
       </template>
