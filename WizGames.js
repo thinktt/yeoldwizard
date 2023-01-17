@@ -1,11 +1,6 @@
 import {html, css} from './pageTools.js'
 import games from './games.js'
 
-const gameInfo = html`
-
-`
-
-
 const template = html`
   <div v-if="games" class="games">
     <a class="button yellow phone-nav" @click="goBack">Back</a>
@@ -28,24 +23,13 @@ const template = html`
     <div class="game-list">
       <template v-for="game in games" :key="game.id">
         <div class="board-and-nav-box" :class="{ noshow: filteredIds.includes(game.id) === false }"> 
-          <!-- <a :href="game.link + '/' + game.playedAs" target="_blank" rel="noopener noreferrer"> -->
-            <!-- <a :href="'#board/' + game.id"> -->
             <a @click="$emit('showGame', game)">
             <wiz-board :nav-is-on="false" :id="game.id" :moves="game.moves" :color-side="game.playedAs">
             </wiz-board> 
           </a>
           <div class="game-info-box">
-            <div v-if="game.conclusion ==='draw'">
-              <img class="king" src="images/king-draw.png">
-            </div>
-            <div v-if="game.conclusion === 'won'">
-              <img class="king" src="images/king-won.png">
-            </div>
-            <div v-if="game.conclusion === 'lost'">
-              <img class="king" src="images/king-lost.png">
-            </div>
-            <p>You played as {{game.playedAs}}</p>
-            <wiz-game-status :game="game"></wiz-game-status>
+            <wiz-game-status :game="game" :shouldShowPlayedAs="true">
+            </wiz-game-status>
           </div>
         </div>
       </template>

@@ -159,12 +159,16 @@ cg-board {
   padding-left: .5rem;
   padding-right: .5rem;
   display: grid;
-  grid-template-rows: 10% 45% 8% 8% 5% 5%;
+  grid-template-rows: 10% 45% 8% 9% 22% 5%;
 }
 
 .board-nav h2 {
   margin: 0;
   margin-top: 1rem;
+}
+
+.game-link {
+  margin: 1rem;
 }
 
 .board-nav a {
@@ -226,6 +230,14 @@ cg-board {
   color: #DDDDDD;
 }
 
+.game-status p {
+  margin: 0;
+  margin-bottom: .25rem;
+}
+
+.board-nav .king {
+  height: 2.5rem;
+}
 
 
 .games {
@@ -255,6 +267,15 @@ cg-board {
 
 .game-info-box .king {
   margin-left: -1rem;
+  margin-bottom: .25rem;
+}
+
+.game-info-box .game-status p{
+  margin-top: .30rem; 
+}
+
+.game-info-box .game-link {
+  margin-top: 2rem;
 }
 
 .game-filter {

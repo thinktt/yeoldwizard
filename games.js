@@ -77,9 +77,11 @@ async function getGamesWithMoves(opponent) {
     if (!lichessGames[i]) continue
     games[i].moves = lichessGames[i].moves.split(' ')
     games[i].drawType = getDrawType(games[i])
+    games[i].lastMoveAt = lichessGames[i].lastMoveAt
   }
   return games
 }
+
 
 function getDrawType(game) {
   if (game.conclusion !== 'draw') return null

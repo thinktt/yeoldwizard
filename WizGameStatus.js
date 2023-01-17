@@ -1,7 +1,17 @@
 import { html } from './pageTools.js'
 
 const template = html`
-  <span>
+  <div class="game-status">
+    <div v-if="game.conclusion ==='draw'">
+      <img class="king" src="images/king-draw.png">
+    </div>
+    <div v-if="game.conclusion === 'won'">
+      <img class="king" src="images/king-won.png">
+    </div>
+    <div v-if="game.conclusion === 'lost'">
+      <img class="king" src="images/king-lost.png">
+    </div>
+    <p v-if="shouldShowPlayedAs">You played as {{game.playedAs}}</p>
     <p v-if="game.status === 'resign'">
         You
         <span>{{game.conclusion}}</span> 
@@ -15,12 +25,17 @@ const template = html`
       <span> {{game.conclusion}}</span> 
       by {{game.status}}
     </p>
-    <a :href="game.link + '/' + game.playedAs" target="_blank" rel="noopener noreferrer">View on Lichess</a>
-  </span>
+    <p>{{(new Date(game.lastMoveAt)).toDateString()}}</p>
+    <div class="game-link"> 
+      <a :href="game.link + '/' + game.playedAs" target="_blank" rel="noopener noreferrer">
+        view on lichess
+      </a>
+    </div>
+</div>
 `
 
 
 export default {
-  props: ['game'],
+  props: ['game', "shouldShowPlayedAs"],
   template,
 }
