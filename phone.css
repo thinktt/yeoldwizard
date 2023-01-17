@@ -119,15 +119,6 @@
     display: block;
   }
   
-/* 
-  .badge-box {
-    right: 1.5rem;
-    bottom: .3rem;
-  } */
-
-  /* span.badge-box.score-even {
-    visibility: none;
-  } */
 
   .badge-box {
     position: absolute;
@@ -144,24 +135,72 @@
   }
 
   .board-room {
+    margin-top: 0;
     margin-left: 0;
+  }
+
+  .board-room .top-panel {
+    display: flex;
+    width: 30rem;
+    background-color: var(--wizbrownfade);
+    padding-top: 3rem;
+  }
+
+  .board-room .top-panel h2 {
+    margin-left: 8rem;
+    margin-top: 3rem;
   }
   
   .board-and-nav-2 {
-    /* display: unset; */
     width: 100%;
     justify-content: center;
+    flex-direction: column;
   }
 
   .board-nav {
+    grid-template-rows: unset;
+    margin: 0;
+    padding: 0;
+    width: 30rem;
+    height: unset;
+  }
+
+  .board-nav .pgn-viewer {
+    display: flex;
+    padding-left: 1rem;
+    gap: .50rem;
+    padding-top: 1rem;
+  }
+
+  .board-nav .wiz-kid-name {
     display: none;
   }
 
-  .board-room .board-container {
-    width: 98vw;
-    height: 98vw;
+  .board-nav .nav-buttons {
     margin: 0;
-    margin-top: 3rem;
+  }
+
+  .board-nav .king {
+    height: 3rem;
+    margin-top: 1rem;
+  }
+
+  .board-nav .user-name {
+    margin: 0;
+  }
+
+  .board-nav .game-link {
+    margin-top: 1.5rem
+  }
+
+  .nav-buttons button {
+    font-size: 2.5rem;
+  }
+
+  .board-room .board-container {
+    width: 30rem;
+    height: 30rem;
+    margin: 0;
   }
 
 

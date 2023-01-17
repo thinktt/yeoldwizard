@@ -4,7 +4,7 @@ import { html } from './pageTools.js'
 
 const template = html`
   <div class="board-nav">
-    <h2>{{game.opponent}}</h2>
+    <h2 class="wiz-kid-name">{{game.opponent}}</h2>
     <div class="pgn-viewer">
       <template v-for="(move, index) in gameHistory">
         <span v-if="index % 2 === 0" class="move-number">{{index / 2 + 1}}.</span>
@@ -22,7 +22,7 @@ const template = html`
       <button @click="$emit('goForward')" id="go-forward-button">n</button>
       <button @click="$emit('goEnd')" id="go-end-button">l</button>
     </div>
-    <h2>{{userName}}</h2>
+    <h2 class="user-name">{{userName}}</h2>
     <wiz-game-status :game="game"></wiz-game-status>
   </div>
 `

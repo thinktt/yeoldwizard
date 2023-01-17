@@ -96,7 +96,10 @@
         @go-back="route('back')">
       </wiz-games>
 
-      <wiz-board-room :class="{noshow: infoMode !== 'board'}" :game="boardGame">
+      <wiz-board-room 
+        :class="{noshow: infoMode !== 'board'}" 
+        :game="boardGame"
+        :cmp="selected">
       </wiz-board-room>
 
       <div class="groups" :class="{

@@ -3,11 +3,19 @@ import { html } from './pageTools.js'
 const template = html`
   <div class="board-room">
     <div class="board-and-nav-2"> 
+      
+      <div class="top-panel"> 
+        <img class="face" :src="'images/faces/' + cmp.face" :alt="cmp.name">
+        <h2>{{game.opponent}}</h2>
+        <!-- <wiz-badges-2></wiz-badges-2> -->
+      </div>
+      
       <wiz-board-2  
         id="main-board"
         :moves="boardMoves" 
         :color-side="game.playedAs">
       </wiz-board-2>
+      
       <wiz-board-nav
         @go-start="goStart"
         @go-back="goBack"
@@ -24,7 +32,7 @@ const template = html`
 
 
 export default {
-  props: ['game'],
+  props: ['game', 'cmp'],
   data() {
     return {
       navIndex: 0,

@@ -9,8 +9,6 @@
   src: url(fonts/icomoon.ttf);
 }
 
-
-
 .board-container {
   width: 20rem;
   height: 20rem;
@@ -25,6 +23,10 @@
   text-align: center;
 }
 
+.board-room .top-panel {
+  display: none;
+}
+
 .board-and-nav-2 {
   display: flex;
   width: 100%;
@@ -34,15 +36,6 @@
   width: 40vw;
   height: 40vw;
 }
-
-.board-nav {
-  margin-top: 1rem;
-  width: 20vw;
-  height: 38.5vw;
-  /* background-color: var(--wizbrown); */
-  background-color: var(--wizbrownfade);
-}
-
 
 
 #chessground {
@@ -152,6 +145,10 @@ cg-board {
 }
 
 .board-nav {
+  margin-top: 1rem;
+  width: 20vw;
+  height: 38.5vw;
+  background-color: var(--wizbrownfade);
   padding-top: 1rem;
   border-style: solid;
   border-width: 1px;
