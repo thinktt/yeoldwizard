@@ -118,7 +118,6 @@ export default {
   },
   watch: {
     moves(moves) {
-      console.log('move dude')
       this.game.reset()
       for (const move of moves) {
         this.game.move(move) 

@@ -8,8 +8,11 @@ const template = html`
     <div class="pgn-viewer">
       <template v-for="(move, index) in gameHistory">
         <span v-if="index % 2 === 0" class="move-number">{{index / 2 + 1}}.</span>
-        <span :class="{highlight: navIndex - 1 === index}" class="half-move">
-          {{move}}
+        <span 
+          :class="{highlight: navIndex - 1 === index}" 
+          @click="$emit('goIndex', index)" 
+          class="half-move">
+            {{move}}
         </span> 
       </template>
     </div>

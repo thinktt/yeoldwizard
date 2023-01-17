@@ -38,8 +38,9 @@
 .board-nav {
   margin-top: 1rem;
   width: 20vw;
-  height: 40vw;
-  background-color: var(--wizbrown);
+  height: 38.5vw;
+  /* background-color: var(--wizbrown); */
+  background-color: var(--wizbrownfade);
 }
 
 
@@ -122,25 +123,6 @@ cg-board {
     opacity: 1;
 }
 
-
-.pgn-viewer {
-  width: 100%;
-  height: 15rem;
-  padding: 1rem;
-  padding-left: 0;
-  background-color: black;
-  display: grid;
-  grid-template-columns: 25% 30% 30%;
-  overflow: auto;
-  /* border-color: goldenrod; */
-  /* border-width: .25rem; */
-  /* border-style: solid; */
-}
-
-.pgn-viewer .highlight {
-  background-color: green;
-}
-
 .cg-wrap {
   height: 100%;
   /* border-style: solid;
@@ -167,6 +149,69 @@ cg-board {
 
 .board-and-nav-box a:visited {
   color:white;
+}
+
+.board-nav {
+  padding-top: 1rem;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--wizbrownfade);
+  padding-left: .5rem;
+  padding-right: .5rem;
+}
+
+.board-nav h2 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.board-nav a {
+  color: white;
+  text-decoration: none;
+}
+
+.pgn-viewer::-webkit-scrollbar {
+  width: 15px;               /* width of the entire scrollbar */
+}
+
+.pgn-viewer::-webkit-scrollbar-track {
+  background: var(--wizbrownfade);        /* color of the tracking area */
+}
+
+.pgn-viewer::-webkit-scrollbar-thumb {
+  background-color: var(--wizblackfade);    /* color of the scroll thumb */
+  /* border-radius: 20px;       roundness of the scroll thumb */
+  /* border: 3px solid orange;  creates padding around scroll thumb */
+}
+
+.pgn-viewer {
+  width: unset;
+  height: 60%;
+  padding: 1rem;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: 25% 30% 30%;
+  overflow: auto;
+  background-color: var(--wizblackfade);
+  padding-left: 1rem;
+  /* margin-left: .25rem; */
+  /* margin-right: .25rem; */
+  /* border-color: darkgoldenrod; */
+  /* border-width: 1px; */
+  /* border-style: solid; */
+}
+
+.pgn-viewer span.half-move {
+  cursor: pointer;
+}
+
+.pgn-viewer .highlight {
+  background-color: green;
+}
+
+.nav-buttons {
+  margin-top: 0rem;
+  margin-bottom: -1rem;
 }
 
 .nav-buttons button {

@@ -75,8 +75,6 @@ async function getGamesWithMoves(opponent) {
   const lichessGames = await lichessApi.getGamesByIds(gameIds)
   for (let i = 0; i < games.length; i++) {
     if (!lichessGames[i]) continue
-    // console.log(lichessGames[i])
-    console.log(games[i])
     games[i].moves = lichessGames[i].moves.split(' ')
     games[i].drawType = getDrawType(games[i])
   }

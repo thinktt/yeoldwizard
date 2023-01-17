@@ -13,6 +13,7 @@ const template = html`
         @go-back="goBack"
         @go-forward="goForward"
         @go-end="goEnd"
+        @go-index="goIndex"
         :game="game"
         :navIndex="navIndex"
         userName="thinktt">
@@ -48,6 +49,9 @@ export default {
     },
     goEnd() {
       this.navIndex = this.game.moves.length
+    },
+    goIndex(index) {
+      this.navIndex = index + 1
     }
   },
   template,
