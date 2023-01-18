@@ -146,15 +146,21 @@
     padding-top: 3rem;
   }
 
+  .board-room .top-panel .wiz-kid-name {
+    width: 30rem;
+  }
+
   .board-room .top-panel h2 {
-    margin-left: 8rem;
     margin-top: 3rem;
+    font-size: 2rem;
+    margin-right: 6rem;
   }
   
   .board-and-nav-2 {
-    width: 100%;
+    width: 30rem;
     justify-content: center;
     flex-direction: column;
+    margin: auto;
   }
 
   .board-nav {

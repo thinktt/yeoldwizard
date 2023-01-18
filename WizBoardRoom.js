@@ -6,7 +6,9 @@ const template = html`
       
       <div class="top-panel"> 
         <img class="face" :src="'images/faces/' + cmp.face" :alt="cmp.name">
-        <h2>{{game.opponent}}</h2>
+        <span class="wiz-kid-name">
+          <h2>{{game.opponent}}</h2>
+        </span>
         <!-- <wiz-badges-2></wiz-badges-2> -->
       </div>
       
