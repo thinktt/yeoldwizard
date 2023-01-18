@@ -521,13 +521,11 @@ async function startApp(user) {
               } else {
                 boardGame.playedAs = 'black'
               }
-              console.log(boardGame)
               this.loadBoard(boardGame)
               
               break;
             case 'gameState':
               this.boardGame.moves = games.getAlgebraMoves(data.moves)
-              console.log(this.boardGame.moves)
               // const endStates = ['mate', 'resign', 'stalemate', 'aborted']
               // if (endStates.includes(data.status)) {
               //   console.log('Game ended!')

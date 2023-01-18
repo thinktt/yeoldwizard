@@ -43,6 +43,16 @@ export default {
   created() {
     document.onkeydown = this.keyNav
   },
+  updated() {
+    if(this.navIndex <= 0) {
+      const el = document.querySelector('.pgn-viewer')
+      el.scrollTo({top: 0})
+      el.scrollTo({left: 0})
+      return
+    }
+    const el = document.querySelector('#move' + this.navIndex)
+    el.scrollIntoView({block: "center"})
+  },
   computed: {
     boardMoves() {
       return this.game.moves.slice(0, this.navIndex)
@@ -51,8 +61,13 @@ export default {
   watch : {
     game: {
       handler(game) {
-        console.log('New moves baby!')
         this.navIndex = game.moves.length
+        const query = '#move' + (this.navIndex)
+        const el = document.querySelector(query)
+        console.log(this.navIndex)
+        console.log(el)
+        console.log(query)
+        // el.scrollIntoView({block: "center"})
       },
       deep: true, 
     }
@@ -60,28 +75,28 @@ export default {
   methods: {
     goStart() {
       this.navIndex = 0
-      const el = document.querySelector('.pgn-viewer')
-      el.scrollTo({top: 0})
-      el.scrollTo({left: 0})
+      // const el = document.querySelector('.pgn-viewer')
+      // el.scrollTo({top: 0})
+      // el.scrollTo({left: 0})
     },
     goBack() {
       if (this.navIndex === 0) return 
       this.navIndex -- 
 
-      if (this.navIndex === 0) return 
-      const el = document.querySelector('#move' + this.navIndex)
-      el.scrollIntoView({block: "center"})
+      // if (this.navIndex === 0) return 
+      // const el = document.querySelector('#move' + this.navIndex)
+      // el.scrollIntoView({block: "center"})
     },
     goForward() {
       if (this.navIndex === this.game.moves.length) return 
       this.navIndex ++
-      const el = document.querySelector('#move' + this.navIndex)
-      el.scrollIntoView({block: "center"})
+      // const el = document.querySelector('#move' + this.navIndex)
+      // el.scrollIntoView({block: "center"})
     },
     goEnd() {
       this.navIndex = this.game.moves.length 
-      const el = document.querySelector('#move' + this.navIndex)
-      el.scrollIntoView({block: "center"})
+      // const el = document.querySelector('#move' + this.navIndex)
+      // el.scrollIntoView({block: "center"})
     },
     goIndex(index) {
       this.navIndex = index + 1
