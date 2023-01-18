@@ -48,17 +48,26 @@ export default {
   methods: {
     goStart() {
       this.navIndex = 0
+      const el = document.querySelector('.pgn-viewer')
+      el.scrollTo({top: 0})
+      el.scrollTo({left: 0})
     },
     goBack() {
       if (this.navIndex === 0) return 
       this.navIndex -- 
+      const el = document.querySelector('#move' + this.navIndex)
+      el.scrollIntoView({block: "center"})
     },
     goForward() {
       if (this.navIndex === this.game.moves.length) return 
       this.navIndex ++
+      const el = document.querySelector('#move' + this.navIndex)
+      el.scrollIntoView({block: "center"})
     },
     goEnd() {
       this.navIndex = this.game.moves.length
+      const el = document.querySelector('#move' + this.navIndex)
+      el.scrollIntoView({block: "center"})
     },
     goIndex(index) {
       this.navIndex = index + 1

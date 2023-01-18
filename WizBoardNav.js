@@ -11,6 +11,7 @@ const template = html`
         <span 
           :class="{highlight: navIndex - 1 === index}" 
           @click="$emit('goIndex', index)" 
+          :id="'move' + (index + 1)"
           class="half-move">
             {{move}}
         </span> 
@@ -40,6 +41,13 @@ export default {
       }
       return game.history()
     }
+  },
+  watch: {
+    // navIndex() {
+    //   const el = document.querySelector('#move' + this.navIndex)
+    //   el.scrollIntoView({block: "start"})
+    //   console.log(el)
+    // }
   },
   name: 'WizBoardNav',
   template,
