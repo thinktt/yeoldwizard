@@ -42,13 +42,6 @@ export default {
       return game.history()
     }
   },
-  watch: {
-    // navIndex() {
-    //   const el = document.querySelector('#move' + this.navIndex)
-    //   el.scrollIntoView({block: "start"})
-    //   console.log(el)
-    // }
-  },
   name: 'WizBoardNav',
   template,
 }

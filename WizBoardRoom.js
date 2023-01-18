@@ -40,6 +40,9 @@ export default {
       navIndex: 0,
     }
   },
+  created() {
+    document.onkeydown = this.keyNav
+  },
   computed: {
     boardMoves() {
       return this.game.moves.slice(0, this.navIndex)
@@ -71,6 +74,12 @@ export default {
     },
     goIndex(index) {
       this.navIndex = index + 1
+    },
+    keyNav(e) {
+      if (e.keyCode === 39) this.goForward()
+      if (e.keyCode === 37) this.goBack()
+      if (e.keyCode === 38) this.goStart()
+      if (e.keyCode === 40) this.goEnd()
     }
   },
   template,

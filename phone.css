@@ -188,8 +188,8 @@
   }
 
   .nav-buttons button:hover {
-    border-color: unset;
-    color: unset;
+    border-color: goldenrod;
+    color: goldenrod;
   }
 
   .board-nav .king {

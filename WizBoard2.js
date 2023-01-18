@@ -96,7 +96,7 @@ export default {
       check: checkColor, 
       movable: {
         free: false,
-        color: 'white',
+        // color: null, //'white',
         // dests: getLeglaMoves(this.game),
         showDests: false,
         events: {
@@ -106,6 +106,12 @@ export default {
       premovable: {
         enabled: false,
         showDests: true,
+      },
+      draggable: {
+        enabled: false,
+      },
+      selectable: {
+        enabled: false,
       },
       drawable: {
         enabled: false,
@@ -224,8 +230,8 @@ function updateBoard(game, cg) {
     fen: game.fen(),
     check: game.in_check(),
     movable: {
-      color: getTurn(game),
-      dests: getLeglaMoves(game),
+      // color: getTurn(game),
+      // dests: getLeglaMoves(game),
     },
     turnColor: getTurn(game),
     lastMove,
