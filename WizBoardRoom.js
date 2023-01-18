@@ -26,7 +26,7 @@ const template = html`
         @go-index="goIndex"
         :game="game"
         :navIndex="navIndex"
-        userName="thinktt">
+        :userName="user">
       </wiz-board-nav>
     </div>
   </div>
@@ -34,7 +34,7 @@ const template = html`
 
 
 export default {
-  props: ['game', 'cmp'],
+  props: ['game', 'cmp', 'user'],
   data() {
     return {
       navIndex: 0,
@@ -48,6 +48,15 @@ export default {
       return this.game.moves.slice(0, this.navIndex)
     }
   },
+  watch : {
+    game: {
+      handler(game) {
+        console.log('New moves baby!')
+        this.navIndex = game.moves.length
+      },
+      deep: true, 
+    }
+  },
   methods: {
     goStart() {
       this.navIndex = 0
@@ -58,6 +67,8 @@ export default {
     goBack() {
       if (this.navIndex === 0) return 
       this.navIndex -- 
+
+      if (this.navIndex === 0) return 
       const el = document.querySelector('#move' + this.navIndex)
       el.scrollIntoView({block: "center"})
     },
@@ -68,7 +79,7 @@ export default {
       el.scrollIntoView({block: "center"})
     },
     goEnd() {
-      this.navIndex = this.game.moves.length
+      this.navIndex = this.game.moves.length 
       const el = document.querySelector('#move' + this.navIndex)
       el.scrollIntoView({block: "center"})
     },

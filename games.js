@@ -1,5 +1,6 @@
 import yowApi from './yowApi.js'
 import lichessApi from './lichessApi.js'
+const chess = new Chess()
 
 export default { 
   updateGameList,
@@ -14,6 +15,7 @@ export default {
   clearCurrentGames,
   deDupeGames,
   clearWasForwardedToYowApi,
+  getAlgebraMoves,
 }
 
 // module globals
@@ -449,6 +451,15 @@ function getProperName(opponent) {
 
   return properNames[opponent.toLowerCase()] || opponent
 }
+
+function getAlgebraMoves(cordinateMovesString) {
+  chess.reset()
+  const cordinateMoves = cordinateMovesString.split(' ')
+  for (const move of cordinateMoves) {
+    chess.move(move, { sloppy: true })
+  }
+  return chess.history()
+} 
 
 // const opponent = await getWizPlayerFromChat('5ZAXEu4YAk5S')
 // console.log(opponent) 

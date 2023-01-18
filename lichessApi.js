@@ -1,12 +1,20 @@
 export default { 
   getGames,
   getGamesByIds,
+  createChallenge,
+  getGameStream,
 }
 
-const lichessApiUrl = 'https://lichess.org/api'
+const baseUrl = 'https://lichess.org/api'
+const tokens = JSON.parse(localStorage.tokens)
+const headers = {
+  'Authorization' : 'Bearer ' + tokens.access_token,
+  'Accept': 'application/x-ndjson',
+}
+
 
 async function getGames(user, lastGameTime) {
-  const lichessEndpoint = `${lichessApiUrl}/games/user/yeoldwiz`
+  const lichessEndpoint = `${baseUrl}/games/user/yeoldwiz`
   const query = `?since=${lastGameTime}&vs=${user}&opening=false&rated=false&perfType=correspondence&ongoing=true`
   const tokens = JSON.parse(localStorage.tokens)
   const res = await fetch(lichessEndpoint + query, {    
@@ -21,7 +29,7 @@ async function getGames(user, lastGameTime) {
 
 async function getGamesByIds(ids) {
   const tokens = JSON.parse(localStorage.tokens)
-  const lichessEndpoint = `${lichessApiUrl}/games/export/_ids`
+  const lichessEndpoint = `${baseUrl}/games/export/_ids`
   const res = await fetch(lichessEndpoint, {    
     headers: {
       'Authorization' : 'Bearer ' + tokens.access_token,
@@ -40,10 +48,15 @@ async function getGamesByIds(ids) {
 }
 
 
-async function stream(url, handler, onDone) {
+async function getStream(url, handler, onDone) {
   const controller = new AbortController()
   const signal = controller.signal
-  const res = await fetch(baseURL + url, { method: 'GET', headers, signal })
+  const res = await fetch(baseUrl + url, { method: 'GET', headers, signal })
+
+  console.log(res.status)
+  console.log(res.ok)
+  console.log(res)
+
 
   const onErr = (err) => {
     console.error(chalk.red(`${url} stream error: ${err}`))
@@ -53,11 +66,12 @@ async function stream(url, handler, onDone) {
       controller.abort()
       return 
     }
-    restartStream(url, handler, onDone, onErr)
+    // restartStream(url, handler, onDone, onErr)
   }
 
   const decoder = new TextDecoder()
   let buf = ''
+
   res.body.on('data', (data) => {
     const chunk = decoder.decode(data, { stream: true })
     buf += chunk
@@ -82,3 +96,45 @@ async function stream(url, handler, onDone) {
  
   return { res, controller }
 }
+
+async function startStream(endpoint, callback) {
+  const tokens = JSON.parse(window.localStorage.tokens)
+  const reader = await fetch('https://lichess.org/api' + endpoint,  {
+    headers: {'Authorization' : 'Bearer ' + tokens.access_token}
+  }).then((res) => res.body.pipeThrough(new TextDecoderStream()).getReader())
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    if (value) {
+      const outs = value.split('\n')
+      for (const out of outs) {
+        if (out !== '') callback(JSON.parse(out))
+      }
+    }
+  }
+}
+
+
+async function getGameStream(gameId, handler, onDone) {
+  const stream = await startStream(`/board/game/stream/${gameId}`, handler, onDone)
+  return stream
+}
+
+
+async function createChallenge(colorToPlay) {
+  const res = await fetch(`${baseUrl}/challenge/yeoldwiz`, {
+    method: 'POST',
+    headers: { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization' : 'Bearer ' + tokens.access_token
+    },
+    body: new URLSearchParams({
+      rated: false, 
+      color: colorToPlay,
+    }),
+  })
+
+  return res
+} 

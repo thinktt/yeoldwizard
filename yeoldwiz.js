@@ -15,8 +15,10 @@ import WizTrophies from './WizTrophies.js'
 import WizTrophy from './WizTrophy.js'
 import router from './router.js'
 import { cssLoader } from './pageTools.js'
+import lichessApi from './lichessApi.js'
+import { applyAnimation } from './lib/chessground/js/config.js'
+import { Chessground } from './lib/chessground/js/chessground.js'
 window.games = games
-
 
 
 cssLoader.render()
@@ -177,7 +179,16 @@ async function startApp(user) {
         scoreMode: localStorage.scoreMode || 'ladder',
         currentGame: null,
         currentOpponent: '',
-        boardGame: {id: 'xyzzy', playedAs: 'white', moves: []},
+        boardGame: {
+          id: "i8ximyUz",
+          createdAt: 1618120201189,
+          status: "mate",
+          conclusion: "lost",
+          playedAs: "white",
+          link: "https://lichess.org/i8ximyUz",
+          wasForwardedToYowApi: true,
+          moves: [],
+        },
         shouldShowSignOut: false,
         selectionIsLocked: false,
         isInPlayMode: false,
@@ -449,19 +460,7 @@ async function startApp(user) {
         this.isStartingGame = true
         // console.log(tokens.access_token)
       
-        const res = await fetch('https://lichess.org/api/challenge/yeoldwiz', {
-          method: 'POST',
-          headers: { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization' : 'Bearer ' + tokens.access_token
-          },
-          body: new URLSearchParams({
-            rated: false, 
-            color: colorToPlay,
-            message: `yoeldwiz {game} started with ${opponent}` 
-          }),
-        })
+        const res = await lichessApi.createChallenge(colorToPlay)
       
         if (!res.ok) {
           this.isStartingGame = false
@@ -490,7 +489,7 @@ async function startApp(user) {
         this.currentGame = gameId
         this.messageType = 'started'
 
-        this.connectToStream(gameId)
+        // this.connectToStream(gameId)
 
         return true
       },
@@ -503,30 +502,47 @@ async function startApp(user) {
           this.wizKidMode = 'message'
           this.currentGame = currentGame.id
           this.connectToStream(currentGame.id)
-          router.lock()
+          // router.lock()
         } 
       },
-      connectToStream(gameId) {
-        startStream(`/board/game/stream/${gameId}`, (data) => {
+      async connectToStream(gameId) {
+        console.log(`Attempting to stream ${gameId}`)
+        const boardGame = games.getCurrentLatestGame() || {}
+        
+        const stream =  await lichessApi.getGameStream(gameId, (data) => {
           switch(data.type) {
             case 'gameFull': 
               console.log(`Succefully connected to Game:`)
               console.log(data.id, data.createdAt, data.state.status) 
+                            
+              boardGame.moves = games.getAlgebraMoves(data.state.moves)
+              if (data.white.id == this.user) { 
+                boardGame.playedAs = 'white'
+              } else {
+                boardGame.playedAs = 'black'
+              }
+              console.log(boardGame)
+              this.loadBoard(boardGame)
+              
               break;
             case 'gameState':
-              const endStates = ['mate', 'resign', 'stalemate', 'aborted']
-              if (endStates.includes(data.status)) {
-                console.log('Game ended!')
-                this.messageType = 'ended'
-                this.message = `You have completed your game with ${this.selected.name}`
-                this.loadUserGames()
-              }
+              this.boardGame.moves = games.getAlgebraMoves(data.moves)
+              console.log(this.boardGame.moves)
+              // const endStates = ['mate', 'resign', 'stalemate', 'aborted']
+              // if (endStates.includes(data.status)) {
+              //   console.log('Game ended!')
+              //   this.messageType = 'ended'
+              //   this.message = `You have completed your game with ${this.selected.name}`
+              //   this.loadUserGames()
+              // }
             default: 
           } 
         })
+
       },
     }
   })
+
   const customElements = ['piece', 'square']
   app1.config.compilerOptions.isCustomElement = tag => customElements.includes(tag)
   app1.component('WizFace', WizFace)
