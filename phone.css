@@ -187,6 +187,11 @@
     margin: 0;
   }
 
+  .nav-buttons button:hover {
+    border-color: unset;
+    color: unset;
+  }
+
   .board-nav .king {
     height: 3rem;
     margin-top: 1rem;

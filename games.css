@@ -200,6 +200,8 @@ cg-board {
   white-space: nowrap;
   padding: .25rem;
   border-radius: .5rem;
+  height: 1rem;
+  margin-bottom: .5rem;
 }
 
 .pgn-viewer span.move-number {
