@@ -197,7 +197,15 @@ cg-board {
 
 .pgn-viewer span.half-move {
   cursor: pointer;
+  white-space: nowrap;
+  padding: .25rem;
+  border-radius: .5rem;
 }
+
+.pgn-viewer span.move-number {
+  padding-top: .25rem;
+}
+
 
 .pgn-viewer .highlight {
   background-color: green;
