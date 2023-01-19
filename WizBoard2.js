@@ -7,24 +7,6 @@ const config = getPromoConfig('e8')
 const { color, queenTop, roookTop, knightTop, bishopTop, leftOffset } = config
 const pgnViewer = html`<div class="pgn-viewer"></div>`
 
-const pgnNav = html`
-  <div v-if="navIsOn"> 
-    <div class="pgn-viewer">
-      <template v-for="(move, index) in gameHistory">
-        <span v-if="index % 2 === 0" class="move-number">{{index / 2 + 1}}.</span>
-        <span :class="{highlight: navIndex - 1 === index}" class="half-move">
-          {{move}}
-        </span> 
-      </template>
-    </div>
-    <button @click="goStart" id="go-start-button">Go Start</button>
-    <button @click="goBack" id="go-back-button">Go Back</button>
-    <button @click="goForward" id="go-forward-button">Go Forward</button>
-    <button @click="goEnd" id="go-end-button">Go End</button>
-  </div>
-`
-
-
 const template =  html`
   <div class="board-container">
     <div :id="id"></div>
@@ -47,7 +29,7 @@ const template =  html`
 
 
 export default {
-  props : [ 'navIsOn', 'id', 'moves', 'colorSide', 'isLocked' ],
+  props : [  'id', 'moves', 'colorSide', 'isLocked' ],
   data() {
     const { 
       color, 
@@ -174,15 +156,12 @@ export default {
     doPromotion(piece) {
       const from = this.promoteFromSquare
       const to = this.promoteToSquare
-
       this.game.move({ from, to, promotion: piece })
-      
       const lastAlgebraMove = this.game.history().slice(-1)[0]
-      this.gameHistory.push(lastAlgebraMove)
-      this.navIndex = this.game.history().length
-
       updateBoard(this.game, this.cg)
       this.isPromoting = false
+      const move = from + to + piece
+      this.$emit('move', move)
     }, 
     goStart() {
       this.game.reset()

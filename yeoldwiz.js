@@ -468,7 +468,6 @@ async function startApp(user) {
         console.log(`Attempting to start a game with ${opponent}`)
         const tokens = JSON.parse(window.localStorage.tokens)
         this.isStartingGame = true
-        // console.log(tokens.access_token)
       
         const res = await lichessApi.createChallenge(colorToPlay)
       
@@ -512,7 +511,6 @@ async function startApp(user) {
           this.wizKidMode = 'message'
           this.currentGame = currentGame.id
           this.connectToStream(currentGame.id)
-          // router.lock()
         } 
       },
       async connectToStream(gameId) {
@@ -524,7 +522,8 @@ async function startApp(user) {
             case 'gameFull': 
               console.log(`Succefully connected to Game:`)
               console.log(data.id, data.createdAt, data.state.status) 
-                            
+              console.log(data.state.moves)
+
               boardGame.moves = games.getAlgebraMoves(data.state.moves)
               if (data.white.id == this.user) { 
                 boardGame.playedAs = 'white'
@@ -536,13 +535,24 @@ async function startApp(user) {
               break;
             case 'gameState':
               this.boardGame.moves = games.getAlgebraMoves(data.moves)
-              // const endStates = ['mate', 'resign', 'stalemate', 'aborted']
-              // if (endStates.includes(data.status)) {
-              //   console.log('Game ended!')
-              //   this.messageType = 'ended'
-              //   this.message = `You have completed your game with ${this.selected.name}`
-              //   this.loadUserGames()
-              // }
+              const endStates = ['mate', 'resign', 'stalemate', 'aborted']
+              if (endStates.includes(data.status)) {
+                console.log(data)
+                console.log('Game ended!')
+                this.messageType = 'ended'
+                this.message = `You have completed your game with ${this.selected.name}`
+                
+                // a hacky way to update the board game status in real time
+                this.boardGame.status = data.status
+                this.boardGame.lastMoveAt = Date.now()
+                if (this.boardGame.playedAs === data.winner) {
+                  this.boardGame.conclusion = 'won'
+                } else {
+                  this.boardGame.conclusion = 'lost'
+                }
+                
+                this.loadUserGames()
+              }
             default: 
           } 
         })
