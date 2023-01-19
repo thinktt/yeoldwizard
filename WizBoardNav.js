@@ -24,14 +24,30 @@ const template = html`
       <button @click="$emit('goEnd')" id="go-end-button">l</button>
     </div>
     <h2 class="user-name">{{userName}}</h2>
+    <div class="nav-buttons">
+      <template v-if="game.moves.length > 1 && !comfirmMessage">
+        <button @click="comfirmMessage = 'Resign'" id="resign-button" title="resign">&#xe9cc;</button>
+        <button @click="comfirmMessage = 'Offer Draw'" id="offer-draw-button" title="offer draw">&#xe904;</button>
+      </template>
+      <template else-if="!comfirmMessage">
+        <button @click="comirmMessage = 'Abort Game'" id="abort-button" title="abort game">&#xe902;</button>
+      </template>
+      <template v-if="comfirmMessage">
+        <div>{{comfirmMessage}}?</div>
+        <button @click="comfirmMessage = ''" id="no-button" title="no">&#xe902;</button>
+        <button @click="doComfirmAction(comfirmMessage)" id="yes-button" title="yes">&#xea10;</button>
+      </template>
+    </div>
+
     <wiz-game-status :game="game"></wiz-game-status>
+
   </div>
 `
 
 export default {
   props : ['game', 'navIndex', 'userName'],
   data() {
-    return {}
+    return {comfirmMessage: ''}
   },
   computed: {
     gameHistory() {
@@ -40,6 +56,13 @@ export default {
         game.move(move) 
       }
       return game.history()
+    }
+  },
+  methods: {
+    doComfirmAction(action) {
+      if (action === 'Resign') this.$emit('quitAction', 'resign')
+      if (action === 'Offer Draw') this.$emit('quitAction', 'offerDraw')
+      if (action === 'Abort Game') this.$emit('quitAction', 'abort')
     }
   },
   name: 'WizBoardNav',

@@ -188,9 +188,9 @@ cg-board {
 .pgn-viewer {
   width: unset;
   padding-top: .5rem;
-  padding-left: 2rem;
   display: grid;
   grid-template-columns: 25% 30% 30%;
+  grid-auto-rows: 1.7rem;
   overflow: auto;
   background-color: var(--wizblackfade);
 }

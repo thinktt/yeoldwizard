@@ -294,6 +294,9 @@ async function startApp(user) {
           console.log('Error making move', err)
         }
       },
+      async doQuitAction(action) {
+        console.log(action)
+      },
       hasTrophy(group, games) {
         return hasTrophy(group, games)
       },

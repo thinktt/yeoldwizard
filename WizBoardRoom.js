@@ -21,6 +21,7 @@ const template = html`
       </wiz-board-2>
       
       <wiz-board-nav
+        @quit-action="(action) => $emit('quitAction', action)"
         @go-start="goStart"
         @go-back="goBack"
         @go-forward="goForward"
