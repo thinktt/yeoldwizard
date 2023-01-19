@@ -4,6 +4,7 @@ export default {
   createChallenge,
   getGameStream,
   makeMove,
+  resign,
 }
 
 const baseUrl = 'https://lichess.org/api'
@@ -160,7 +161,32 @@ async function makeMove(gameId, move) {
 
   return res
 
-  // return post(`api/bot/game/${gameId}/move/${move}`, null, (err) => {
-  //   throw err
-  // })
 }
+
+async function post(apiRoute) {
+  const res = await fetch(`${baseUrl}${apiRoute}`, {
+    method: 'POST',
+    headers: { 
+      // 'Accept': 'application/json',
+      // 'Content-Type': 'application/json',
+      'Authorization' : 'Bearer ' + tokens.access_token
+    },
+  })
+  return res
+}
+
+async function resign(gameId) {
+  let err
+  const res = await post(`/board/game/${gameId}/resign`).catch(e => err = e)
+
+  if (err) throw err
+
+  if (!res.ok) {
+    const err = Error(`Resign request failed with status ${res.status}`)
+    throw err    
+  }
+
+  return true
+}
+
+// https://lichess.org/api/bot

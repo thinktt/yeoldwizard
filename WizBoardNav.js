@@ -17,6 +17,7 @@ const template = html`
         </span> 
       </template>
     </div>
+
     <div class="nav-buttons">
       <button @click="$emit('goStart')" id="go-start-button">s</button>
       <button @click="$emit('goBack')" id="go-back-button">p</button>
@@ -24,13 +25,14 @@ const template = html`
       <button @click="$emit('goEnd')" id="go-end-button">l</button>
     </div>
     <h2 class="user-name">{{userName}}</h2>
-    <div class="nav-buttons">
+    
+    <div v-if="shouldShowActions" class="nav-buttons">
       <template v-if="game.moves.length > 1 && !comfirmMessage">
         <button @click="comfirmMessage = 'Resign'" id="resign-button" title="resign">&#xe9cc;</button>
         <button @click="comfirmMessage = 'Offer Draw'" id="offer-draw-button" title="offer draw">&#xe904;</button>
       </template>
-      <template else-if="!comfirmMessage">
-        <button @click="comirmMessage = 'Abort Game'" id="abort-button" title="abort game">&#xe902;</button>
+      <template v-else-if="!comfirmMessage">
+        <button @click="comfirmMessage = 'Abort Game'" id="abort-button" title="abort game">&#xea0e;</button>
       </template>
       <template v-if="comfirmMessage">
         <div>{{comfirmMessage}}?</div>
@@ -47,7 +49,10 @@ const template = html`
 export default {
   props : ['game', 'navIndex', 'userName'],
   data() {
-    return {comfirmMessage: ''}
+    return {
+      comfirmMessage: '',
+      shouldShowActions: true,
+    }
   },
   computed: {
     gameHistory() {
@@ -58,11 +63,19 @@ export default {
       return game.history()
     }
   },
+  watch: {
+    navIndex() {
+      this.shouldShowActions = true
+      this.comfirmMessage = ''
+    }
+  },
   methods: {
     doComfirmAction(action) {
       if (action === 'Resign') this.$emit('quitAction', 'resign')
       if (action === 'Offer Draw') this.$emit('quitAction', 'offerDraw')
       if (action === 'Abort Game') this.$emit('quitAction', 'abort')
+      this.comfirmMessage = ''
+      this.shouldShowActions = false
     }
   },
   name: 'WizBoardNav',

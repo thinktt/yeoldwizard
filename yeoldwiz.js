@@ -295,6 +295,7 @@ async function startApp(user) {
         }
       },
       async doQuitAction(action) {
+        if (action === 'resign') lichessApi.resign(this.boardGame.id)
         console.log(action)
       },
       hasTrophy(group, games) {
