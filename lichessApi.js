@@ -5,6 +5,8 @@ export default {
   getGameStream,
   makeMove,
   resign,
+  offerDraw,
+  abortGame,
 }
 
 const baseUrl = 'https://lichess.org/api'
@@ -188,5 +190,34 @@ async function resign(gameId) {
 
   return true
 }
+
+async function offerDraw(gameId) {
+  let err
+  const res = await post(`/board/game/${gameId}/draw/yes`).catch(e => err = e)
+
+  if (err) throw err
+
+  if (!res.ok) {
+    const err = Error(`Draw request failed with status ${res.status}`)
+    throw err    
+  }
+
+  return true
+}
+
+async function abortGame(gameId) {
+  let err
+  const res = await post(`/board/game/${gameId}/abort`).catch(e => err = e)
+
+  if (err) throw err
+
+  if (!res.ok) {
+    const err = Error(`Abort request failed with status ${res.status}`)
+    throw err    
+  }
+
+  return true
+}
+
 
 // https://lichess.org/api/bot

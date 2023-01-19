@@ -54,6 +54,10 @@ export default {
       shouldShowActions: false,
     }
   },
+  beforeUpdate() {
+    if (this.game.status === 'started') this.shouldShowActions = true
+      else this.shouldShowActions = false
+  },
   computed: {
     gameHistory() {
       const game = new Chess() 
@@ -65,8 +69,8 @@ export default {
   },
   watch: {
     navIndex() {
-      if (this.game.status === 'started') this.shouldShowActions = true
-        else this.shouldShowActions = false
+      // if (this.game.status === 'started') this.shouldShowActions = true
+      //   else this.shouldShowActions = false
       this.comfirmMessage = ''
     }
   },

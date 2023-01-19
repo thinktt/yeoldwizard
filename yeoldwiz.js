@@ -296,6 +296,8 @@ async function startApp(user) {
       },
       async doQuitAction(action) {
         if (action === 'resign') lichessApi.resign(this.boardGame.id)
+        if (action === 'offerDraw') lichessApi.offerDraw(this.boardGame.id)
+        if (action === 'abort') lichessApi.abortGame(this.boardGame.id)
         console.log(action)
       },
       hasTrophy(group, games) {
@@ -521,15 +523,14 @@ async function startApp(user) {
         const boardGame = games.getCurrentLatestGame() || {}
         console.log(`Attempting to stream ${boardGame.id}`)
         
-        const stream =  await lichessApi.getGameStream(boardGame.id, (data) => {
-          switch(data.type) {
+        const stream =  await lichessApi.getGameStream(boardGame.id, (event) => {
+          switch(event.type) {
             case 'gameFull': 
               console.log(`Succefully connected to Game:`)
-              console.log(data.id, data.createdAt, data.state.status) 
-              console.log(data.state.moves)
+              console.log(event.id, event.createdAt, event.state.status) 
 
-              boardGame.moves = games.getAlgebraMoves(data.state.moves)
-              if (data.white.id == this.user) { 
+              boardGame.moves = games.getAlgebraMoves(event.state.moves)
+              if (event.white.id == this.user) { 
                 boardGame.playedAs = 'white'
               } else {
                 boardGame.playedAs = 'black'
@@ -538,18 +539,20 @@ async function startApp(user) {
               
               break;
             case 'gameState':
-              this.boardGame.moves = games.getAlgebraMoves(data.moves)
-              const endStates = ['mate', 'resign', 'stalemate', 'aborted']
-              if (endStates.includes(data.status)) {
-                console.log(data)
+              console.log('normal game event')
+              console.log(event)
+              this.boardGame.moves = games.getAlgebraMoves(event.moves)
+              const endStates = ['mate', 'resign', 'stalemate', 'aborted', 'draw']
+              if (endStates.includes(event.status)) {
                 console.log('Game ended!')
                 this.messageType = 'ended'
                 this.message = `You have completed your game with ${this.selected.name}`
                 
                 // a hacky way to update the board game status in real time
-                this.boardGame.status = data.status
+                this.boardGame.status = event.status
                 this.boardGame.lastMoveAt = Date.now()
-                if (this.boardGame.playedAs === data.winner) {
+                if (event.status === 'draw') this.boardGame.conclusion = 'draw'
+                else if (this.boardGame.playedAs === event.winner) {
                   this.boardGame.conclusion = 'won'
                 } else {
                   this.boardGame.conclusion = 'lost'
@@ -557,7 +560,10 @@ async function startApp(user) {
                 
                 this.loadUserGames()
               }
+              break;
             default: 
+              console.log('unhandled game event: ' +  event.type)
+              console.log(event)
           } 
         })
 
