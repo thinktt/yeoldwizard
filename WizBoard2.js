@@ -47,7 +47,7 @@ const template =  html`
 
 
 export default {
-  props : [ 'navIsOn', 'id', 'moves', 'colorSide' ],
+  props : [ 'navIsOn', 'id', 'moves', 'colorSide', 'isLocked' ],
   data() {
     const { 
       color, 
@@ -74,6 +74,7 @@ export default {
     }
   },
   mounted: function() {
+    console.log(this.colorSide)
     this.game = new Chess()
     for (const move of this.moves) {
       this.game.move(move) 
@@ -96,8 +97,8 @@ export default {
       check: checkColor, 
       movable: {
         free: false,
-        // color: null, //'white',
-        // dests: getLeglaMoves(this.game),
+        color: this.colorSide, //this.color,
+        dests: getLeglaMoves(this.game),
         showDests: false,
         events: {
           after: this.onMove
@@ -108,10 +109,10 @@ export default {
         showDests: true,
       },
       draggable: {
-        enabled: false,
+        enabled: true,
       },
       selectable: {
-        enabled: false,
+        enabled: true,
       },
       drawable: {
         enabled: false,
@@ -128,14 +129,15 @@ export default {
       for (const move of moves) {
         this.game.move(move) 
       }
-      // this.navIndex = this.game.history().length
-      this.navIndex = 0
-      // const lastAlgebraMove = this.game.history().slice(-1)[0]
-      this.gameHistory = this.game.history()
-      updateBoard(this.game, this.cg)
+      updateBoard(this.game, this.cg, this.isLocked)
     },
     colorSide(color) {
-      this.cg.set({ orientation: color, })
+      this.cg.set({ 
+        orientation: color,
+        movable: {
+          color: color,
+        } 
+      })
     },
   },
   methods: {
@@ -145,15 +147,17 @@ export default {
         this.doPromoteRequest(from, to)
         return
       }
-      // reset game hisotry if user has navigate back and made a new move
-      if (this.gameHistory.length > this.navIndex) {
-        this.gameHistory = this.game.history()
-      } 
-      this.game.move({ from, to })
-      this.navIndex = this.game.history().length
-      const lastAlgebraMove = this.game.history().slice(-1)[0]
-      this.gameHistory.push(lastAlgebraMove)
-      updateBoard(this.game, this.cg)
+
+      this.$emit('move', from + to)
+      // // reset game hisotry if user has navigate back and made a new move
+      // if (this.gameHistory.length > this.navIndex) {
+      //   this.gameHistory = this.game.history()
+      // } 
+      // this.game.move({ from, to })
+      // this.navIndex = this.game.history().length
+      // const lastAlgebraMove = this.game.history().slice(-1)[0]
+      // this.gameHistory.push(lastAlgebraMove)
+      // updateBoard(this.game, this.cg)
     },
     doPromoteRequest(from, to) {
       const config = getPromoConfig(to)
@@ -224,14 +228,27 @@ export default {
 }
 
 
-function updateBoard(game, cg) {
+function updateBoard(game, cg, isLocked) {
   const lastMove = getLastMove(game)
+
+  if (isLocked) {
+    cg.set({
+      draggable: { enabled: false },
+      selectable: { enabled: false },
+    })
+  } else {
+    cg.set({
+      draggable: { enabled: true },
+      selectable: { enabled: true },
+    })
+  }
+
   cg.set({ 
     fen: game.fen(),
     check: game.in_check(),
     movable: {
       // color: getTurn(game),
-      // dests: getLeglaMoves(game),
+      dests: getLeglaMoves(game),
     },
     turnColor: getTurn(game),
     lastMove,

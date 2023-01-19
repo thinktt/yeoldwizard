@@ -3,6 +3,7 @@ export default {
   getGamesByIds,
   createChallenge,
   getGameStream,
+  makeMove,
 }
 
 const baseUrl = 'https://lichess.org/api'
@@ -138,3 +139,28 @@ async function createChallenge(colorToPlay) {
 
   return res
 } 
+
+async function makeMove(gameId, move) {
+  const res = await fetch(`${baseUrl}/board/game/${gameId}/move/${move}`, {
+    method: 'POST',
+    headers: { 
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization' : 'Bearer ' + tokens.access_token
+    },
+  })
+
+  const data = await res.json() 
+
+  if (!res.ok) {
+    let err = Error(`${res.status}`)
+    err.res = res 
+    throw err    
+  }
+
+  return res
+
+  // return post(`api/bot/game/${gameId}/move/${move}`, null, (err) => {
+  //   throw err
+  // })
+}

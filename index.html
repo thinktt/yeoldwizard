@@ -97,6 +97,7 @@
       </wiz-games>
 
       <wiz-board-room 
+        @move="doMove"
         :class="{noshow: infoMode !== 'board'}" 
         :game="boardGame"
         :cmp="selected"

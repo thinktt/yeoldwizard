@@ -284,6 +284,16 @@ async function startApp(user) {
       return data
     },
     methods : {
+      async doMove(move) {
+        const sloppyMoves = this.boardGame.moves.slice()
+        sloppyMoves.push(move)
+        this.boardGame.moves = games.getAlgebraMoves(sloppyMoves.join(' ')) 
+        let err
+        const res = await lichessApi.makeMove(this.boardGame.id, move).catch((e) => err = e )
+        if (err) {
+          console.log('Error making move', err)
+        }
+      },
       hasTrophy(group, games) {
         return hasTrophy(group, games)
       },
@@ -448,7 +458,7 @@ async function startApp(user) {
       async startGame(opponent) {
         // be sure to send our alias to lichess to stay consistent
         this.wizKidMode = 'message'
-        router.lock()
+        // router.lock()
         opponent = getAlias(opponent)
         
         const colorToPlay = games.getColorToPlay(opponent)
@@ -489,7 +499,7 @@ async function startApp(user) {
         this.currentGame = gameId
         this.messageType = 'started'
 
-        // this.connectToStream(gameId)
+        this.loadUserGames()
 
         return true
       },
@@ -506,10 +516,10 @@ async function startApp(user) {
         } 
       },
       async connectToStream(gameId) {
-        console.log(`Attempting to stream ${gameId}`)
         const boardGame = games.getCurrentLatestGame() || {}
+        console.log(`Attempting to stream ${boardGame.id}`)
         
-        const stream =  await lichessApi.getGameStream(gameId, (data) => {
+        const stream =  await lichessApi.getGameStream(boardGame.id, (data) => {
           switch(data.type) {
             case 'gameFull': 
               console.log(`Succefully connected to Game:`)

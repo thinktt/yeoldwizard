@@ -12,10 +12,12 @@ const template = html`
         <!-- <wiz-badges-2></wiz-badges-2> -->
       </div>
       
-      <wiz-board-2  
+      <wiz-board-2
+        @move="(move) => $emit('move', move)"  
         id="main-board"
         :moves="boardMoves" 
-        :color-side="game.playedAs">
+        :color-side="game.playedAs"
+        :is-locked="isLocked">
       </wiz-board-2>
       
       <wiz-board-nav
@@ -56,6 +58,9 @@ export default {
   computed: {
     boardMoves() {
       return this.game.moves.slice(0, this.navIndex)
+    },
+    isLocked() {
+      return this.navIndex !== this.game.moves.length 
     }
   },
   watch : {
@@ -64,10 +69,6 @@ export default {
         this.navIndex = game.moves.length
         const query = '#move' + (this.navIndex)
         const el = document.querySelector(query)
-        console.log(this.navIndex)
-        console.log(el)
-        console.log(query)
-        // el.scrollIntoView({block: "center"})
       },
       deep: true, 
     }
@@ -75,28 +76,17 @@ export default {
   methods: {
     goStart() {
       this.navIndex = 0
-      // const el = document.querySelector('.pgn-viewer')
-      // el.scrollTo({top: 0})
-      // el.scrollTo({left: 0})
     },
     goBack() {
       if (this.navIndex === 0) return 
       this.navIndex -- 
-
-      // if (this.navIndex === 0) return 
-      // const el = document.querySelector('#move' + this.navIndex)
-      // el.scrollIntoView({block: "center"})
     },
     goForward() {
       if (this.navIndex === this.game.moves.length) return 
       this.navIndex ++
-      // const el = document.querySelector('#move' + this.navIndex)
-      // el.scrollIntoView({block: "center"})
     },
     goEnd() {
       this.navIndex = this.game.moves.length 
-      // const el = document.querySelector('#move' + this.navIndex)
-      // el.scrollIntoView({block: "center"})
     },
     goIndex(index) {
       this.navIndex = index + 1
@@ -106,7 +96,7 @@ export default {
       if (e.keyCode === 37) this.goBack()
       if (e.keyCode === 38) this.goStart()
       if (e.keyCode === 40) this.goEnd()
-    }
+    },
   },
   template,
 }
