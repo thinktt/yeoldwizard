@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       comfirmMessage: '',
-      shouldShowActions: true,
+      shouldShowActions: false,
     }
   },
   computed: {
@@ -65,7 +65,8 @@ export default {
   },
   watch: {
     navIndex() {
-      this.shouldShowActions = true
+      if (this.game.status === 'started') this.shouldShowActions = true
+        else this.shouldShowActions = false
       this.comfirmMessage = ''
     }
   },
