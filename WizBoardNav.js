@@ -27,6 +27,7 @@ const template = html`
     <h2 class="user-name">{{userName}}</h2>
     
     <div v-if="shouldShowActions" class="nav-buttons">
+    
       <template v-if="game.moves.length > 1 && !comfirmMessage">
         <button @click="comfirmMessage = 'Resign'" id="resign-button" title="resign">&#xe9cc;</button>
         <button 
@@ -37,14 +38,17 @@ const template = html`
           &#xe904;
         </button>
       </template>
+    
       <template v-else-if="!comfirmMessage">
         <button @click="comfirmMessage = 'Abort Game'" id="abort-button" title="abort game">&#xea0e;</button>
       </template>
+    
       <template v-if="comfirmMessage">
         <div>{{comfirmMessage}}?</div>
         <button @click="comfirmMessage = ''" id="no-button" title="no">&#xe902;</button>
         <button @click="doComfirmAction(comfirmMessage)" id="yes-button" title="yes">&#xea10;</button>
       </template>
+      
       <div v-if="drawOfferState === 'offered'">
         You offered a Draw
       </div>
@@ -54,6 +58,7 @@ const template = html`
       <div v-if="drawOfferState === 'ignored'" class="nav-message">
         Draw offeres are not being accpeted righ now, make more moves and try again later
       </div>
+    
     </div>
 
     <wiz-game-status :game="game"></wiz-game-status>

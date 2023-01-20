@@ -16,6 +16,7 @@ export default {
   deDupeGames,
   clearWasForwardedToYowApi,
   getAlgebraMoves,
+  getDrawType,
 }
 
 // module globals

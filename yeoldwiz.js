@@ -550,15 +550,19 @@ async function startApp(user) {
               }
              const endStates = ['mate', 'resign', 'stalemate', 'aborted', 'draw']
              if (endStates.includes(event.status)) {
+                console.log(event)
                 console.log('Game ended!')
                 this.messageType = 'ended'
                 this.message = `You have completed your game with ${this.selected.name}`
               
                 // a hacky way to update the board game status in real time
+                // need to create a better state flow from games module
                 this.boardGame.status = event.status
                 this.boardGame.lastMoveAt = Date.now()
-                if (event.status === 'draw') this.boardGame.conclusion = 'draw'
-                else if (this.boardGame.playedAs === event.winner) {
+                if (event.status === 'draw' || event.status === 'stalemate') { 
+                  this.boardGame.conclusion = 'draw'
+                  this.boardGame.drawType = games.getDrawType(this.boardGame)
+                } else if (this.boardGame.playedAs === event.winner) {
                   this.boardGame.conclusion = 'won'
                 } else {
                   this.boardGame.conclusion = 'lost'
