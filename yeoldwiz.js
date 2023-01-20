@@ -518,7 +518,7 @@ async function startApp(user) {
       
         games.addCurrentGame({id: gameId, opponent, })
         this.currentGame = gameId
-        this.messageType = 'started'
+        this.messageType = 'none'
 
         this.loadUserGames()
 
@@ -529,11 +529,13 @@ async function startApp(user) {
         const currentGame =  await games.getCurrentLatestGame() || {}
         if (currentGame.id) {
           this.route('selected', currentGame.opponent)
-          this.messageType = "started"
-          this.wizKidMode = 'message'
+          // this.messageType = "started"
+          // this.wizKidMode = 'message'
           this.currentGame = currentGame.id
           this.connectToStream(currentGame.id)
+          return
         } 
+        this.currentGame = null
       },
       async connectToStream(gameId) {
         const boardGame = games.getCurrentLatestGame() || {}
@@ -567,8 +569,8 @@ async function startApp(user) {
              if (endStates.includes(event.status)) {
                 console.log(event)
                 console.log('Game ended!')
-                this.messageType = 'ended'
-                this.message = `You have completed your game with ${this.selected.name}`
+                // this.messageType = 'ended'
+                // this.message = `You have completed your game with ${this.selected.name}`
               
                 // a hacky way to update the board game status in real time
                 // need to create a better state flow from games module

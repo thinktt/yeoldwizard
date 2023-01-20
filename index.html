@@ -64,6 +64,7 @@
             :score="games[selected.name] ? games[selected.name].score : null"
             :is-nemesis="games[selected.name] ? games[selected.name].isNemesis : null"
             :top-feat="games[selected.name] ? games[selected.name].topFeat : null"
+            :current-game-id="currentGame"
             @deselect="route('back')" :user="user" 
             @start-game="() => startGame(selected.name)"
             @show-games="route('games', selected.name)">
