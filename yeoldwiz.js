@@ -296,10 +296,21 @@ async function startApp(user) {
         }
       },
       async doQuitAction(action) {
-        if (action === 'resign') lichessApi.resign(this.boardGame.id)
-        if (action === 'offerDraw') lichessApi.offerDraw(this.boardGame.id)
-        if (action === 'abort') lichessApi.abortGame(this.boardGame.id)
-        if (action === 'drawWasIgnored') this.drawOfferState = 'ignored'
+        switch(action) {
+          case 'resign':
+             lichessApi.resign(this.boardGame.id)
+             break;
+          case 'offerDraw':
+             lichessApi.offerDraw(this.boardGame.id)
+             this.drawOfferState = 'offered'
+             break;
+          case 'abort':
+             lichessApi.abortGame(this.boardGame.id)
+             break;
+          case 'drawWasIgnored':
+             this.drawOfferState = 'ignored'
+             break;
+        }
       },
       hasTrophy(group, games) {
         return hasTrophy(group, games)
@@ -571,9 +582,11 @@ async function startApp(user) {
                 this.loadUserGames()
               }
               break;
-            case 'cahtLine': 
-              if (event.userName === 'Lichess' && event.text.contains('declines draw') ) {
-                console.log(event.text)
+            case 'chatLine': 
+              console.log('chatLine', event.text.includes, event.text.includes('declines draw'))
+              this.drawOfferState = 'declined'
+              if (event.username === 'lichess' && event.text.includes('declines draw') ) {
+                console.log('triggered!')
                 this.drawOfferState = 'declined'
               }
               break;

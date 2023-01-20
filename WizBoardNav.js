@@ -99,19 +99,19 @@ export default {
     },
     game: {
       handler() {
-        const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
-        const drawHasBeenOfferd = this.drawOfferState === 'offered'
-        const drawWasDeclined = this.drawOfferState === 'delcined'
-        console.log(movesSinceDrawOffer, drawHasBeenOfferd, drawWasDeclined)
-        if (drawHasBeenOfferd && movesSinceDrawOffer >= 2) {
-          console.log('draw offer is being ingored')
-          this.$emit('quitAction', 'drawWasIgnored')
-        }
+        // const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
+        // const drawHasBeenOfferd = this.drawOfferState === 'offered'
+        // const drawWasDeclined = this.drawOfferState === 'delcined'
+        // console.log(movesSinceDrawOffer, drawHasBeenOfferd, drawWasDeclined)
+        // if (drawHasBeenOfferd && movesSinceDrawOffer >= 2) {
+        //   console.log('draw offer is being ingored')
+        //   this.$emit('quitAction', 'drawWasIgnored')
+        // }
 
-        if (drawWasDeclined && movesSinceDrawOffer >= 2) {
-          console.log('clearing draw offer')
-          this.$emit('quitAction', 'clearDrawOffer')
-        }
+        // if (drawWasDeclined && movesSinceDrawOffer >= 2) {
+        //   console.log('clearing draw offer')
+        //   this.$emit('quitAction', 'clearDrawOffer')
+        // }
       },
       deep: true,
     },
