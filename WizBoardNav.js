@@ -28,10 +28,10 @@ const template = html`
     
     <div v-if="shouldShowActions" class="nav-buttons">
     
-      <template v-if="game.moves.length > 1 && !comfirmMessage">
+      <template v-if="game.moves.length > 1 && !comfirmMessage && !isWaiting">
         <button @click="comfirmMessage = 'Resign'" id="resign-button" title="resign">&#xe9cc;</button>
         <button 
-          :class="{ disabled: drawsAreOnHold }"
+          :class="{disabled: drawsAreOnHold}"
           @click="drawsAreOnHold ? null : comfirmMessage = 'Offer Draw'" 
           id="offer-draw-button" 
           title="offer draw">
@@ -39,7 +39,7 @@ const template = html`
         </button>
       </template>
     
-      <template v-else-if="!comfirmMessage">
+      <template v-else-if="!comfirmMessage && !isWaiting">
         <button @click="comfirmMessage = 'Abort Game'" id="abort-button" title="abort game">&#xea0e;</button>
       </template>
     
@@ -52,7 +52,7 @@ const template = html`
       <div v-if="drawOfferState === 'declined'" class="nav-message">
         {{this.game.opponent}} declined your draw offer
       </div>
-      <div v-if="drawOfferState === 'offered'" class="icon knight spin">
+      <div v-if="drawOfferState === 'offered' || isWaiting" class="icon knight spin">
         ♞
       </div>
     
@@ -71,7 +71,7 @@ export default {
       shouldShowActions: true,
       moveOfDrawOffer: 0,
       drawWasOffered: false,
-      message: '',
+      isWaiting: false,
     }
   },
   beforeUpdate() {
@@ -105,6 +105,7 @@ export default {
       this.shouldShowActions = true
       this.moveOfDrawOffer = 0
       this.drawWasOffered = false
+      this.isWaiting = false
       this.$emit('quitAction', 'clearDrawOffer')
     }
  },
@@ -120,8 +121,8 @@ export default {
 
       if (action === 'Resign') this.$emit('quitAction', 'resign')
       if (action === 'Abort Game') this.$emit('quitAction', 'abort')
+      this.isWaiting = true
       this.comfirmMessage = ''
-      this.shouldShowActions = false
     }
   },
   name: 'WizBoardNav',
