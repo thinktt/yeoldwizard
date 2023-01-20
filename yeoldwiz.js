@@ -304,7 +304,6 @@ async function startApp(user) {
              lichessApi.offerDraw(this.boardGame.id)
              this.drawOfferState = 'offered'
              await new Promise(r => setTimeout(r, 5000))
-             console.log(this.drawOfferState)
              if (this.drawOfferState === 'offered') this.drawOfferState = 'ignored'
              break;
           case 'abort':
@@ -588,10 +587,7 @@ async function startApp(user) {
               }
               break;
             case 'chatLine': 
-              console.log('chatLine', event.text.includes, event.text.includes('declines draw'))
-              this.drawOfferState = 'declined'
               if (event.username === 'lichess' && event.text.includes('declines draw') ) {
-                console.log('triggered!')
                 this.drawOfferState = 'declined'
               }
               break;
@@ -602,6 +598,11 @@ async function startApp(user) {
         })
 
       },
+    },
+    watch: {
+      drawOfferState(newState, oldState) {
+        console.log(`drawOfferState  OLD:${oldState || 'none'} NEW:${newState || 'none'}`)
+      }
     }
   })
 

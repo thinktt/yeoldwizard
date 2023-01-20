@@ -56,7 +56,6 @@ export default {
     }
   },
   mounted: function() {
-    console.log(this.colorSide)
     this.game = new Chess()
     for (const move of this.moves) {
       this.game.move(move) 
@@ -129,17 +128,7 @@ export default {
         this.doPromoteRequest(from, to)
         return
       }
-
       this.$emit('move', from + to)
-      // // reset game hisotry if user has navigate back and made a new move
-      // if (this.gameHistory.length > this.navIndex) {
-      //   this.gameHistory = this.game.history()
-      // } 
-      // this.game.move({ from, to })
-      // this.navIndex = this.game.history().length
-      // const lastAlgebraMove = this.game.history().slice(-1)[0]
-      // this.gameHistory.push(lastAlgebraMove)
-      // updateBoard(this.game, this.cg)
     },
     doPromoteRequest(from, to) {
       const config = getPromoConfig(to)

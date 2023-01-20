@@ -48,16 +48,10 @@ const template = html`
         <button @click="comfirmMessage = ''" id="no-button" title="no">&#xe902;</button>
         <button @click="doComfirmAction(comfirmMessage)" id="yes-button" title="yes">&#xea10;</button>
       </template>
-      
-      <!-- <div v-if="drawOfferState === 'offered'">
-        You offered a Draw
-      </div> -->
+
       <div v-if="drawOfferState === 'declined'" class="nav-message">
         {{this.game.opponent}} declined your draw offer
       </div>
-      <!-- <div v-if="drawOfferState === 'ignored'" class="nav-message">
-        Draw offeres are not being accpeted righ now, make more moves and try again later
-      </div> -->
       <div v-if="drawOfferState === 'offered'" class="icon knight spin">
         ♞
       </div>
@@ -94,7 +88,6 @@ export default {
     },
     drawsAreOnHold() {
       const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
-      console.log(movesSinceDrawOffer)
       return this.moveOfDrawOffer !==0 && movesSinceDrawOffer < 22
     }
   },
@@ -103,16 +96,16 @@ export default {
       this.comfirmMessage = ''
     },
     'game.moves'() {
-      console.log('New moves baby!')
       const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
       if (movesSinceDrawOffer === 2) this.$emit('quitAction', 'clearDrawOffer') 
     },
     'game.id'() {
-      console.log('Incoming! New Game!')
+      console.log(`loading ${this.game.id} into play board`)
       this.comfirmMessage = ''
       this.shouldShowActions = true
       this.moveOfDrawOffer = 0
       this.drawWasOffered = false
+      this.$emit('quitAction', 'clearDrawOffer')
     }
  },
   methods: {
@@ -149,3 +142,10 @@ export default {
 //   console.log('clearing draw offer')
 //   this.$emit('quitAction', 'clearDrawOffer')
 // }
+
+// <!-- <div v-if="drawOfferState === 'offered'">
+// You offered a Draw
+// </div> -->
+// <!-- <div v-if="drawOfferState === 'ignored'" class="nav-message">
+// Draw offeres are not being accpeted righ now, make more moves and try again later
+// </div> -->
