@@ -173,6 +173,11 @@ cg-board {
   text-decoration: none;
 }
 
+.board-nav .nav-message {
+  margin-right: 15%;
+  margin-left: 15%;
+}
+
 .pgn-viewer::-webkit-scrollbar {
   width: 15px;
 }
@@ -230,6 +235,18 @@ cg-board {
   border-width: .20rem;
   border-radius: 2rem;
   border: none;
+}
+
+.nav-buttons .disabled {
+  color: gray;
+  cursor: unset;
+  opacity: 75%;
+}
+
+.nav-buttons .disabled:hover{
+  border: gray;
+  color: gray;
+  opacity: 75%;
 }
 
 .nav-buttons button:hover {

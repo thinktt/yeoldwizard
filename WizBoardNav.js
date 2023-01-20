@@ -29,7 +29,13 @@ const template = html`
     <div v-if="shouldShowActions" class="nav-buttons">
       <template v-if="game.moves.length > 1 && !comfirmMessage">
         <button @click="comfirmMessage = 'Resign'" id="resign-button" title="resign">&#xe9cc;</button>
-        <button @click="comfirmMessage = 'Offer Draw'" id="offer-draw-button" title="offer draw">&#xe904;</button>
+        <button 
+          :class="{ disabled: drawOfferState }"
+          @click="drawOfferState ? null : comfirmMessage = 'Offer Draw'" 
+          id="offer-draw-button" 
+          title="offer draw">
+          &#xe904;
+        </button>
       </template>
       <template v-else-if="!comfirmMessage">
         <button @click="comfirmMessage = 'Abort Game'" id="abort-button" title="abort game">&#xea0e;</button>
@@ -39,6 +45,15 @@ const template = html`
         <button @click="comfirmMessage = ''" id="no-button" title="no">&#xe902;</button>
         <button @click="doComfirmAction(comfirmMessage)" id="yes-button" title="yes">&#xea10;</button>
       </template>
+      <div v-if="drawOfferState === 'offered'">
+        You offered a Draw
+      </div>
+      <div v-if="drawOfferState === 'declined'" class="nav-message">
+        {{this.game.opponent}} declined your draw offer
+      </div>
+      <div v-if="drawOfferState === 'ignored'" class="nav-message">
+        Draw offeres are not being accpeted righ now, make more moves and try again later
+      </div>
     </div>
 
     <wiz-game-status :game="game"></wiz-game-status>
@@ -47,11 +62,13 @@ const template = html`
 `
 
 export default {
-  props : ['game', 'navIndex', 'userName'],
+  props : ['game', 'navIndex', 'userName', 'drawOfferState'],
   data() {
     return {
       comfirmMessage: '',
-      shouldShowActions: false,
+      shouldShowActions: true,
+      moveOfDrawOffer: 128,
+      drawWasOffered: false,
     }
   },
   beforeUpdate() {
@@ -65,22 +82,50 @@ export default {
         game.move(move) 
       }
       return game.history()
+    },
+    drawsAreOnHold() {
+      return false
+      // return this.game.moves.length - this.moveOfDrawOffer < 15
     }
   },
   watch: {
     navIndex() {
-      // if (this.game.status === 'started') this.shouldShowActions = true
-      //   else this.shouldShowActions = false
       this.comfirmMessage = ''
-    }
+    },
+    game: {
+      handler() {
+        const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
+        const drawHasBeenOfferd = this.drawOfferState === 'offered'
+        const drawWasDeclined = this.drawOfferState === 'delcined'
+        console.log(movesSinceDrawOffer, drawHasBeenOfferd, drawWasDeclined)
+        if (drawHasBeenOfferd && movesSinceDrawOffer >= 2) {
+          console.log('draw offer is being ingored')
+          this.$emit('quitAction', 'drawWasIgnored')
+        }
+
+        if (drawWasDeclined && movesSinceDrawOffer >= 2) {
+          console.log('clearing draw offer')
+          this.$emit('quitAction', 'clearDrawOffer')
+        }
+      },
+      deep: true,
+    },
   },
   methods: {
     doComfirmAction(action) {
+      if (action === 'Offer Draw') {
+        this.$emit('quitAction', 'offerDraw')
+        this.drawWasOffered = true
+        this.moveOfDrawOffer = this.game.moves.length
+        this.comfirmMessage = ''
+        return 
+      }
+
       if (action === 'Resign') this.$emit('quitAction', 'resign')
-      if (action === 'Offer Draw') this.$emit('quitAction', 'offerDraw')
       if (action === 'Abort Game') this.$emit('quitAction', 'abort')
       this.comfirmMessage = ''
       this.shouldShowActions = false
+      console.log(action)
     }
   },
   name: 'WizBoardNav',

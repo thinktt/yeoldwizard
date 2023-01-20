@@ -27,6 +27,7 @@ const template = html`
         @go-forward="goForward"
         @go-end="goEnd"
         @go-index="goIndex"
+        :draw-offer-state=drawOfferState
         :game="game"
         :navIndex="navIndex"
         :userName="user">
@@ -37,7 +38,7 @@ const template = html`
 
 
 export default {
-  props: ['game', 'cmp', 'user'],
+  props: ['game', 'cmp', 'user', 'drawOfferState'],
   data() {
     return {
       navIndex: 0,
@@ -54,6 +55,7 @@ export default {
       return
     }
     const el = document.querySelector('#move' + this.navIndex)
+    if (!el) return
     el.scrollIntoView({block: "center"})
   },
   computed: {
@@ -61,7 +63,9 @@ export default {
       return this.game.moves.slice(0, this.navIndex)
     },
     isLocked() {
-      return this.navIndex !== this.game.moves.length 
+      const gameIsDone = this.game.status !== 'started'
+      const navIsOnPreviousMoves = this.navIndex !== this.game.moves.length
+      return gameIsDone || navIsOnPreviousMoves
     }
   },
   watch : {

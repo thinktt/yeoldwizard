@@ -189,6 +189,7 @@ async function startApp(user) {
           wasForwardedToYowApi: true,
           moves: [],
         },
+        drawOfferState: '',
         shouldShowSignOut: false,
         selectionIsLocked: false,
         isInPlayMode: false,
@@ -298,7 +299,7 @@ async function startApp(user) {
         if (action === 'resign') lichessApi.resign(this.boardGame.id)
         if (action === 'offerDraw') lichessApi.offerDraw(this.boardGame.id)
         if (action === 'abort') lichessApi.abortGame(this.boardGame.id)
-        console.log(action)
+        if (action === 'drawWasIgnored') this.drawOfferState = 'ignored'
       },
       hasTrophy(group, games) {
         return hasTrophy(group, games)
@@ -540,7 +541,6 @@ async function startApp(user) {
               break;
             case 'gameState':
               console.log('normal game event')
-              console.log(event)
               this.boardGame.moves = games.getAlgebraMoves(event.moves)
               if (event.status === 'aborted') {
                 this.route('back')
@@ -565,6 +565,12 @@ async function startApp(user) {
                 }
                 
                 this.loadUserGames()
+              }
+              break;
+            case 'cahtLine': 
+              if (event.userName === 'Lichess' && event.text.contains('declines draw') ) {
+                console.log(event.text)
+                this.drawOfferState = 'declined'
               }
               break;
             default: 

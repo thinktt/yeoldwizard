@@ -100,6 +100,7 @@
         @move="doMove"
         @quit-action="doQuitAction"
         :class="{noshow: infoMode !== 'board'}" 
+        :draw-offer-state="drawOfferState"
         :game="boardGame"
         :cmp="selected"
         :user="user">
