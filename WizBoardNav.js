@@ -31,8 +31,8 @@ const template = html`
       <template v-if="game.moves.length > 1 && !comfirmMessage">
         <button @click="comfirmMessage = 'Resign'" id="resign-button" title="resign">&#xe9cc;</button>
         <button 
-          :class="{ disabled: drawOfferState }"
-          @click="drawOfferState ? null : comfirmMessage = 'Offer Draw'" 
+          :class="{ disabled: drawsAreOnHold }"
+          @click="drawsAreOnHold ? null : comfirmMessage = 'Offer Draw'" 
           id="offer-draw-button" 
           title="offer draw">
           &#xe904;
@@ -49,14 +49,17 @@ const template = html`
         <button @click="doComfirmAction(comfirmMessage)" id="yes-button" title="yes">&#xea10;</button>
       </template>
       
-      <div v-if="drawOfferState === 'offered'">
+      <!-- <div v-if="drawOfferState === 'offered'">
         You offered a Draw
-      </div>
+      </div> -->
       <div v-if="drawOfferState === 'declined'" class="nav-message">
         {{this.game.opponent}} declined your draw offer
       </div>
-      <div v-if="drawOfferState === 'ignored'" class="nav-message">
+      <!-- <div v-if="drawOfferState === 'ignored'" class="nav-message">
         Draw offeres are not being accpeted righ now, make more moves and try again later
+      </div> -->
+      <div v-if="drawOfferState === 'offered'" class="icon knight spin">
+        ♞
       </div>
     
     </div>
@@ -72,8 +75,9 @@ export default {
     return {
       comfirmMessage: '',
       shouldShowActions: true,
-      moveOfDrawOffer: 128,
+      moveOfDrawOffer: 0,
       drawWasOffered: false,
+      message: '',
     }
   },
   beforeUpdate() {
@@ -89,33 +93,28 @@ export default {
       return game.history()
     },
     drawsAreOnHold() {
-      return false
-      // return this.game.moves.length - this.moveOfDrawOffer < 15
+      const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
+      console.log(movesSinceDrawOffer)
+      return this.moveOfDrawOffer !==0 && movesSinceDrawOffer < 22
     }
   },
   watch: {
     navIndex() {
       this.comfirmMessage = ''
     },
-    game: {
-      handler() {
-        // const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
-        // const drawHasBeenOfferd = this.drawOfferState === 'offered'
-        // const drawWasDeclined = this.drawOfferState === 'delcined'
-        // console.log(movesSinceDrawOffer, drawHasBeenOfferd, drawWasDeclined)
-        // if (drawHasBeenOfferd && movesSinceDrawOffer >= 2) {
-        //   console.log('draw offer is being ingored')
-        //   this.$emit('quitAction', 'drawWasIgnored')
-        // }
-
-        // if (drawWasDeclined && movesSinceDrawOffer >= 2) {
-        //   console.log('clearing draw offer')
-        //   this.$emit('quitAction', 'clearDrawOffer')
-        // }
-      },
-      deep: true,
+    'game.moves'() {
+      console.log('New moves baby!')
+      const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
+      if (movesSinceDrawOffer === 2) this.$emit('quitAction', 'clearDrawOffer') 
     },
-  },
+    'game.id'() {
+      console.log('Incoming! New Game!')
+      this.comfirmMessage = ''
+      this.shouldShowActions = true
+      this.moveOfDrawOffer = 0
+      this.drawWasOffered = false
+    }
+ },
   methods: {
     doComfirmAction(action) {
       if (action === 'Offer Draw') {
@@ -130,10 +129,23 @@ export default {
       if (action === 'Abort Game') this.$emit('quitAction', 'abort')
       this.comfirmMessage = ''
       this.shouldShowActions = false
-      console.log(action)
     }
   },
   name: 'WizBoardNav',
   template,
 }
 
+
+// const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
+// const drawHasBeenOfferd = this.drawOfferState === 'offered'
+// const drawWasDeclined = this.drawOfferState === 'delcined'
+// console.log(movesSinceDrawOffer, drawHasBeenOfferd, drawWasDeclined)
+// if (drawHasBeenOfferd && movesSinceDrawOffer >= 2) {
+//   console.log('draw offer is being ingored')
+//   this.$emit('quitAction', 'drawWasIgnored')
+// }
+
+// if (drawWasDeclined && movesSinceDrawOffer >= 2) {
+//   console.log('clearing draw offer')
+//   this.$emit('quitAction', 'clearDrawOffer')
+// }

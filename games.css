@@ -178,6 +178,12 @@ cg-board {
   margin-left: 15%;
 }
 
+.board-nav .icon.knight {
+  display: block;
+  margin: auto;
+  font-size: 1.7rem;
+}
+
 .pgn-viewer::-webkit-scrollbar {
   width: 15px;
 }

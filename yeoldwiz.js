@@ -303,6 +303,9 @@ async function startApp(user) {
           case 'offerDraw':
              lichessApi.offerDraw(this.boardGame.id)
              this.drawOfferState = 'offered'
+             await new Promise(r => setTimeout(r, 5000))
+             console.log(this.drawOfferState)
+             if (this.drawOfferState === 'offered') this.drawOfferState = 'ignored'
              break;
           case 'abort':
              lichessApi.abortGame(this.boardGame.id)
@@ -310,6 +313,8 @@ async function startApp(user) {
           case 'drawWasIgnored':
              this.drawOfferState = 'ignored'
              break;
+          case 'clearDrawOffer': 
+            this.drawOfferState = ''
         }
       },
       hasTrophy(group, games) {
@@ -551,7 +556,7 @@ async function startApp(user) {
               
               break;
             case 'gameState':
-              console.log('normal game event')
+              // console.log('normal game event')
               this.boardGame.moves = games.getAlgebraMoves(event.moves)
               if (event.status === 'aborted') {
                 this.route('back')
