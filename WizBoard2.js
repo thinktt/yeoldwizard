@@ -69,6 +69,7 @@ export default {
     this.gameHistory = this.game.history()
     window.gameHistory = this.gameHistory
     this.navIndex = this.gameHistory.length
+    
     this.cg = Chessground(document.getElementById(this.id), {
       orientation: this.colorSide,  
       turnColor: this.colorSide,
@@ -99,9 +100,10 @@ export default {
         enabled: false,
       },
       animation: { 
-        enabled: true 
+        enabled: false 
       },
     })
+
     window.cg = this.cg
   },
   watch: {

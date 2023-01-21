@@ -276,6 +276,8 @@ cg-board {
   margin-bottom: 25rem;
   width: 40rem;
   text-align: center;
+  content-visibility: auto
+
 }
 
 .games.loading-message {
