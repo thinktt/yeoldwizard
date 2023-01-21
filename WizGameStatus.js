@@ -34,11 +34,6 @@ const template = html`
       by {{game.status}}
     </p>
     <p>{{(new Date(game.lastMoveAt)).toDateString()}}</p>
-    <!-- <div class="game-link"> 
-      <a :href="game.link + '/' + game.playedAs" target="_blank" rel="noopener noreferrer">
-        view on lichess
-      </a>
-    </div> -->
 </div>
 `
 

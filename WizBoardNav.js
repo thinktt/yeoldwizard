@@ -36,12 +36,13 @@ const template = html`
         <button class="lichess-button" @click="openGame" title="play on Lichess">
           &#xe901;
         </button>
-        <button @click="comfirmMessage = 'Resign'" id="resign-button" title="resign">&#xe9cc;</button>
-        <button 
+
+        <button title="resign" @click="comfirmMessage = 'Resign'" id="resign-button">&#xe9cc;</button>
+        
+        <button title="offer draw"  
           :class="{disabled: drawsAreOnHold}"
           @click="drawsAreOnHold ? null : comfirmMessage = 'Offer Draw'" 
-          id="offer-draw-button" 
-          title="offer draw">
+          id="offer-draw-button"> 
           &#xe904;
         </button>
       </template>
@@ -52,8 +53,8 @@ const template = html`
     
       <template v-if="comfirmMessage">
         <div>{{comfirmMessage}}?</div>
-        <button @click="comfirmMessage = ''" id="no-button" title="no">&#xe902;</button>
-        <button @click="doComfirmAction(comfirmMessage)" id="yes-button" title="yes">&#xea10;</button>
+        <button title="no" @click="comfirmMessage = ''" id="no-button"> &#xe902;</button>
+        <button title="yes" @click="doComfirmAction(comfirmMessage)" id="yes-button">&#xea10;</button>
       </template>
 
       <div v-if="drawOfferState === 'declined'" class="nav-message">
@@ -64,9 +65,14 @@ const template = html`
       </div>
     
     </div>
-
     <wiz-game-status :game="game"></wiz-game-status>
 
+    <button title="view on Lichess" class="lichess-button" @click="openGame">
+      &#xe901;
+    </button>
+    
+    <div v-if="game.status !== 'started'" class="nav-buttons">
+    </div>
   </div>
 `
 

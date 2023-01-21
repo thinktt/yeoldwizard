@@ -30,6 +30,11 @@ const template = html`
           <div class="game-info-box">
             <wiz-game-status :game="game" :shouldShowPlayedAs="true">
             </wiz-game-status>
+            
+            <button title="view on Lichess" class="lichess-button" @click="openGame(game)">
+              &#xe901;
+            </button>
+            <div class="lichess-message">view on lichess</div>
           </div>
         </div>
       </template>
@@ -103,6 +108,11 @@ export default {
     },
     goBack() {
       this.$emit('goBack')
+    },
+    openGame(game) {
+      const url = 'https://lichess.org/' + game.id + '/' + game.playedAs
+      console.log(url)
+      window.open(url, '_blank')
     },
   },
   template,

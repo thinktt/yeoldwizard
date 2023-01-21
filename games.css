@@ -156,7 +156,7 @@ cg-board {
   padding-left: .5rem;
   padding-right: .5rem;
   display: grid;
-  grid-template-rows: 10% 45% 8% 9% 22% 5%;
+  grid-template-rows: 10% 45% 8% 9% 17% 10%;
 }
 
 .board-nav h2 {
@@ -260,8 +260,25 @@ cg-board {
   color: #DDDDDD;
 }
 
-.nav-buttons .lichess-button {
+.lichess-button {
+  font-family: iconmoon;
+  background: transparent;
+  border-color: goldenrod;
+  font-size: 1.5rem;
+  padding: .5rem;
+  margin: .25rem;
+  border-style: solid;
+  color: goldenrod;
+  cursor: pointer;
+  border-width: .20rem;
+  border-radius: 2rem;
+  border: none;
   font-weight: bold;
+}
+
+.lichess-button:hover {
+  border-color:#DDDDDD;
+  color: #DDDDDD;
 }
 
 .game-status p {
@@ -299,6 +316,15 @@ cg-board {
   text-align: center;
   margin-top: 4rem;
   width: 13rem;
+}
+
+.game-info-box .lichess-button {
+  margin-top: 1.5rem;
+  font-size: 2rem;
+}
+
+.game-info-box .lichess-message {
+  font-size: 1rem;
 }
 
 .game-info-box .king {
