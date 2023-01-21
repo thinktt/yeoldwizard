@@ -156,7 +156,7 @@ cg-board {
   padding-left: .5rem;
   padding-right: .5rem;
   display: grid;
-  grid-template-rows: 10% 45% 8% 9% 17% 10%;
+  grid-template-rows: 10% 45% 8% 10% 16% 10%;
 }
 
 .board-nav h2 {
@@ -311,7 +311,8 @@ cg-board {
 }
 
 .game-info-box {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
+  line-height: 1.5rem;
   margin: 1rem;
   text-align: center;
   margin-top: 4rem;
