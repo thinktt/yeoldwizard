@@ -260,6 +260,10 @@ cg-board {
   color: #DDDDDD;
 }
 
+.nav-buttons .lichess-button {
+  font-weight: bold;
+}
+
 .game-status p {
   margin: 0;
   margin-bottom: .25rem;

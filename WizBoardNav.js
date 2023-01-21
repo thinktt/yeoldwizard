@@ -25,10 +25,17 @@ const template = html`
       <button @click="$emit('goEnd')" id="go-end-button">l</button>
     </div>
     <h2 class="user-name">{{userName}}</h2>
-    
+      
+
     <div v-if="shouldShowActions" class="nav-buttons">
-    
+      <!-- <a :href="'https://lichess.org/' + game.id + '/' + game.playedAs" target="_blank" rel="noopener noreferrer">
+        &#xe901;
+      </a> -->
+ 
       <template v-if="game.moves.length > 1 && !comfirmMessage && !isWaiting">
+        <button class="lichess-button" @click="openGame" title="play on Lichess">
+          &#xe901;
+        </button>
         <button @click="comfirmMessage = 'Resign'" id="resign-button" title="resign">&#xe9cc;</button>
         <button 
           :class="{disabled: drawsAreOnHold}"
@@ -123,6 +130,11 @@ export default {
       if (action === 'Abort Game') this.$emit('quitAction', 'abort')
       this.isWaiting = true
       this.comfirmMessage = ''
+    },
+    openGame() {
+      const url = 'https://lichess.org/' + this.game.id + '/' + this.game.playedAs
+      console.log(url)
+      window.open(url, '_blank')
     }
   },
   name: 'WizBoardNav',
