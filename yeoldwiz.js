@@ -177,7 +177,8 @@ async function startApp(user) {
         messageType: 'none',
         message: 'Things fall apart',
         scoreMode: localStorage.scoreMode || 'ladder',
-        currentGame: null,
+        currentGameId: null,
+        currentGame: {},
         currentOpponent: '',
         boardGame: {
           id: "i8ximyUz",
@@ -352,6 +353,9 @@ async function startApp(user) {
         const selector = 'div[name="'  + cmpName + '"]'
         document.querySelector(selector).scrollIntoView({block: 'center'})
       },
+      goToCurrentGame() {
+        this.loadBoard(this.currentGame)
+      },
       showGames() {
         this.infoMode = 'games'
         this.navIsOn = false
@@ -475,7 +479,7 @@ async function startApp(user) {
         // this.route('')
       },
       openGame() {
-        window.open('https://lichess.org/' + this.currentGame, '_blank')
+        window.open('https://lichess.org/' + this.currentGameId, '_blank')
       },
       async startGame(opponent) {
         // be sure to send our alias to lichess to stay consistent
@@ -517,7 +521,7 @@ async function startApp(user) {
         }
       
         games.addCurrentGame({id: gameId, opponent, })
-        this.currentGame = gameId
+        this.currentGameId = gameId
         this.messageType = 'none'
 
         this.loadUserGames()
@@ -531,14 +535,15 @@ async function startApp(user) {
           this.route('selected', currentGame.opponent)
           // this.messageType = "started"
           // this.wizKidMode = 'message'
-          this.currentGame = currentGame.id
+          this.currentGameId = currentGame.id
+          this.currentGame = currentGame
           this.connectToStream(currentGame.id)
           return
         } 
-        this.currentGame = null
+        this.currentGameId = null
       },
       async connectToStream(gameId) {
-        const boardGame = games.getCurrentLatestGame() || {}
+        const boardGame = this.currentGame //games.getCurrentLatestGame() || {}
         console.log(`Attempting to stream ${boardGame.id}`)
         
         const stream =  await lichessApi.getGameStream(boardGame.id, (event) => {
@@ -558,7 +563,11 @@ async function startApp(user) {
               break;
             case 'gameState':
               // console.log('normal game event')
-              this.boardGame.moves = games.getAlgebraMoves(event.moves)
+              this.currentGame.moves = games.getAlgebraMoves(event.moves)
+              if (this.boardGame.id === this.currentGame.id) {
+                this.boardGame.move = this.currentGame.moves
+              }
+                // this.currentGame = this.boardGame
               if (event.status === 'aborted') {
                 this.route('back')
                 this.messageType = 'none'
