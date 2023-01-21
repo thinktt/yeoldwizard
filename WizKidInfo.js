@@ -25,7 +25,9 @@ const template =  html`
 
     
     <template v-if="mode === 'control'">
-      <h3 v-if="view === 'top' || badgeSelection">Wiz Rating {{cmp.rating}}</h3>
+      <h3 v-if="(view === 'top' || badgeSelection) && !currentGameId">Wiz Rating {{cmp.rating}}</h3>
+      <h3 v-if="(view === 'top' || badgeSelection) && currentGameId" style="color:geen">Playing Now</h3>
+
       <wiz-badges-2 v-if="view === 'top' || badgeSelection" 
         :score="score" :isNemesis="isNemesis" :topFeat="topFeat" 
         :cmpName="cmp.name" :selection="badgeSelection" @selection-made="doBadgeSelection">
@@ -35,10 +37,11 @@ const template =  html`
       </wiz-badges-2>
       <div v-if="view === 'top'" class="buttons">
         <a v-if="user && !currentGameId" class="button blue" @click="startGame(cmp.name)">Play</a>
+        <a v-if="user && currentGameId" class="button blue phone-nav" @click="$emit('goToBoard')">Go To Game</a>
         <a v-else-if="!currentGameId" :href="signInLink" class="button blue">Sign in to Play</a>
         <a class="button yellow" @click="show('bio')">Bio</a>
         <a class="button yellow" @click="show('about')">Chess Style</a>
-        <a v-if="user" class="button yellow phone-nav" @click="showGames()">See Games</a>
+        <a v-if="user && !currentGameId" class="button yellow phone-nav" @click="showGames()">See Games</a>
         <a @click="goBack" class="button yellow">Back</a>
       </div>
 

@@ -67,7 +67,8 @@
             :current-game-id="currentGame"
             @deselect="route('back')" :user="user" 
             @start-game="() => startGame(selected.name)"
-            @show-games="route('games', selected.name)">
+            @show-games="route('games', selected.name)"
+            @go-to-board="route('board', boardGame.id)">
           </wiz-kid-info>
           
           <wiz-message @clear-error="clearError()" @open-game="openGame" @clear-message="clearMessage()"

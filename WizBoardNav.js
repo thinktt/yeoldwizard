@@ -67,7 +67,7 @@ const template = html`
     </div>
     <wiz-game-status :game="game"></wiz-game-status>
 
-    <button title="view on Lichess" class="lichess-button" @click="openGame">
+    <button v-if="game.status !=='started'" title="view on Lichess" class="lichess-button" @click="openGame">
       &#xe901;
     </button>
     
