@@ -1,5 +1,6 @@
 import yowApi from './yowApi.js'
 import lichessApi from './lichessApi.js'
+import { move } from './lib/chessground/js/draw.js'
 const chess = new Chess()
 
 export default { 
@@ -17,6 +18,7 @@ export default {
   clearWasForwardedToYowApi,
   getAlgebraMoves,
   getDrawType,
+  storeMoves,
 }
 
 // module globals
@@ -85,6 +87,27 @@ async function getGamesWithMoves(opponent) {
   return games
 }
 
+// async function getGameWithMoves(gameId) {
+//   const lichessGames = await lichessApi.getGamesByIds([gameId])
+//   const lichessGame = lichessGames[0]
+//   return game
+// }
+
+async function storeMoves(opponent) {
+  const games = getGames(opponent)
+  const gameIds = games.map(game => game.id) 
+  const lichessGames = await lichessApi.getGamesByIds(gameIds)
+  let moveStore = {}
+  if (localStorage.moveStore) moveStore = JSON.parse(localStorage.moveStore)
+  for (const game of lichessGames) {
+    moveStore[game.id] = game.moves
+  }
+  localStorage.moveStore = JSON.stringify(moveStore)
+}
+
+function getMovesFromCache(id) {
+  return cacheMoves.get(id)
+}
 
 function getDrawType(game) {
   if (game.conclusion !== 'draw') return null
@@ -273,7 +296,7 @@ async function getGamesFromLichess(user, lastGameTime) {
     // to keep things from exploding
     if (!gameStr) break
     
-    const {id, createdAt, status, players, winner } = JSON.parse(gameStr)
+    const {id, createdAt, lastMoveAt, status, players, winner } = JSON.parse(gameStr)
     
     if (status === 'aborted') {
       // clear aborted game from current games
@@ -294,7 +317,7 @@ async function getGamesFromLichess(user, lastGameTime) {
     opponent = getProperName(opponent)
 
     if (status === 'started') {
-      currentGames.push({ id, createdAt, status, opponent })
+      currentGames.push({ id, createdAt, lastMoveAt, status, opponent })
       continue
     }
     

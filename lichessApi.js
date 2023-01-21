@@ -10,11 +10,6 @@ export default {
 }
 
 const baseUrl = 'https://lichess.org/api'
-const tokens = JSON.parse(localStorage.tokens)
-const headers = {
-  'Authorization' : 'Bearer ' + tokens.access_token,
-  'Accept': 'application/x-ndjson',
-}
 
 
 async function getGames(user, lastGameTime) {
@@ -53,6 +48,11 @@ async function getGamesByIds(ids) {
 
 
 async function getStream(url, handler, onDone) {
+  const tokens = JSON.parse(localStorage.tokens)
+  const headers = {
+    'Authorization' : 'Bearer ' + tokens.access_token,
+    'Accept': 'application/x-ndjson',
+  }
   const controller = new AbortController()
   const signal = controller.signal
   const res = await fetch(baseUrl + url, { method: 'GET', headers, signal })
