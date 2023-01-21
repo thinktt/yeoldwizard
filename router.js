@@ -32,12 +32,13 @@ window.addEventListener('popstate', (event) => {
   lastHash = hashRoute
   const routePieces = hashRoute.slice(1).split('/')
   const view = routePieces[0]
+  const item = routePieces[1]
   const cmp = cmpsObj[routePieces[1]]
 
   // console.log('hash route is:', hashRoute)
-  
+
   if (view === 'board') {
-    app.showBoard(cmp)
+    app.showBoard(item)
     return
   }
 

@@ -367,9 +367,16 @@ async function startApp(user) {
       async loadBoard(game) {
         this.boardGame = game
         await new Promise(r => setTimeout(r, 0))
+        this.selected = cmpsObj[game.opponent]
         this.route('board', game.id)
       },
-      showBoard() {
+      showBoard(gameId) {
+        if (this.boardGame.id !== gameId) {
+          console.log('We need to load the game here')
+          // get the tame
+          // this.loadBoard(game)
+          // return
+        }
         this.infoMode = 'board'
         this.navIsOn = false
       },
