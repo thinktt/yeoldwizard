@@ -1,7 +1,7 @@
 import yowApi from './yowApi.js'
 import lichessApi from './lichessApi.js'
-import { move } from './lib/chessground/js/draw.js'
-const chess = new Chess()
+import db from './storage.js'
+const Chess = window.Chess
 
 export default { 
   updateGameList,
@@ -44,8 +44,8 @@ async function updateGameList(user) {
   // parseMoves(currentGames) 
 
   const games = deDupeGames(newGames.concat(storedGames)) 
-  // setGames(games)
-  // setCurrentGames(currentGames)
+  setGames(games)
+  setCurrentGames(currentGames)
 
   // everytime game list is updated we will forward missing games to the YOW API
   fowardGamesToYowApi()
@@ -55,6 +55,7 @@ async function updateGameList(user) {
 
 function setUser(userToSet) {
   user = userToSet
+  db.setUser(userToSet)
 }
 
 // clear out any  number of games games starting from latest, for dev purposes
@@ -124,24 +125,6 @@ function getGames(opponent) {
   return games
 }
 
-function getColorToPlay(opponent) {
-  const opponentGames = getGames(opponent)
-  const colorRatio = {black: 0, white: 0}
-  for (const game of opponentGames ) {
-    colorRatio[game.playedAs] ++
-  }
-  let colorToPlay = 'random'
-  if (opponentGames[0]) {
-    if (opponentGames[0].playedAs === 'white') colorToPlay = 'black'
-    if (opponentGames[0].playedAs === 'black') colorToPlay = 'white'
-    if (colorRatio['white'] > colorRatio['black']) colorToPlay = 'black'
-    if (colorRatio['white'] < colorRatio['black']) colorToPlay = 'white'
-  }
-  console.log(`${opponent} Color Ratio is w:${colorRatio.white} b:${colorRatio.black}`)
-  console.log(`Color balancing determines user will play as ${colorToPlay}`)
-  return colorToPlay
-}
-
 function setGames(games) {
   if (!user) {
     console.error('Cannot set games, no user found')
@@ -151,6 +134,7 @@ function setGames(games) {
   localStorage[user + '_games'] = JSON.stringify(games)
   // console.log(JSON.parse(localStorage[user + '_games']))
 }
+
 
 function deDupeGames(gamesToDeDupe) {
   const gameMap  = {}
@@ -238,8 +222,6 @@ function sortGamesByOpponent(games) {
   }
   return opponentGames
 }
-// const games = JSON.parse(localStorage['thinktt_games'])
-// console.log(sortGamesByOpponent(games))
 
 
 function getLastGameTime(games, currentGames) {
@@ -398,6 +380,25 @@ async function getOpponentFromChat(gameId) {
   return opponent
 }
 
+function getColorToPlay(opponent) {
+  const opponentGames = getGames(opponent)
+  const colorRatio = {black: 0, white: 0}
+  for (const game of opponentGames ) {
+    colorRatio[game.playedAs] ++
+  }
+  let colorToPlay = 'random'
+  if (opponentGames[0]) {
+    if (opponentGames[0].playedAs === 'white') colorToPlay = 'black'
+    if (opponentGames[0].playedAs === 'black') colorToPlay = 'white'
+    if (colorRatio['white'] > colorRatio['black']) colorToPlay = 'black'
+    if (colorRatio['white'] < colorRatio['black']) colorToPlay = 'white'
+  }
+  console.log(`${opponent} Color Ratio is w:${colorRatio.white} b:${colorRatio.black}`)
+  console.log(`Color balancing determines user will play as ${colorToPlay}`)
+  return colorToPlay
+}
+
+
 // forward gameIds and opponent names to long term YOW API so we no longer 
 // depend on chat messages to remember who the opponents of games are
 async function fowardGamesToYowApi() {
@@ -423,9 +424,8 @@ async function fowardGamesToYowApi() {
     game.wasForwardedToYowApi = true
     gamesForwarded.push(game) 
   }
-  
-  // console.log(games)
-  // console.log(gamesForwarded)
+ 
+
   setGames(games)
   console.log(gamesForwarded.length, 'games forwarded to yowApi')
   console.log(gamesFailedToForward.length, 'games failed to forward to yowApi')

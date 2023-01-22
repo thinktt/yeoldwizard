@@ -66,11 +66,9 @@ async function doAccountFlow() {
     tokens = JSON.parse(localStorage.tokens) 
         
     await app.loadUserGames()
-    if (localStorage.lastCmp) {
-      app.goToCmp(localStorage.lastCmp)
-      // await new Promise(r => setTimeout(r, 10))
-      app.groupsAreHidden = false
-    }
+    app.goToCmp(localStorage.lastCmp || 'Wizard')
+    // await new Promise(r => setTimeout(r, 10))
+    app.groupsAreHidden = false
     return
   }
 
@@ -109,9 +107,10 @@ async function doAccountFlow() {
       if (!res.ok) throw res.error
 
       tokens = await res.json() 
-      console.log('Setting tokens in local storage')
+      console.log('Setting tokens in local storage and lichessApi')
       tokens.fetchTime = Math.floor(Date.now() / 1000)
       window.localStorage.tokens = JSON.stringify(tokens)
+      lichessApi.setTokens(tokens)
   
       res = await fetch('https://lichess.org/api/account', {
         headers: {
@@ -127,7 +126,7 @@ async function doAccountFlow() {
 
       // now that we have an account we can connnect to users games
       await app.loadUserGames()
-      app.goToCmp(localStorage.lastCmp)
+      app.goToCmp(localStorage.lastCmp || 'Wizard')
       app.groupsAreHidden = false
 
     } catch (err) {

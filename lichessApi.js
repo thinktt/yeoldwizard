@@ -1,4 +1,5 @@
-export default { 
+export default {
+  setTokens, 
   getGames,
   getGamesByIds,
   createChallenge,
@@ -10,7 +11,17 @@ export default {
 }
 
 const baseUrl = 'https://lichess.org/api'
+let tokens
+if (localStorage.tokens) {
+  tokens = JSON.parse(localStorage.tokens)
+  console.log('token found')
+} else {
+   console.log('no api tokens found for api')
+}
 
+function setTokens(tokensToSet) {
+  tokens = tokensToSet
+}
 
 async function getGames(user, lastGameTime) {
   const lichessEndpoint = `${baseUrl}/games/user/yeoldwiz`
