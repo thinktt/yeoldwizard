@@ -18,8 +18,10 @@ export default {
   clearWasForwardedToYowApi,
   getAlgebraMoves,
   getDrawType,
-  storeMoves,
+  getOpponent,
 }
+
+
 
 // module globals
 let user = ''
@@ -36,9 +38,14 @@ async function updateGameList(user) {
   // we'll add one so we will only get new games
   lastGameTime = lastGameTime + 1
   const { games : newGames, currentGames } = await getGamesFromLichess(user, lastGameTime)
+
+
+  // parseMoves(games)
+  // parseMoves(currentGames) 
+
   const games = deDupeGames(newGames.concat(storedGames)) 
-  setGames(games)
-  setCurrentGames(currentGames)
+  // setGames(games)
+  // setCurrentGames(currentGames)
 
   // everytime game list is updated we will forward missing games to the YOW API
   fowardGamesToYowApi()
@@ -85,28 +92,6 @@ async function getGamesWithMoves(opponent) {
     games[i].lastMoveAt = lichessGames[i].lastMoveAt
   }
   return games
-}
-
-// async function getGameWithMoves(gameId) {
-//   const lichessGames = await lichessApi.getGamesByIds([gameId])
-//   const lichessGame = lichessGames[0]
-//   return game
-// }
-
-async function storeMoves(opponent) {
-  const games = getGames(opponent)
-  const gameIds = games.map(game => game.id) 
-  const lichessGames = await lichessApi.getGamesByIds(gameIds)
-  let moveStore = {}
-  if (localStorage.moveStore) moveStore = JSON.parse(localStorage.moveStore)
-  for (const game of lichessGames) {
-    moveStore[game.id] = game.moves
-  }
-  localStorage.moveStore = JSON.stringify(moveStore)
-}
-
-function getMovesFromCache(id) {
-  return cacheMoves.get(id)
 }
 
 function getDrawType(game) {
@@ -271,8 +256,9 @@ function getLastGameTime(games, currentGames) {
   return lastGameTime
 }
 
+
 // Using time from last game we have get all games since that game, this
-// function is a mess and should refctored and split up, it's doing way to much
+// function is a mess and should refactored and split up, it's doing way to much
 async function getGamesFromLichess(user, lastGameTime) {
   console.log(`Attempting to get all games for ${user} since ${lastGameTime}`)
 
@@ -296,7 +282,7 @@ async function getGamesFromLichess(user, lastGameTime) {
     // to keep things from exploding
     if (!gameStr) break
     
-    const {id, createdAt, lastMoveAt, status, players, winner } = JSON.parse(gameStr)
+    const {id, createdAt, lastMoveAt, status, players, winner, moves } = JSON.parse(gameStr)
     
     if (status === 'aborted') {
       // clear aborted game from current games
@@ -317,14 +303,14 @@ async function getGamesFromLichess(user, lastGameTime) {
     opponent = getProperName(opponent)
 
     if (status === 'started') {
-      currentGames.push({ id, createdAt, lastMoveAt, status, opponent })
+      currentGames.push({ id, createdAt, lastMoveAt, status, opponent, moves })
       continue
     }
     
     // This is an actual completed game to be stored in long storage 
     const conclusion = parseGameConclusion(players, winner)
     const playedAs = parsePlayedAs(players)
-    games.push({id, createdAt, status, conclusion, opponent, playedAs})
+    games.push({id, createdAt, lastMoveAt, status, conclusion, opponent, playedAs, moves})
   }
 
 
@@ -412,11 +398,8 @@ async function getOpponentFromChat(gameId) {
   return opponent
 }
 
-
 // forward gameIds and opponent names to long term YOW API so we no longer 
 // depend on chat messages to remember who the opponents of games are
-// this may not be used in the future but will help us record opponent
-// currently only stored on local storage
 async function fowardGamesToYowApi() {
   const games = getGames()
 

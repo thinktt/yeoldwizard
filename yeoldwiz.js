@@ -21,7 +21,7 @@ import { Chessground } from './lib/chessground/js/chessground.js'
 window.games = games
 
 
-cssLoader.render()
+// cssLoader.render()
 
 const oauthUrl = 'https://lichess.org/oauth' 
 const oauthQuery = '?response_type=code'
