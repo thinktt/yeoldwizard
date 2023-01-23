@@ -6,7 +6,8 @@ const Chess = window.Chess
 export default { 
   updateGameList,
   getGames, 
-  getGamesWithMoves,
+  setGames,
+  getGamesWithMoves : getGames,
   getColorToPlay,
   getCurrentGames,
   getCurrentLatestGame,
@@ -118,8 +119,12 @@ function getGames(opponent) {
     if (opponent && game.opponent !== opponent) continue
     game.link = 'https://lichess.org/' + game.id
     
-    // cheap hack for now to clean Chessmaster from local game records
-    if (game.opponent === 'Chessmaster') game.opponent = 'Wizard'
+    if (!game) console.log('no game')
+    if (!game.moves) console.log('no moves', game)
+    game.moves = game.moves.split(' ')
+    // getDrawType(games[i])
+
+    
     games.push(game)
   }
   return games
@@ -130,9 +135,12 @@ function setGames(games) {
     console.error('Cannot set games, no user found')
     return
   }
+
+  for(const game of games) {
+    if (Array.isArray(game.moves)) game.moves = game.moves.join(' ')
+  }
   
   localStorage[user + '_games'] = JSON.stringify(games)
-  // console.log(JSON.parse(localStorage[user + '_games']))
 }
 
 

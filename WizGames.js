@@ -68,7 +68,7 @@ export default {
   },
   async created() {
     // await new Promise(r => setTimeout(r, 1000))
-    this.games = await games.getGamesWithMoves(this.cmpName)
+    this.games = await games.getGames(this.cmpName)
     for (const game of this.games) {
       this.filteredIds.push(game.id)
     }
