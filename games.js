@@ -54,6 +54,39 @@ async function updateGameList(user) {
   return sortGamesByOpponent(games)
 }
 
+function getGames(opponent) {
+  const storedGamesStr = localStorage[user + '_games'] || '[]'
+  const storedGames = JSON.parse(storedGamesStr)
+  let games = []
+  for (const game of storedGames) {
+    if (opponent && game.opponent !== opponent) continue
+    game.link = 'https://lichess.org/' + game.id
+    
+    if (!game) console.log('no game')
+    if (!game.moves) console.log('no moves', game)
+    game.moves = game.moves.split(' ')
+    game.drawType = getDrawType(game)
+    // if (game.status === 'draw') console.log(game.drawType)
+    
+    games.push(game)
+  }
+  return games
+}
+
+function setGames(games) {
+  if (!user) {
+    console.error('Cannot set games, no user found')
+    return
+  }
+
+  for(const game of games) {
+    if (Array.isArray(game.moves)) game.moves = game.moves.join(' ')
+  }
+  
+  localStorage[user + '_games'] = JSON.stringify(games)
+}
+
+
 function setUser(userToSet) {
   user = userToSet
   db.setUser(userToSet)
@@ -109,40 +142,6 @@ function getDrawType(game) {
   return "mutal agreement"
   
 }
-
-
-function getGames(opponent) {
-  const storedGamesStr = localStorage[user + '_games'] || '[]'
-  const storedGames = JSON.parse(storedGamesStr)
-  let games = []
-  for (const game of storedGames) {
-    if (opponent && game.opponent !== opponent) continue
-    game.link = 'https://lichess.org/' + game.id
-    
-    if (!game) console.log('no game')
-    if (!game.moves) console.log('no moves', game)
-    game.moves = game.moves.split(' ')
-    // getDrawType(games[i])
-
-    
-    games.push(game)
-  }
-  return games
-}
-
-function setGames(games) {
-  if (!user) {
-    console.error('Cannot set games, no user found')
-    return
-  }
-
-  for(const game of games) {
-    if (Array.isArray(game.moves)) game.moves = game.moves.join(' ')
-  }
-  
-  localStorage[user + '_games'] = JSON.stringify(games)
-}
-
 
 function deDupeGames(gamesToDeDupe) {
   const gameMap  = {}
