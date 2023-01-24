@@ -7,8 +7,6 @@ export default {
   updateGameList,
   setGames,
   getGames,
-  // getGames1, 
-  // setGames1,
   getGamesWithMoves : getGames,
   getColorToPlay,
   getCurrentGames,
@@ -27,7 +25,7 @@ export default {
 window.dumbHash = dumbHash
 
 let gameCache = null
-let gameMap = {}
+let opponentMap = {}
 
 // module globals
 let user = ''
@@ -49,45 +47,18 @@ async function updateGameList(user) {
   const games = deDupeGames(newGames.concat(storedGames)) 
   setGames(games)
   setCurrentGames(currentGames)
-  gameMap = sortGamesByOpponent(games)
+  opponentMap = sortGamesByOpponent(games)
 
   // everytime game list is updated we will forward missing games to the YOW API
   fowardGamesToYowApi()
 
-  return gameMap
+  return opponentMap
 }
 
-// function getGames1(opponent) {
-//   const storedGamesStr = localStorage[user + '_games'] || '[]'
-//   const storedGames = JSON.parse(storedGamesStr)
-//   let games = []
-//   for (const game of storedGames) {
-//     if (opponent && game.opponent !== opponent) continue
-//     game.moves = game.moves.split(' ')
-//     games.push(game)
-//   }
-//   return games
-// }
-
-// function setGames1(games) {
-//   if (!user) {
-//     console.error('Cannot set games, no user found')
-//     return
-//   }
-
-//   for(const game of games) {
-//     if (Array.isArray(game.moves)) game.moves = game.moves.join(' ')
-//   }
-
-//   const gamesStr = JSON.stringify(games)
-//   localStorage[user + '_games'] = gamesStr
-//   return dumbHash(gamesStr)
-// }
-
 function getGames(opponent) {
-  if (opponent && gameMap) {
+  if (opponent && opponentMap) {
     // console.log('gameMap found returning games from the map')
-    return gameMap[opponent].games
+    return opponentMap[opponent].games
   }
   if (gameCache) {
     //  console.log('gameCache found, returning all games')
