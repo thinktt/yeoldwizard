@@ -87,6 +87,8 @@ async function updateGameList(user) {
 // }
 
 function getGames(opponent) {
+  if (!localStorage[user + '_gameRows']) return []
+
   const gameKeys = JSON.parse(localStorage.gameKeys)
   const gameRowsStr = localStorage[user + '_gameRows']
   const gameRows = JSON.parse(gameRowsStr)
@@ -162,11 +164,11 @@ function getDrawType(conclusion, moves) {
   for (const move of moves) {
     chess.move(move) 
   }
-  if (chess.insufficient_material()) return "insufficient material"
+  if (chess.insufficient_material()) return "material"
   if (chess.in_stalemate()) return "stalemate"
-  if (chess.in_threefold_repetition()) return "three fold repetition"
-  if (chess.in_draw()) return "fifty move rule"
-  return "mutal agreement"
+  if (chess.in_threefold_repetition()) return "threefold"
+  if (chess.in_draw()) return "fiftyMove"
+  return "mutual"
 }
 
 function deDupeGames(gamesToDeDupe) {
@@ -326,7 +328,7 @@ async function buildGamesFromLichess(user, lastGameTime) {
     // parsing is very slow especially for getDrawType, need to make non blocking
     const conclusion = parseGameConclusion(players, winner)
     const playedAs = parsePlayedAs(players)
-    const drawType = getDrawType(conclusion, moves)
+    const drawType = getDrawType(conclusion, moves.split(' '))
     games.push({id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, playedAs, moves})
   }
 

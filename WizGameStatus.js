@@ -1,3 +1,4 @@
+import games from './games.js'
 import { html } from './pageTools.js'
 
 const template = html`
@@ -26,7 +27,7 @@ const template = html`
         by resignation
     </p>
     <p v-else-if="game.status === 'draw' || game.status === 'stalemate'">
-        draw by {{game.drawType}}
+        Draw by {{drawType}}
     </p>
     <p v-else>
       You
@@ -41,4 +42,25 @@ const template = html`
 export default {
   props: ['game', "shouldShowPlayedAs"],
   template,
+  computed : {
+    drawType() {
+      switch(this.game.drawType) {
+        case 'material':
+          return 'Insuficient Material'
+          break;
+        case 'stalemate':
+          return 'Stalemate'
+          break;
+        case 'threefold':
+          return 'Three Fold Repetition'
+          break;
+        case 'fiftyMove':
+          return 'Fifty Move Rule'
+          break;
+        case 'mutual':
+          return 'Mutual Agreement'
+          break;
+      }
+    }
+  }
 }
