@@ -224,10 +224,7 @@ function sortGamesByOpponent(games) {
     } else if (game.conclusion === 'draw' && opponentGames[game.opponent].topFeat === 'lost') {
       opponentGames[game.opponent].topFeat = 'draw'
     }
-    opponentGames[game.opponent].games.push(game)
-
-    // this deletes opponent in gamesByOpponent due to JS object by reference
-    // delete game.opponent
+    opponentGames[game.opponent].games.unshift(game)
   }
 
   // find and mark game groups where the oppoent is a "Nemesis", meaning you've
