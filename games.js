@@ -344,7 +344,7 @@ async function buildGamesFromLichess(user, lastGameTime) {
     // parsing is very slow especially for getDrawType, need to make non blocking
     const conclusion = parseGameConclusion(players, winner)
     const playedAs = parsePlayedAs(players)
-    const drawType = getDrawType(conclusion, moves.split(' '))
+    const drawType = getDrawType(conclusion, moves)
     games.push({id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, playedAs, moves})
   }
 
