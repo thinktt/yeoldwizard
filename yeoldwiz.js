@@ -20,7 +20,6 @@ import { applyAnimation } from './lib/chessground/js/config.js'
 import { Chessground } from './lib/chessground/js/chessground.js'
 window.games = games
 
-
 // cssLoader.render()
 
 const oauthUrl = 'https://lichess.org/oauth' 

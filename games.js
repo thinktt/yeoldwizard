@@ -5,8 +5,10 @@ const Chess = window.Chess
 
 export default { 
   updateGameList,
-  getGames, 
   setGames,
+  getGames,
+  // getGames1, 
+  // setGames1,
   getGamesWithMoves : getGames,
   getColorToPlay,
   getCurrentGames,
@@ -22,7 +24,10 @@ export default {
   getOpponent,
 }
 
+window.dumbHash = dumbHash
 
+let memGames = null
+let opponentGameMap = {}
 
 // module globals
 let user = ''
@@ -38,7 +43,7 @@ async function updateGameList(user) {
   
   // we'll add one so we will only get new games
   lastGameTime = lastGameTime + 1
-  const { games : newGames, currentGames } = await buidGameFromLichess(user, lastGameTime)
+  const { games : newGames, currentGames } = await buildGamesFromLichess(user, lastGameTime)
 
 
   // parseMoves(games)
@@ -54,11 +59,45 @@ async function updateGameList(user) {
   return sortGamesByOpponent(games)
 }
 
+// function getGames1(opponent) {
+//   const storedGamesStr = localStorage[user + '_games'] || '[]'
+//   const storedGames = JSON.parse(storedGamesStr)
+//   let games = []
+//   for (const game of storedGames) {
+//     if (opponent && game.opponent !== opponent) continue
+//     game.moves = game.moves.split(' ')
+//     games.push(game)
+//   }
+//   return games
+// }
+
+// function setGames1(games) {
+//   if (!user) {
+//     console.error('Cannot set games, no user found')
+//     return
+//   }
+
+//   for(const game of games) {
+//     if (Array.isArray(game.moves)) game.moves = game.moves.join(' ')
+//   }
+
+//   const gamesStr = JSON.stringify(games)
+//   localStorage[user + '_games'] = gamesStr
+//   return dumbHash(gamesStr)
+// }
+
 function getGames(opponent) {
-  const storedGamesStr = localStorage[user + '_games'] || '[]'
-  const storedGames = JSON.parse(storedGamesStr)
+  const gameKeys = JSON.parse(localStorage.gameKeys)
+  const gameRowsStr = localStorage[user + '_gameRows']
+  const gameRows = JSON.parse(gameRowsStr)
+
   let games = []
-  for (const game of storedGames) {
+  for (const gameRow of gameRows) {
+
+    //create a game object from the game row
+    const game = {} 
+    gameKeys.forEach((key, i) => game[key] = gameRow[i])
+
     if (opponent && game.opponent !== opponent) continue
     game.moves = game.moves.split(' ')
     games.push(game)
@@ -72,11 +111,19 @@ function setGames(games) {
     return
   }
 
+  const gameKeys = Object.keys(games[0])
+  const gameRows = []
+
   for(const game of games) {
     if (Array.isArray(game.moves)) game.moves = game.moves.join(' ')
+    const gameRow = Object.values(game)
+    gameRows.push(gameRow)
   }
   
-  localStorage[user + '_games'] = JSON.stringify(games)
+  localStorage.gameKeys = JSON.stringify(gameKeys)
+  const gameRowsStr = JSON.stringify(gameRows)
+  localStorage[user + '_gameRows'] = gameRowsStr
+  return dumbHash(gameRowsStr)
 }
 
 
@@ -227,7 +274,7 @@ function getLastGameTime(games, currentGames) {
 
 // Using time from last game we have get all games since that game, then
 // build our game objects that will be stored in the local db
-async function buidGameFromLichess(user, lastGameTime) {
+async function buildGamesFromLichess(user, lastGameTime) {
   console.log(`Attempting to get all games for ${user} since ${lastGameTime}`)
 
   const res = await lichessApi.getGames(user, lastGameTime)
@@ -455,6 +502,21 @@ function getAlgebraMoves(cordinateMovesString) {
   }
   return chess.history()
 } 
+
+
+function dumbHash (itemToHash) {
+  let str
+  if (typeof(itemToHash) === 'object') str = JSON.stringify(itemToHash)
+    else str = itemToHash
+
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash &= hash; // Convert to 32bit integer
+  }
+  return new Uint32Array([hash])[0].toString(36);
+};
 
 // const opponent = await getWizPlayerFromChat('5ZAXEu4YAk5S')
 // console.log(opponent) 
