@@ -38,7 +38,7 @@ async function updateGameList(user) {
   
   // we'll add one so we will only get new games
   lastGameTime = lastGameTime + 1
-  const { games : newGames, currentGames } = await getGamesFromLichess(user, lastGameTime)
+  const { games : newGames, currentGames } = await buidGameFromLichess(user, lastGameTime)
 
 
   // parseMoves(games)
@@ -60,14 +60,7 @@ function getGames(opponent) {
   let games = []
   for (const game of storedGames) {
     if (opponent && game.opponent !== opponent) continue
-    game.link = 'https://lichess.org/' + game.id
-    
-    if (!game) console.log('no game')
-    if (!game.moves) console.log('no moves', game)
     game.moves = game.moves.split(' ')
-    game.drawType = getDrawType(game)
-    // if (game.status === 'draw') console.log(game.drawType)
-    
     games.push(game)
   }
   return games
@@ -116,23 +109,10 @@ function clearWasForwardedToYowApi() {
   setGames(games)
 }
 
-async function getGamesWithMoves(opponent) {
-  const games = getGames(opponent)
-  const gameIds = games.map(game => game.id)  
-  const lichessGames = await lichessApi.getGamesByIds(gameIds)
-  for (let i = 0; i < games.length; i++) {
-    if (!lichessGames[i]) continue
-    games[i].moves = lichessGames[i].moves.split(' ')
-    games[i].drawType = getDrawType(games[i])
-    games[i].lastMoveAt = lichessGames[i].lastMoveAt
-  }
-  return games
-}
-
-function getDrawType(game) {
-  if (game.conclusion !== 'draw') return null
+function getDrawType(conclusion, moves) {
+  if (conclusion !== 'draw') return null
   const chess = new Chess() 
-  for (const move of game.moves) {
+  for (const move of moves) {
     chess.move(move) 
   }
   if (chess.insufficient_material()) return "insufficient material"
@@ -140,7 +120,6 @@ function getDrawType(game) {
   if (chess.in_threefold_repetition()) return "three fold repetition"
   if (chess.in_draw()) return "fifty move rule"
   return "mutal agreement"
-  
 }
 
 function deDupeGames(gamesToDeDupe) {
@@ -246,9 +225,9 @@ function getLastGameTime(games, currentGames) {
 }
 
 
-// Using time from last game we have get all games since that game, this
-// function is a mess and should refactored and split up, it's doing way to much
-async function getGamesFromLichess(user, lastGameTime) {
+// Using time from last game we have get all games since that game, then
+// build our game objects that will be stored in the local db
+async function buidGameFromLichess(user, lastGameTime) {
   console.log(`Attempting to get all games for ${user} since ${lastGameTime}`)
 
   const res = await lichessApi.getGames(user, lastGameTime)
@@ -296,10 +275,12 @@ async function getGamesFromLichess(user, lastGameTime) {
       continue
     }
     
-    // This is an actual completed game to be stored in long storage 
+    // This is an actual completed game to be stored in long storage. This 
+    // parsing is very slow especially for getDrawType, need to make non blocking
     const conclusion = parseGameConclusion(players, winner)
     const playedAs = parsePlayedAs(players)
-    games.push({id, createdAt, lastMoveAt, status, conclusion, opponent, playedAs, moves})
+    const drawType = getDrawType(conclusion, moves)
+    games.push({id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, playedAs, moves})
   }
 
 
