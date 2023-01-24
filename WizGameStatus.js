@@ -20,11 +20,11 @@ const template = html`
     <div v-if="game.conclusion === 'lost'">
       <img class="king" src="images/king-lost.png">
     </div>
-    <p v-if="shouldShowPlayedAs">You played as {{game.playedAs}}</p>
+    <p v-if="shouldShowPlayedAs">You played as {{playedAs}}</p>
     <p v-if="game.status === 'resign'">
         You
         <span>{{game.conclusion}}</span> 
-        by resignation
+        by Resignation
     </p>
     <p v-else-if="game.status === 'draw' || game.status === 'stalemate'">
         Draw by {{drawType}}
@@ -32,7 +32,7 @@ const template = html`
     <p v-else>
       You
       <span> {{game.conclusion}}</span> 
-      by {{game.status}}
+      by {{status}}
     </p>
     <p>{{(new Date(game.lastMoveAt)).toDateString()}}</p>
 </div>
@@ -43,6 +43,10 @@ export default {
   props: ['game', "shouldShowPlayedAs"],
   template,
   computed : {
+    playedAs() {
+      if (!this.game.playedAs) return 
+      return this.game.playedAs[0].toUpperCase() +  this.game.playedAs.substring(1)
+    },
     drawType() {
       switch(this.game.drawType) {
         case 'material':
@@ -60,6 +64,15 @@ export default {
         case 'mutual':
           return 'Mutual Agreement'
           break;
+      }
+    },
+    status() {
+      switch(this.game.status) {
+        case 'mate':
+          return 'Checkmate'
+          break;
+        default: 
+          return this.game.status
       }
     }
   }
