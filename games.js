@@ -26,8 +26,8 @@ export default {
 
 window.dumbHash = dumbHash
 
-let memGames = null
-let opponentGameMap = {}
+let gameCache = null
+let gameMap = {}
 
 // module globals
 let user = ''
@@ -46,17 +46,15 @@ async function updateGameList(user) {
   const { games : newGames, currentGames } = await buildGamesFromLichess(user, lastGameTime)
 
 
-  // parseMoves(games)
-  // parseMoves(currentGames) 
-
   const games = deDupeGames(newGames.concat(storedGames)) 
   setGames(games)
   setCurrentGames(currentGames)
+  gameMap = sortGamesByOpponent(games)
 
   // everytime game list is updated we will forward missing games to the YOW API
   fowardGamesToYowApi()
 
-  return sortGamesByOpponent(games)
+  return gameMap
 }
 
 // function getGames1(opponent) {
@@ -87,8 +85,20 @@ async function updateGameList(user) {
 // }
 
 function getGames(opponent) {
-  if (!localStorage[user + '_gameRows']) return []
+  if (opponent && gameMap) {
+    // console.log('gameMap found returning games from the map')
+    return gameMap[opponent].games
+  }
+  if (gameCache) {
+    //  console.log('gameCache found, returning all games')
+    return gameCache
+  }
+  if (!localStorage[user + '_gameRows']) { 
+    console.log('no stored games found for' + user)
+    return []
+  }
 
+  console.log('loading previous games from localStorage')
   const gameKeys = JSON.parse(localStorage.gameKeys)
   const gameRowsStr = localStorage[user + '_gameRows']
   const gameRows = JSON.parse(gameRowsStr)
@@ -104,6 +114,7 @@ function getGames(opponent) {
     game.moves = game.moves.split(' ')
     games.push(game)
   }
+  gameCache = games
   return games
 }
 
@@ -117,8 +128,9 @@ function setGames(games) {
   const gameRows = []
 
   for(const game of games) {
-    if (Array.isArray(game.moves)) game.moves = game.moves.join(' ')
-    const gameRow = Object.values(game)
+    let moves
+    moves = game.moves.join(' ')
+    const gameRow = Object.values({ ...game, moves })
     gameRows.push(gameRow)
   }
   
@@ -244,7 +256,7 @@ function sortGamesByOpponent(games) {
     opponentGames[game.opponent].games.push(game)
 
     // this deletes opponent in gamesByOpponent due to JS object by reference
-    delete game.opponent
+    // delete game.opponent
   }
 
   // find and mark game groups where the oppoent is a "Nemesis", meaning you've
@@ -299,7 +311,8 @@ async function buildGamesFromLichess(user, lastGameTime) {
     // to keep things from exploding
     if (!gameStr) break
     
-    const {id, createdAt, lastMoveAt, status, players, winner, moves } = JSON.parse(gameStr)
+    const {id, createdAt, lastMoveAt, status, players, winner, moves : movesStr } = 
+      JSON.parse(gameStr)
     
     if (status === 'aborted') {
       // clear aborted game from current games
@@ -318,6 +331,9 @@ async function buildGamesFromLichess(user, lastGameTime) {
 
     // now make sure the opponent has it's proper cmpObj name
     opponent = getProperName(opponent)
+
+    //moves come from lichess as a string, make them an Array
+    const moves = movesStr.split(' ')
 
     if (status === 'started') {
       currentGames.push({ id, createdAt, lastMoveAt, status, opponent, moves })
