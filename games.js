@@ -95,6 +95,9 @@ function setGames(games) {
     return
   }
 
+  // first replace the game cache
+  gameCache = games
+
   const gameKeys = Object.keys(games[0])
   const gameRows = []
 
