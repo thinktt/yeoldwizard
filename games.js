@@ -2,6 +2,7 @@ import yowApi from './yowApi.js'
 import lichessApi from './lichessApi.js'
 import db from './storage.js'
 const Chess = window.Chess
+const chess = new Chess()
 
 export default { 
   updateGameList,
@@ -21,6 +22,7 @@ export default {
   getDrawType,
   getOpponent,
   getGameById,
+  addFensToGameCache,
 }
 
 window.dumbHash = dumbHash
@@ -504,6 +506,21 @@ function getAlgebraMoves(cordinateMovesString) {
   return chess.history()
 } 
 
+// this is going to be super slow and blocky
+function addFensToGameCache() {
+  for (const game of gameCache) {
+    game.endFen = getFenFromMoves(game.moves)
+  }
+}
+
+// warning this is really slow
+function getFenFromMoves(moves) {
+  chess.reset()
+  for (const move of moves) {
+    chess.move(move)
+  }
+  return chess.fen()
+}
 
 function dumbHash (itemToHash) {
   let str

@@ -370,10 +370,8 @@ async function startApp(user) {
       },
       showBoard(gameId) {
         if (this.boardGame.id !== gameId) {
-          console.log('We need to load the game here')
-          // get the tame
-          // this.loadBoard(game)
-          // return
+          const game = games.getGameById(gameId)
+          this.loadBoard(game)
         }
         this.infoMode = 'board'
         this.navIsOn = false

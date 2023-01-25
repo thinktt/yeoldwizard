@@ -1,7 +1,10 @@
 import {html, css} from './pageTools.js'
 import { Chessground } from './lib/chessground/js/chessground.js'
-// import { configure } from './lib/chessground/js/config.js'
+const chess = new Chess()
 
+
+let boardQue = []
+let boardsAreRendering  = false
 
 const template =  html`
   <div class="board-container">
@@ -9,35 +12,26 @@ const template =  html`
   </div>
 `
 
-
 export default {
-  props : [ 'navIsOn', 'id', 'moves', 'colorSide' ],
+  props : [ 'navIsOn', 'id', 'moves', 'colorSide', 'endFen' ],
   data() {
     return {
       checkSquare: null,
     }
   },
+  unmounted() {
+    // clear the boardQue
+    boardQue = []
+  },
   mounted: function() {
-    this.game = new Chess()
-    for (const move of this.moves) {
-      this.game.move(move) 
-    }
-    let checkColor = null
-    if (this.game.in_check()) {
-      checkColor = this.game.turn() === 'w' ? 'white' : 'black'
-    }
-    window.chess = this.game
-    this.checkSquare = this.game.fen()
-    this.gameHistory = this.game.history()
-    window.gameHistory = this.gameHistory
-    this.navIndex = this.gameHistory.length
-    this.cg = Chessground(document.getElementById(this.id), {
+    const config = {
       orientation: this.colorSide,  
       turnColor: this.colorSide,
       // viewOnly: true,
       coordinates: false,
-      fen: this.game.fen(),
-      check: checkColor, 
+      // fen: this.game.fen(),
+      // fen: this.endFen,
+      // check: checkColor, 
       movable: {
         free: false,
         // color: 'white',
@@ -63,8 +57,9 @@ export default {
       animation: { 
         enabled: true 
       },
-    })
-    window.cg = this.cg
+    }
+    queBoard({ id: this.id, moves: this.moves, config })
+    renderBoards()
   },
   methods: {
     onMove(from, to) {},
@@ -74,12 +69,32 @@ export default {
 }
 
 
-function getLeglaMoves(game)  {
-  const dests = new Map();
-  game.SQUARES.forEach(s => {
-    const ms = game.moves({square: s, verbose: true});
-    if (ms.length) dests.set(s, ms.map(m => m.to));
-  });
-  return dests;
+// these function are used to load all the chess ground boards withoug blocking 
+// the even loop by loading a board on every even loop using setTimeout
+function queBoard(config) {
+  boardQue.push(config)
 }
 
+async function renderBoards() {
+  if (boardsAreRendering) return
+  boardsAreRendering = true
+  while(boardQue.length) {
+    renderNextBoard()
+    await new Promise(r => setTimeout(r, 0))
+  }
+  boardsAreRendering = false
+}
+
+function renderNextBoard() {
+  chess.reset()
+  const board = boardQue.shift()
+  for (const move of board.moves) {
+    chess.move(move) 
+  }
+
+  board.config.fen = chess.fen()
+  if (chess.in_check()) {
+    board.config.check = chess.turn() === 'w' ? 'white' : 'black'
+  }
+  Chessground(document.getElementById(board.id), board.config)
+}

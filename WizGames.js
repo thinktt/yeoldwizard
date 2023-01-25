@@ -24,7 +24,11 @@ const template = html`
       <template v-for="game in games" :key="game.id">
         <div class="board-and-nav-box" :class="{ noshow: filteredIds.includes(game.id) === false }"> 
             <a @click="$emit('showGame', game)">
-            <wiz-board :nav-is-on="false" :id="game.id" :moves="game.moves" :color-side="game.playedAs">
+            <wiz-board 
+              :end-fen="game.endFen"
+              :nav-is-on="false" 
+              :id="game.id" :moves="game.moves" 
+              :color-side="game.playedAs">
             </wiz-board> 
           </a>
           <div class="game-info-box">

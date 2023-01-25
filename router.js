@@ -74,7 +74,7 @@ window.addEventListener('popstate', (event) => {
 })
 
 function route(view, cmpName) {
-  if(isLocked) return 
+  if (isLocked) return 
 
   if (!view) {
     window.location.hash = '#'
