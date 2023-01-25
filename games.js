@@ -20,12 +20,14 @@ export default {
   getAlgebraMoves,
   getDrawType,
   getOpponent,
+  getGameById,
 }
 
 window.dumbHash = dumbHash
 
 let gameCache = null
 let opponentMap = {}
+let idMap = {}
 
 // module globals
 let user = ''
@@ -47,7 +49,7 @@ async function updateGameList(user) {
   const games = deDupeGames(newGames.concat(storedGames)) 
   setGames(games)
   setCurrentGames(currentGames)
-  opponentMap = sortGamesByOpponent(games)
+  
 
   // everytime game list is updated we will forward missing games to the YOW API
   fowardGamesToYowApi()
@@ -89,6 +91,10 @@ function getGames(opponent) {
   return games
 }
 
+function getGameById(id) {
+  return idMap[id]
+}
+
 function setGames(games) {
   if (!user) {
     console.error('Cannot set games, no user found')
@@ -96,7 +102,10 @@ function setGames(games) {
   }
 
   // first replace the game cache
+  const { gamesByOpponet, gamesbyId } = sortGames(games)
   gameCache = games
+  idMap = gamesbyId
+  opponentMap = gamesByOpponet
 
   const gameKeys = Object.keys(games[0])
   const gameRows = []
@@ -207,38 +216,41 @@ function deleteCurrentGame(gameId) {
   localStorage[user + '_currentGames'] = JSON.stringify(gameMap)
 }
 
-// creates and object keyed by opponent names with each of their games
-function sortGamesByOpponent(games) {
-  let opponentGames = {}
-  for (const game of games.slice().reverse()) {
+// sorts games by opponent adding metadata, and creates a map obj of games by id
+function sortGames(games) {
+  const gamesByOpponet = {}
+  const gamesById = {}
 
+  for (const game of games.slice().reverse()) {
+    gamesById[game.id] = game
+    
     // if we haven't mapped this opponent yet
-    if ( !opponentGames[game.opponent] ) {
-      opponentGames[game.opponent] = {games: [], topFeat: 'lost', score: 0}
+    if ( !gamesByOpponet[game.opponent] ) {
+      gamesByOpponet[game.opponent] = {games: [], topFeat: 'lost', score: 0}
     }
 
     // if this game is a higher player achievement than any game before we will map it here
     // also calculate total score by tallying wins and losses
-    if (game.conclusion === 'won' && opponentGames[game.opponent].score < 5) {
-      opponentGames[game.opponent].topFeat = 'won'
-      opponentGames[game.opponent].score++
-    } else if (game.conclusion === 'lost' && opponentGames[game.opponent].score > -5){
-      opponentGames[game.opponent].score--
-    } else if (game.conclusion === 'draw' && opponentGames[game.opponent].topFeat === 'lost') {
-      opponentGames[game.opponent].topFeat = 'draw'
+    if (game.conclusion === 'won' && gamesByOpponet[game.opponent].score < 5) {
+      gamesByOpponet[game.opponent].topFeat = 'won'
+      gamesByOpponet[game.opponent].score++
+    } else if (game.conclusion === 'lost' && gamesByOpponet[game.opponent].score > -5){
+      gamesByOpponet[game.opponent].score--
+    } else if (game.conclusion === 'draw' && gamesByOpponet[game.opponent].topFeat === 'lost') {
+      gamesByOpponet[game.opponent].topFeat = 'draw'
     }
-    opponentGames[game.opponent].games.unshift(game)
+    gamesByOpponet[game.opponent].games.unshift(game)
   }
 
   // find and mark game groups where the oppoent is a "Nemesis", meaning you've
   // tried playing them a lot but can't get a positive score on them
-  for (const opponent in opponentGames) {
-    const numberOfGames = opponentGames[opponent].games.length
-    const score = opponentGames[opponent].score
-    if(score < -2 && numberOfGames > 10) opponentGames[opponent].isNemesis = true
-      else opponentGames[opponent].isNemesis = false
+  for (const opponent in gamesByOpponet) {
+    const numberOfGames = gamesByOpponet[opponent].games.length
+    const score = gamesByOpponet[opponent].score
+    if(score < -2 && numberOfGames > 10) gamesByOpponet[opponent].isNemesis = true
+      else gamesByOpponet[opponent].isNemesis = false
   }
-  return opponentGames
+  return { gamesByOpponet, gamesById }
 }
 
 
