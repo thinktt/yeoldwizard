@@ -102,9 +102,9 @@ function setGames(games) {
   }
 
   // first replace the game cache
-  const { gamesByOpponet, gamesbyId } = sortGames(games)
+  const { gamesByOpponet, gamesById } = sortGames(games)
   gameCache = games
-  idMap = gamesbyId
+  idMap = gamesById
   opponentMap = gamesByOpponet
 
   const gameKeys = Object.keys(games[0])
