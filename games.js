@@ -60,9 +60,9 @@ async function updateGameList(user) {
 function getGames(opponent) {
   if (opponent && opponentMap) {
     // console.log('gameMap found returning games from the map')
-    return opponentMap[opponent].games
+    return opponentMap[opponent] ? opponentMap[opponent].games : []
   }
-  if (gameCache) {
+  if (!opponent && gameCache) {
     //  console.log('gameCache found, returning all games')
     return gameCache
   }
