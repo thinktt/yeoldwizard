@@ -65,6 +65,7 @@ function getGames(opponent) {
     return opponentMap[opponent] ? opponentMap[opponent].games : []
   }
   if (!opponent && gameCache) {
+  // if (gameCache) { 
     //  console.log('gameCache found, returning all games')
     return gameCache
   }

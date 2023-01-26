@@ -93,7 +93,9 @@
         :games="games">
       </wiz-trophies>
 
-      <wiz-games v-if="(infoMode === 'selected' || infoMode === 'games') && user && messageType === 'none'"
+      <wiz-games
+        key="gamesPageRefresKey" 
+        v-if="(infoMode === 'selected' || infoMode === 'games') && user && messageType === 'none'"
         @show-game="(game) => loadBoard(game)"
         :cmp-name="this.selected.name" :class="{focus: infoMode == 'games'}" 
         @go-back="route('back')">

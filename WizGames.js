@@ -1,3 +1,4 @@
+import { nextTick } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import {html, css} from './pageTools.js'
 import games from './games.js'
 
@@ -21,7 +22,8 @@ const template = html`
     </div>
     <p v-if="filteredIds.length">{{filteredIds.length}} games</p>
     <div class="game-list">
-      <template v-for="game in games" :key="game.id">
+      
+    <template v-for="game in eagerGames" :key="game.id">
         <div class="board-and-nav-box" :class="{ noshow: filteredIds.includes(game.id) === false }"> 
             <a @click="$emit('showGame', game)">
             <wiz-board 
@@ -42,6 +44,29 @@ const template = html`
           </div>
         </div>
       </template>
+
+      <template v-for="game in lazyGames" :key="game.id">
+        <div class="board-and-nav-box" :class="{ noshow: filteredIds.includes(game.id) === false }"> 
+            <a @click="$emit('showGame', game)">
+            <wiz-board 
+              :end-fen="game.endFen"
+              :nav-is-on="false" 
+              :id="game.id" :moves="game.moves" 
+              :color-side="game.playedAs">
+            </wiz-board> 
+          </a>
+          <div class="game-info-box">
+            <wiz-game-status :game="game" :shouldShowPlayedAs="true">
+            </wiz-game-status>
+            
+            <button title="view on Lichess" class="lichess-button" @click="openGame(game)">
+              &#xe901;
+            </button>
+            <div class="lichess-message">view on lichess</div>
+          </div>
+        </div>
+      </template>
+
     </div>
     <p v-if="games.length === 0" class="filter-message"> 
       It looks like you haven't played any games with {{cmpName}}. Start a game and when you finish it will appear here. 
@@ -61,6 +86,7 @@ export default {
     return {
       games: null,
       moves: [],
+      shouldShowLazyGames: false,
       wonIsSelected: true, 
       drawIsSelected: true,
       lostIsSelected: true,
@@ -71,13 +97,23 @@ export default {
     }
   },
   async created() {
-    // await new Promise(r => setTimeout(r, 1000))
     this.games = await games.getGames(this.cmpName)
     for (const game of this.games) {
       this.filteredIds.push(game.id)
     }
+    // seems ugly but can't find a better way for lazy games to render
+    // after page is visible, nexTick doesn't seem to work
+    await new Promise(r => setTimeout(r, 500))
+    this.shouldShowLazyGames = true
   },
   computed: {
+    eagerGames() {
+      return this.games.slice(0,3)
+    },
+    lazyGames() {
+      if (this.shouldShowLazyGames) return this.games.slice(3)
+      return []
+    },
     filteredGamesOld() {
       const selectedFilters = []
       if (this.wonIsSelected) selectedFilters.push('won')
