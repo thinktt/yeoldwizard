@@ -195,7 +195,7 @@ async function startApp(user) {
         isStartingGame: false,
         isSignedIn: Boolean(user),
         gameIsStarted: false,
-        gamesPageRefresKey: 0,
+        gamesPageRefreshKey: 0,
         gameUrl: '',
         scrollPosition: 0,
         signInLink: oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + clientId + '&redirect_uri=' + redirectUri + 
@@ -358,7 +358,7 @@ async function startApp(user) {
       showGames() {
         this.infoMode = 'games'
         this.navIsOn = false
-        this.gamesPageRefresKey ++
+        this.gamesPageRefreshKey ++
       },
       showTrophies() {
         this.infoMode = 'trophies'

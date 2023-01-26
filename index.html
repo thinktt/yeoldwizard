@@ -94,7 +94,7 @@
       </wiz-trophies>
 
       <wiz-games
-        key="gamesPageRefresKey" 
+        :key="gamesPageRefreshKey" 
         v-if="(infoMode === 'selected' || infoMode === 'games') && user && messageType === 'none'"
         @show-game="(game) => loadBoard(game)"
         :cmp-name="this.selected.name" :class="{focus: infoMode == 'games'}" 
