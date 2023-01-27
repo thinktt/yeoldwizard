@@ -59,11 +59,10 @@ export default {
       },
     }
     const board = { id: this.id, moves: this.moves, config }
-    if (this.isEager) {
-      renderBoard(board)
-      return
-    }
-
+    // if (this.isEager) {
+    //   renderBoard(board)
+    //   return
+    // }
     queBoard(board)
     renderBoards()
   },
