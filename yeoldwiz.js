@@ -13,6 +13,7 @@ import WizKidInfo from './WizKidInfo.js'
 import WizMessage from './WizMessage.js'
 import WizTrophies from './WizTrophies.js'
 import WizTrophy from './WizTrophy.js'
+import WizLoader from './WizLoader.js'
 import router from './router.js'
 import { cssLoader } from './pageTools.js'
 import lichessApi from './lichessApi.js'
@@ -64,10 +65,10 @@ async function doAccountFlow() {
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
         
-    await app.loadUserGames()
+    // await app.loadUserGames()
     app.goToCmp(localStorage.lastCmp || 'Wizard')
     // await new Promise(r => setTimeout(r, 10))
-    app.groupsAreHidden = false
+    // app.groupsAreHidden = false
     return
   }
 
@@ -637,6 +638,7 @@ async function startApp(user) {
   app1.component('WizMessage', WizMessage)
   app1.component('WizTrophies', WizTrophies)
   app1.component('WizTrophy', WizTrophy)
+  app1.component('WizLoader', WizLoader)
   const app = app1.mount('#app')
   router.loadApp(app, cmpsObj)
   app.route = router.route

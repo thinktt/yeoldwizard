@@ -1,6 +1,7 @@
 export default {
   setTokens, 
   getGames,
+  getGames2,
   getGamesByIds,
   createChallenge,
   getGameStream,
@@ -34,6 +35,14 @@ async function getGames(user, lastGameTime) {
     }
   })
   return res
+}
+
+
+async function getGames2(user, lastGameTime, handler, onDone) {
+  const endpoint = `/games/user/yeoldwiz`
+  const query = `?since=${lastGameTime}&vs=${user}&opening=false&rated=false&perfType=correspondence&ongoing=true`
+  const stream = await startStream(endpoint + query, handler, onDone)
+  return stream
 }
 
 
@@ -112,10 +121,13 @@ async function getStream(url, handler, onDone) {
   return { res, controller }
 }
 
-async function startStream(endpoint, callback) {
+async function startStream(endpoint, callback, onDone) {
   const tokens = JSON.parse(window.localStorage.tokens)
   const reader = await fetch('https://lichess.org/api' + endpoint,  {
-    headers: {'Authorization' : 'Bearer ' + tokens.access_token}
+    headers: {
+      'Authorization' : 'Bearer ' + tokens.access_token,
+      'Accept': 'application/x-ndjson',
+    }
   }).then((res) => res.body.pipeThrough(new TextDecoderStream()).getReader())
 
   while (true) {
@@ -128,6 +140,7 @@ async function startStream(endpoint, callback) {
       }
     }
   }
+  if (onDone) onDone()
 }
 
 

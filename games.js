@@ -5,7 +5,9 @@ const Chess = window.Chess
 const chess = new Chess()
 
 export default { 
+  setUser,
   updateGameList,
+  loadGames,
   setGames,
   getGames,
   getGamesWithMoves : getGames,
@@ -27,11 +29,10 @@ export default {
 
 window.dumbHash = dumbHash
 
+// module globals
 let gameCache = null
 let opponentMap = {}
 let idMap = {}
-
-// module globals
 let user = ''
 
 // Check if any new games have been played and adds them to the localStoage list
@@ -58,6 +59,38 @@ async function updateGameList(user) {
 
   return opponentMap
 }
+
+async function loadGames(games, counts) {
+  // wait for games module to be fully loaded
+  // while(!user || !gameCache) {
+  //   await new Promise(r => setTimeout(r, 500))
+  // }
+  user = 'thinktt'
+  getGames()
+
+  const lastGameTime = 1 //gameCache[5].createdAt
+  const handler =  async (game) => {
+    const res = await yowApi.getGame(game.id).catch()
+    if (!res.ok) {
+      console.log(game.id, 'NONE')
+      return 
+    }
+    const { opponent } = await res.json()
+    console.log(game.id, opponent)
+    counts.loaded ++
+  }
+  const onDone = () => {
+    // console.log('Done loading games')
+  }
+
+  lichessApi.getGames2(user, lastGameTime, handler, onDone)
+  // counts.loaded = gameCache.length
+  // for (const game of localGames) {
+  //   games.push(game)
+  //   await new Promise(r => setTimeout(r, 25))
+  // }
+}
+
 
 function getGames(opponent) {
   if (opponent && opponentMap) {
