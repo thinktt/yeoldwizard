@@ -27,6 +27,7 @@ const template = html`
         <div class="board-and-nav-box" :class="{ noshow: filteredIds.includes(game.id) === false }"> 
             <a @click="$emit('showGame', game)">
             <wiz-board 
+              :isEager="true"
               :end-fen="game.endFen"
               :nav-is-on="false" 
               :id="game.id" :moves="game.moves" 

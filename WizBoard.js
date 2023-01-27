@@ -13,7 +13,7 @@ const template =  html`
 `
 
 export default {
-  props : [ 'navIsOn', 'id', 'moves', 'colorSide', 'endFen' ],
+  props : [ 'isEager', 'navIsOn', 'id', 'moves', 'colorSide', 'endFen' ],
   data() {
     return {
       checkSquare: null,
@@ -58,7 +58,13 @@ export default {
         enabled: true 
       },
     }
-    queBoard({ id: this.id, moves: this.moves, config })
+    const board = { id: this.id, moves: this.moves, config }
+    if (this.isEager) {
+      renderBoard(board)
+      return
+    }
+
+    queBoard(board)
     renderBoards()
   },
   methods: {
@@ -86,8 +92,12 @@ async function renderBoards() {
 }
 
 function renderNextBoard() {
-  chess.reset()
   const board = boardQue.shift()
+  renderBoard(board)
+}
+
+function renderBoard(board) {
+  chess.reset()
   for (const move of board.moves) {
     chess.move(move) 
   }
