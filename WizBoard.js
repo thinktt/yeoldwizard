@@ -2,7 +2,7 @@ import {html, css} from './pageTools.js'
 import { Chessground } from './lib/chessground/js/chessground.js'
 const chess = new Chess()
 
-
+let endFenMap = {}
 let boardQue = []
 let boardsAreRendering  = false
 
@@ -73,7 +73,6 @@ export default {
   template,
 }
 
-
 // these function are used to load all the chess ground boards withoug blocking 
 // the even loop by loading a board on every even loop using setTimeout
 function queBoard(config) {
@@ -96,12 +95,19 @@ function renderNextBoard() {
 }
 
 function renderBoard(board) {
-  chess.reset()
-  for (const move of board.moves) {
-    chess.move(move) 
+  // if the endFen doesn't exist let's process it and cache it
+  if (!endFenMap[board.id]) {
+    chess.reset()
+    for (const move of board.moves) {
+      chess.move(move) 
+    }
+    endFenMap[board.id] = chess.fen()
+  } else {
+    chess.load(endFenMap[board.id])
   }
 
-  board.config.fen = chess.fen()
+  board.config.fen = endFenMap[board.id]
+
   if (chess.in_check()) {
     board.config.check = chess.turn() === 'w' ? 'white' : 'black'
   }

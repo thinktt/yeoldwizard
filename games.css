@@ -99,7 +99,8 @@ body {
 
 
 cg-board {
-  background-color: #bfcfdd;
+  background-color: transparent;
+  background-image: url('images/wood4.jpg')
 }
 
 #promotoion-choice {
