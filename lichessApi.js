@@ -2,6 +2,7 @@ export default {
   setTokens, 
   getGames,
   getGames2,
+  getGamesCount,
   getGamesByIds,
   createChallenge,
   getGameStream,
@@ -43,6 +44,23 @@ async function getGames2(user, lastGameTime, handler, onDone) {
   const query = `?since=${lastGameTime}&vs=${user}&opening=false&rated=false&perfType=correspondence&ongoing=true`
   const stream = await startStream(endpoint + query, handler, onDone)
   return stream
+}
+
+async function getGamesCount(user) {
+  const lichessEndpoint = `${baseUrl}/crosstable/yeoldwiz/${user}`
+  const tokens = JSON.parse(localStorage.tokens)
+  const res = await fetch(lichessEndpoint, {    
+    headers: {
+      'Authorization' : 'Bearer ' + tokens.access_token,
+      'Accept': 'application/x-ndjson',
+    }
+  })
+  if (!res.ok) {
+    const err = Error(`Resign request failed with status ${res.status}`)
+    throw err    
+  }
+  const data = await res.json()
+  return data.nbGames
 }
 
 
@@ -242,6 +260,7 @@ async function abortGame(gameId) {
 
   return true
 }
+
 
 
 // https://lichess.org/api/bot

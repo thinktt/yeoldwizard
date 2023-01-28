@@ -60,36 +60,165 @@ async function updateGameList(user) {
   return opponentMap
 }
 
-async function loadGames(games, counts) {
+async function loadGames(loadState) {
   // wait for games module to be fully loaded
   // while(!user || !gameCache) {
   //   await new Promise(r => setTimeout(r, 500))
   // }
   user = 'thinktt'
   getGames()
+  const localGames = gameCache.slice(300)
+  loadState.found = localGames.length
 
-  const lastGameTime = 1 //gameCache[5].createdAt
-  const handler =  async (game) => {
-    const res = await yowApi.getGame(game.id).catch()
-    if (!res.ok) {
-      console.log(game.id, 'NONE')
+  // add 1 to get most recent game we don't already have 
+  const lastGameTime = localGames[0].createdAt + 1
+
+  const games = [] 
+  const abortedGames = []
+  const opponentlessGames = []
+  const currentGames = []
+  
+  const handler =  async (lichessGame) => {
+    const game = await buildLocalGame(lichessGame)
+    loadState.loaded ++
+    
+    if (game.status === 'aborted') {
+      // clear aborted game from current games
+      deleteCurrentGame(game.id)
+      abortedGames.push(game.id) 
       return 
     }
-    const { opponent } = await res.json()
-    console.log(game.id, opponent)
-    counts.loaded ++
+    if (!game.opponent) {
+      // console.log('oponentless game')
+      opponentlessGames.push(game.id)
+      return 
+    }
+    if (game.status === 'started') {
+      currentGames.push(game)
+      return 
+    }
+
+    games.push(game)
   }
+  
   const onDone = () => {
-    // console.log('Done loading games')
+    console.log(games.length, 'valid new games found')
+    console.log(opponentlessGames.length, 'opponentless games found')
+    console.log(abortedGames.length, 'aborted games found')
+    console.log(currentGames.length, 'current games found')
   }
 
+  loadState.total = await lichessApi.getGamesCount(user)
+  loadState.toGet = loadState.total - localGames.length
   lichessApi.getGames2(user, lastGameTime, handler, onDone)
-  // counts.loaded = gameCache.length
-  // for (const game of localGames) {
-  //   games.push(game)
-  //   await new Promise(r => setTimeout(r, 25))
-  // }
 }
+
+async function buildLocalGame(game) {
+  const {id, createdAt, lastMoveAt, status, players, winner, moves : movesStr } = game
+
+  if (status === 'aborted') {
+    return { id, status: 'aborted' }
+  }
+
+  let opponent = await getOpponent(id)
+
+  if (!opponent) {
+    return { id, opponent: null }
+  }
+
+  // now make sure the opponent has it's proper cmpObj name
+  opponent = getProperName(opponent)
+  
+  //moves come from lichess as a string, make them an Array
+  const moves = movesStr.split(' ')
+
+  if (status === 'started') {
+    return { id, createdAt, lastMoveAt, status, opponent, moves }
+  }
+
+  // This is an actual completed game to be stored in long storage. This 
+  // parsing is very slow especially for getDrawType, need to make non blocking
+  const conclusion = parseGameConclusion(players, winner)
+  const playedAs = parsePlayedAs(players)
+  const drawType = getDrawType(conclusion, moves)
+  const localGame = {id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, playedAs, moves}
+  
+  return localGame
+}
+
+
+
+
+// Using time from last game we have get all games since that game, then
+// build our game objects that will be stored in the local db
+async function buildGamesFromLichess(user, lastGameTime) {
+  console.log(`Attempting to get all games for ${user} since ${lastGameTime}`)
+
+  const res = await lichessApi.getGames(user, lastGameTime)
+
+  if (!res.ok) {
+    console.log('Error getting games:') 
+    return {games: [], currentGames: []}
+  }
+
+  const gamesNdjson = await res.text()
+  const games = [] 
+  const abortedGames = []
+  const opponentlessGames = []
+  const currentGames = []
+
+  
+  for (const gameStr of gamesNdjson.split('\n')) {
+    
+    // last input will be a end of line char or some such, stop the loop
+    // to keep things from exploding
+    if (!gameStr) break
+    
+    const {id, createdAt, lastMoveAt, status, players, winner, moves : movesStr } = 
+      JSON.parse(gameStr)
+    
+    if (status === 'aborted') {
+      // clear aborted game from current games
+      deleteCurrentGame(id)
+      abortedGames.push(id) 
+      continue
+    }
+    
+    let opponent = await getOpponent(id)
+
+    // we were unbale to find a opponent, skip this game and record it
+    if (!opponent) {
+      opponentlessGames.push(id)
+      continue
+    }
+
+    // now make sure the opponent has it's proper cmpObj name
+    opponent = getProperName(opponent)
+
+    //moves come from lichess as a string, make them an Array
+    const moves = movesStr.split(' ')
+
+    if (status === 'started') {
+      currentGames.push({ id, createdAt, lastMoveAt, status, opponent, moves })
+      continue
+    }
+    
+    // This is an actual completed game to be stored in long storage. This 
+    // parsing is very slow especially for getDrawType, need to make non blocking
+    const conclusion = parseGameConclusion(players, winner)
+    const playedAs = parsePlayedAs(players)
+    const drawType = getDrawType(conclusion, moves)
+    games.push({id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, playedAs, moves})
+  }
+
+
+  console.log(games.length, 'valid new games found')
+  console.log(opponentlessGames.length, 'opponentless games found')
+  console.log(abortedGames.length, 'aborted games found')
+  console.log(currentGames.length, 'current games found')
+  return { games, currentGames}
+}
+
 
 
 function getGames(opponent) {
@@ -304,76 +433,6 @@ function getLastGameTime(games, currentGames) {
   return lastGameTime
 }
 
-
-// Using time from last game we have get all games since that game, then
-// build our game objects that will be stored in the local db
-async function buildGamesFromLichess(user, lastGameTime) {
-  console.log(`Attempting to get all games for ${user} since ${lastGameTime}`)
-
-  const res = await lichessApi.getGames(user, lastGameTime)
-
-  if (!res.ok) {
-    console.log('Error getting games:') 
-    return {games: [], currentGames: []}
-  }
-
-  const gamesNdjson = await res.text()
-  const games = [] 
-  const abortedGames = []
-  const opponentlessGames = []
-  const currentGames = []
-
-  
-  for (const gameStr of gamesNdjson.split('\n')) {
-    
-    // last input will be a end of line char or some such, stop the loop
-    // to keep things from exploding
-    if (!gameStr) break
-    
-    const {id, createdAt, lastMoveAt, status, players, winner, moves : movesStr } = 
-      JSON.parse(gameStr)
-    
-    if (status === 'aborted') {
-      // clear aborted game from current games
-      deleteCurrentGame(id)
-      abortedGames.push(id) 
-      continue
-    }
-    
-    let opponent = await getOpponent(id)
-
-    // we were unbale to find a opponent, skip this game and record it
-    if (!opponent) {
-      opponentlessGames.push(id)
-      continue
-    }
-
-    // now make sure the opponent has it's proper cmpObj name
-    opponent = getProperName(opponent)
-
-    //moves come from lichess as a string, make them an Array
-    const moves = movesStr.split(' ')
-
-    if (status === 'started') {
-      currentGames.push({ id, createdAt, lastMoveAt, status, opponent, moves })
-      continue
-    }
-    
-    // This is an actual completed game to be stored in long storage. This 
-    // parsing is very slow especially for getDrawType, need to make non blocking
-    const conclusion = parseGameConclusion(players, winner)
-    const playedAs = parsePlayedAs(players)
-    const drawType = getDrawType(conclusion, moves)
-    games.push({id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, playedAs, moves})
-  }
-
-
-  console.log(games.length, 'valid new games found')
-  console.log(opponentlessGames.length, 'opponentless games found')
-  console.log(abortedGames.length, 'aborted games found')
-  console.log(currentGames.length, 'current games found')
-  return { games, currentGames}
-}
 
 // parse a simple conlcusion, did user win, lose, or draw?
 function parseGameConclusion(players, winner) {
