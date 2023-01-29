@@ -11,16 +11,7 @@ const template = html`
   </div>
 `
 
-
 export default {
-  props: [],
-  data() {
-    return {
-      loadState : {loaded: 0, found: 0, toGet: 0, total: 0, isDone: false}
-    }
-  },
-  mounted() {
-    games.loadGames(this.loadState)
-  },
+  props: ['loadState'],
   template,
 }

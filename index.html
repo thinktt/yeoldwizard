@@ -111,7 +111,7 @@
         :user="user">
       </wiz-board-room>
 
-      <wiz-loader></wiz-loader>
+      <wiz-loader :load-state="loadState"></wiz-loader>
 
       <div class="groups" :class="{
         focus: infoMode == 'browsing' && wizKidMode !== 'message', 

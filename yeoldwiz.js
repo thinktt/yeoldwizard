@@ -65,7 +65,7 @@ async function doAccountFlow() {
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
         
-    // await app.loadUserGames()
+    await app.loadUserGames()
     app.goToCmp(localStorage.lastCmp || 'Wizard')
     // await new Promise(r => setTimeout(r, 10))
     // app.groupsAreHidden = false
@@ -190,6 +190,7 @@ async function startApp(user) {
           moves: [],
         },
         drawOfferState: '',
+        loadState : {loaded: 0, found: 0, toGet: 0, total: 0, isDone: false},
         shouldShowSignOut: false,
         selectionIsLocked: false,
         isInPlayMode: false,
@@ -535,7 +536,10 @@ async function startApp(user) {
         return true
       },
       async loadUserGames() {
-        this.games = await games.updateGameList(window.localStorage.user)
+        games.setUser(window.localStorage.user)
+        await games.loadGames(this.loadState)
+        this.games = games.getGamesByOpponent()
+        // this.games = await games.updateGameList(window.localStorage.user)
         const currentGame =  await games.getCurrentLatestGame() || {}
         if (currentGame.id) {
           this.route('selected', currentGame.opponent)

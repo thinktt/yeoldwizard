@@ -10,6 +10,7 @@ export default {
   loadGames,
   setGames,
   getGames,
+  getGamesByOpponent,
   getGamesWithMoves : getGames,
   getColorToPlay,
   getCurrentGames,
@@ -35,6 +36,7 @@ let opponentMap = {}
 let idMap = {}
 let user = ''
 
+
 // Check if any new games have been played and adds them to the localStoage list
 async function updateGameList(user) {
   console.log('Attempting to update the local storage game list')
@@ -48,30 +50,35 @@ async function updateGameList(user) {
   lastGameTime = lastGameTime + 1
   const { games : newGames, currentGames } = await buildGamesFromLichess(user, lastGameTime)
 
-
   const games = deDupeGames(newGames.concat(storedGames)) 
   setGames(games)
   setCurrentGames(currentGames)
   
-
   // everytime game list is updated we will forward missing games to the YOW API
   fowardGamesToYowApi()
-
   return opponentMap
 }
 
-async function loadGames(loadState) {
-  // wait for games module to be fully loaded
-  // while(!user || !gameCache) {
-  //   await new Promise(r => setTimeout(r, 500))
-  // }
-  user = 'thinktt'
-  getGames()
-  const localGames = gameCache.slice(300)
-  loadState.found = localGames.length
 
-  // add 1 to get most recent game we don't already have 
-  const lastGameTime = localGames[0].createdAt + 1
+function getGamesByOpponent() {
+  return opponentMap
+}
+
+
+async function loadGames(loadState) {
+  if (!user) {
+    console.error('No user set, must load user before loading games')
+    return
+  }
+
+  console.log('Attempting to update the local storage game list')
+  const storedGames = getGames().slice(300)
+  const storedCurrentGames = getCurrentGames()
+  let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
+  console.log('last game time found: ' + lastGameTime)
+  
+  // we'll add one so we will only get new games
+  lastGameTime = lastGameTime + 1
 
   const games = [] 
   const abortedGames = []
@@ -106,12 +113,20 @@ async function loadGames(loadState) {
     console.log(opponentlessGames.length, 'opponentless games found')
     console.log(abortedGames.length, 'aborted games found')
     console.log(currentGames.length, 'current games found')
+    const gamesToStore = deDupeGames(games.concat(storedGames)) 
+    setGames(gamesToStore)
+    setCurrentGames(currentGames)
+    
+    // everytime game list is updated we will forward missing games to the YOW API
+    fowardGamesToYowApi()
   }
 
+  loadState.found = storedGames.length
   loadState.total = await lichessApi.getGamesCount(user)
-  loadState.toGet = loadState.total - localGames.length
+  loadState.toGet = loadState.total - loadState.found
   lichessApi.getGames2(user, lastGameTime, handler, onDone)
 }
+
 
 async function buildLocalGame(game) {
   const {id, createdAt, lastMoveAt, status, players, winner, moves : movesStr } = game
@@ -145,8 +160,6 @@ async function buildLocalGame(game) {
   
   return localGame
 }
-
-
 
 
 // Using time from last game we have get all games since that game, then
