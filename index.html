@@ -111,12 +111,13 @@
         :user="user">
       </wiz-board-room>
 
-      <wiz-loader :load-state="loadState"></wiz-loader>
+      <wiz-loader v-if="isLoading" :load-state="loadState"></wiz-loader>
 
       <div class="groups" :class="{
         focus: infoMode == 'browsing' && wizKidMode !== 'message', 
         'nav-is-on': navIsOn, 
-        hidden: true, noshow: true}">
+        hidden: groupsAreHidden, 
+        noshow: isLoading}">
         <!-- hidden: groupsAreHidden }"> -->
         <section v-for="group in groups" class="group" :name="group.title"> 
           <!-- <a :name="group.title.replace(' ','')"></a> -->

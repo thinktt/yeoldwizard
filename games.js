@@ -72,7 +72,7 @@ async function loadGames(loadState) {
   }
 
   console.log('Attempting to update the local storage game list')
-  const storedGames = getGames().slice(300)
+  const storedGames = getGames() //.slice(300)
   const storedCurrentGames = getCurrentGames()
   let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
   console.log('last game time found: ' + lastGameTime)
@@ -108,6 +108,8 @@ async function loadGames(loadState) {
     games.push(game)
   }
   
+  let resolve
+  const promise = new Promise(r => resolve = r) 
   const onDone = () => {
     console.log(games.length, 'valid new games found')
     console.log(opponentlessGames.length, 'opponentless games found')
@@ -119,12 +121,15 @@ async function loadGames(loadState) {
     
     // everytime game list is updated we will forward missing games to the YOW API
     fowardGamesToYowApi()
+    // loadState.isDone = true
+    resolve()
   }
 
   loadState.found = storedGames.length
   loadState.total = await lichessApi.getGamesCount(user)
   loadState.toGet = loadState.total - loadState.found
   lichessApi.getGames2(user, lastGameTime, handler, onDone)
+  return promise
 }
 
 

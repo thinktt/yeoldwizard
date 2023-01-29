@@ -66,9 +66,10 @@ async function doAccountFlow() {
     tokens = JSON.parse(localStorage.tokens) 
         
     await app.loadUserGames()
+    app.isLoading = false
+    await new Promise(r => setTimeout(r, 0))
     app.goToCmp(localStorage.lastCmp || 'Wizard')
-    // await new Promise(r => setTimeout(r, 10))
-    // app.groupsAreHidden = false
+    app.groupsAreHidden = false
     return
   }
 
@@ -190,6 +191,7 @@ async function startApp(user) {
           moves: [],
         },
         drawOfferState: '',
+        isLoading: true,
         loadState : {loaded: 0, found: 0, toGet: 0, total: 0, isDone: false},
         shouldShowSignOut: false,
         selectionIsLocked: false,
