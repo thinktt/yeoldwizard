@@ -81,6 +81,10 @@
     /* display: block; */
   }
 
+  .groups.hidden {
+    visibility: hidden;
+  }
+
   .groups.nav-is-on {
     visibility: hidden;
   }
