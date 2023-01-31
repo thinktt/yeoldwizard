@@ -502,12 +502,9 @@ async function startApp(user) {
         games.setUser(window.localStorage.user)
         await games.loadGames(this.loadState)
         this.games = games.getGamesByOpponent()
-        // this.games = await games.updateGameList(window.localStorage.user)
         const currentGame =  await games.getCurrentLatestGame() || {}
         if (currentGame.id) {
           this.route('selected', currentGame.opponent)
-          // this.messageType = "started"
-          // this.wizKidMode = 'message'
           this.currentGameId = currentGame.id
           this.currentGame = currentGame
           this.connectToStream(currentGame.id)
