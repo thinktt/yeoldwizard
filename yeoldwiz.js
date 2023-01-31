@@ -492,9 +492,9 @@ async function startApp(user) {
       
         games.addCurrentGame({id: gameId, opponent, })
         this.currentGameId = gameId
+        
+        await this.loadUserGames()
         this.messageType = 'none'
-
-        this.loadUserGames()
 
         return true
       },
