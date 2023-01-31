@@ -75,7 +75,6 @@ async function getToken(code) {
   }
 
   const token = await res.json()
-  console.log(token)
   return token
 }
 
