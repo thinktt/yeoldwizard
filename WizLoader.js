@@ -10,8 +10,8 @@ const template = html`
       <div class="loader-bar">
         <div class="inner-bar" :style="{width: percent + '%'}"></div>
       </div>
-      <h2> {{loadState.found}} Games found in local storage </h2>
-      <h2>{{loadState.total}} Games found in lichess</h2>
+      <!-- <h2> {{loadState.found}} Games found in local storage </h2> -->
+      <!-- <h2>{{loadState.total}} Games found in lichess</h2> -->
       <h2>{{loadState.loaded}} of {{loadState.toGet}} games loaded</h2>
       <!-- <h2>{{loadState.nullGameCount}} previous nullgames recorded</h2> -->
       <!-- <h2> This may take some time... </h2> -->
@@ -24,7 +24,7 @@ export default {
   props: ['loadState'],
   data() {
     return {
-      shouldShowBar: true,
+      shouldShowBar: false,
     }
   },
   async mounted() {
