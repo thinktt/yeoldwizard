@@ -504,10 +504,10 @@ async function startApp(user) {
         this.games = games.getGamesByOpponent()
         const currentGame =  await games.getCurrentLatestGame() || {}
         if (currentGame.id) {
-          this.route('selected', currentGame.opponent)
+          // this.route('selected', currentGame.opponent)
           this.currentGameId = currentGame.id
           this.currentGame = currentGame
-          this.connectToStream(currentGame.id)
+          await this.connectToStream(currentGame.id)
           return
         } 
         this.currentGameId = null
@@ -516,7 +516,9 @@ async function startApp(user) {
         const boardGame = this.currentGame //games.getCurrentLatestGame() || {}
         console.log(`Attempting to stream ${boardGame.id}`)
         
-        lichessApi.getGameStream(boardGame.id, (event) => {
+        let resolve
+        const startPromise = new Promise(r => resolve = r)
+        lichessApi.getGameStream(boardGame.id, async (event) => {
           switch(event.type) {
             case 'gameFull': 
               console.log(`Succefully connected to Game:`)
@@ -528,8 +530,8 @@ async function startApp(user) {
               } else {
                 boardGame.playedAs = 'black'
               }
-              this.loadBoard(boardGame)
-              
+              await this.loadBoard(boardGame)
+              resolve()
               break;
             case 'gameState':
               // console.log('normal game event')
@@ -580,6 +582,7 @@ async function startApp(user) {
           console.log(`game stream ${boardGame.id} has ended`)
         })
 
+        return startPromise
       },
     },
     watch: {
