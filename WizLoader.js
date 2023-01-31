@@ -28,7 +28,7 @@ export default {
     }
   },
   async mounted() {
-    await new Promise(r => setTimeout(r, 1000))
+    await new Promise(r => setTimeout(r, 1500))
     this.shouldShowBar = true
   },
   computed: {
