@@ -334,7 +334,9 @@ async function startApp(user) {
       },
       showBoard(gameId) {
         if (this.boardGame.id !== gameId) {
-          const game = games.getGameById(gameId)
+          let game 
+          if (gameId === this.currentGame.id) game = this.currentGame
+          else game = games.getGameById(gameId) 
           this.loadBoard(game)
         }
         this.infoMode = 'board'

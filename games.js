@@ -131,12 +131,10 @@ function getNullGameCount() {
 }
 
 
-window.abortCount = 0
 async function buildLocalGame(game) {
   const {id, createdAt, lastMoveAt, status, players, winner, moves : movesStr } = game
 
   if (status === 'aborted') {
-    window.abortCount ++
     return { id, status: 'aborted' }
   }
 
@@ -153,15 +151,15 @@ async function buildLocalGame(game) {
   
   //moves come from lichess as a string, make them an Array
   const moves = movesStr.split(' ')
+  const playedAs = parsePlayedAs(players)
 
   if (status === 'started') {
-    return { id, createdAt, lastMoveAt, status, opponent, moves }
+    return { id, createdAt, lastMoveAt, status, opponent, playedAs, moves }
   }
 
   // This is an actual completed game to be stored in long storage. This 
   // parsing is very slow especially for getDrawType, need to make non blocking
   const conclusion = parseGameConclusion(players, winner)
-  const playedAs = parsePlayedAs(players)
   const drawType = getDrawType(conclusion, moves)
   const localGame = {id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, 
     playedAs, moves, wasForwardedToYowApi }
