@@ -333,7 +333,7 @@ function setGames(games) {
   const gameRowsStr = JSON.stringify(gameRows)
   localStorage[user + '_gameRows'] = gameRowsStr
   const hash = dumbHash(gameRowsStr)
-  console.log('dbhash:', hash)
+  // console.log('dbhash:', hash)
   return hash
 }
 
@@ -399,9 +399,7 @@ async function setCurrentGames(games) {
     gameMap[game.id] = game 
   }
 
-  console.log('Howdy', games)
   localStorage[user + '_currentGames'] = JSON.stringify(gameMap)
-
 }
 
 function getCurrentGames() {
