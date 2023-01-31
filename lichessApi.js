@@ -1,5 +1,7 @@
 export default {
-  setTokens, 
+  setTokens,
+  getSignInLink, 
+  getToken,
   getGames,
   getGames2,
   getGamesCount,
@@ -11,6 +13,9 @@ export default {
   offerDraw,
   abortGame,
 }
+
+const clientId = 'L47TqpZn7iaJppGM'
+const redirectUri = 'https://thinktt.github.io/yeoldwizard'
 
 const baseUrl = 'https://lichess.org/api'
 let tokens
@@ -24,6 +29,56 @@ if (localStorage.tokens) {
 function setTokens(tokensToSet) {
   tokens = tokensToSet
 }
+
+async function getSignInLink() {
+  const oauthUrl = 'https://lichess.org/oauth' 
+  const oauthQuery = '?response_type=code'
+  const scope = 'board:play'
+  const codeVerifier = localStorage.codeVerifier || genRandomString()
+  localStorage.codeVerifier = codeVerifier
+  const codeChallenge = await genChallengeCode(codeVerifier)
+
+  const signInLink = oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + 
+    clientId + '&redirect_uri=' + redirectUri + '&code_challenge_method=S256' + 
+    '&code_challenge=' + codeChallenge + '&state=12345'
+  
+    return signInLink
+}
+
+async function getToken(code, redirectUri, clientId) {
+  const url = 'https://lichess.org/api/token'
+  const query =  `?code=${code}&redirect_uri=${redirectUri}`
+  const body = {
+    grant_type : 'authorization_code',
+    code: code,
+    code_verifier: localStorage.codeVerifier,
+    redirect_uri: redirectUri,
+    client_id: clientId,
+  }
+
+  const res = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
+    method: 'POST',
+    body: new URLSearchParams(body)
+  })
+
+  if (!res.ok) {
+    let err = Error(`Token request failed with status ${res.status}`)
+    err.res = res 
+    throw err    
+  }
+
+  const token = await res.json()
+  console.log(token)
+  return token
+}
+
+async function getAccount() {
+
+}
+
 
 async function getGames(user, lastGameTime) {
   const lichessEndpoint = `${baseUrl}/games/user/yeoldwiz`
@@ -262,5 +317,57 @@ async function abortGame(gameId) {
 }
 
 
+
+
+//..................Helper Functions...................
+function genRandomString() {
+  const PKCE_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const RECOMMENDED_CODE_VERIFIER_LENGTH = 96
+  const output = new Uint32Array(RECOMMENDED_CODE_VERIFIER_LENGTH);
+  crypto.getRandomValues(output);
+  const randStr = base64urlEncode(Array
+    .from(output)
+    .map((num) => PKCE_CHARSET[num % PKCE_CHARSET.length])
+    .join(''));
+ 
+  return randStr
+}
+
+
+async function genChallengeCode(codeVerifier) {
+  let codes = crypto
+    .subtle
+    .digest('SHA-256', (new TextEncoder()).encode(codeVerifier))
+    .then((buffer) => {
+      let hash = new Uint8Array(buffer);
+      let binary = '';
+      let hashLength = hash.byteLength;
+      for (let i = 0; i < hashLength; i++) {
+        binary += String.fromCharCode(hash[i]);
+      }
+      return binary;
+    })
+    .then(base64urlEncode)
+    .then((codeChallenge) => ({ codeChallenge, codeVerifier }));
+
+  return (await codes).codeChallenge;
+}
+
+function base64urlEncode(value) {
+  let base64 = btoa(value);
+  base64 = base64.replace(/\+/g, '-');
+  base64 = base64.replace(/\//g, '_');
+  base64 = base64.replace(/=/g, '');
+  return base64;
+}
+
+
+// let dummyCode
+// if (window.location.host.includes('192.168')) {
+//   console.log('Using dummy account for local dev address')
+//   dummyCode = 'EzUA-uZDIDR-E6-8XZgnvVpr0KvYQwWAjiVUk3E7ZoY'
+//   window.localStorage.user = 'dummyjoe'
+// }
+// codeChallenge = dummyCode || await genChallengeCode(localStorage.codeVerifier)
 
 // https://lichess.org/api/bot

@@ -22,17 +22,15 @@ import { Chessground } from './lib/chessground/js/chessground.js'
 window.games = games
 
 // cssLoader.render()
+// let redirectUri = 'http://localhost:8080'
+// yowProxyUrl = 'http://localhost:5000'
+// let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 
 const oauthUrl = 'https://lichess.org/oauth' 
 const oauthQuery = '?response_type=code'
 const scope = 'board:play'
-
-// let redirectUri = 'http://localhost:8080'
-// yowProxyUrl = 'http://localhost:5000'
-
-let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 const clientId = 'L47TqpZn7iaJppGM'
-let redirectUri = 'https://thinktt.github.io/yeoldwizard'
+const redirectUri = 'https://thinktt.github.io/yeoldwizard'
 let devHost = localStorage.devHost || 'localhost:8080'
 let tokens, codeChallenge
 
@@ -79,43 +77,22 @@ async function doAccountFlow() {
   const authCodeRegex = /code\=([_a-zA-Z0-9]*)/
   const match = authCodeRegex.exec(window.location.search.substr(1))
   if (match) {
-
     // go ahead and clear the query string as we no longer need it
     window.history.replaceState({}, null, window.location.origin + window.location.pathname)
-    
+
     //null starts the app with knight spining to show it's trying to connect
     const app = await startApp(null)
-    
+
     console.log("Auth callback detected, attempting to fetch tokens")
     const code = match[1]
-    const query =  `?code=${code}&redirect_uri=${redirectUri}`
     try {
-      // let url = yowProxyUrl + '/token' + query
-      let body = {
-        grant_type : 'authorization_code',
-        code: code,
-        code_verifier: localStorage.codeVerifier,
-        redirect_uri: redirectUri,
-        client_id: clientId,
-      }
+      const tokens = await lichessApi.getToken(code, redirectUri, clientId)
 
-      let url = 'https://lichess.org/api/token'
-      let res = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        },
-        method: 'POST',
-        body: new URLSearchParams(body)
-      })
-      if (!res.ok) throw res.error
-
-      tokens = await res.json() 
       console.log('Setting tokens in local storage and lichessApi')
       tokens.fetchTime = Math.floor(Date.now() / 1000)
       window.localStorage.tokens = JSON.stringify(tokens)
       lichessApi.setTokens(tokens)
-  
-      res = await fetch('https://lichess.org/api/account', {
+      const res = await fetch('https://lichess.org/api/account', {
         headers: {
           'Authorization' : 'Bearer ' + tokens.access_token, 
         }
@@ -151,6 +128,7 @@ async function doAccountFlow() {
 async function startApp(user) {
   
   const res = await fetch('personalities.json')
+  const signInLink = await lichessApi.getSignInLink()
   const cmpsObj = await res.json()
 
   // Map the CMP Object to an array, sort them by rating, reverse them 
@@ -213,9 +191,7 @@ async function startApp(user) {
         gamesPageRefreshKey: 0,
         gameUrl: '',
         scrollPosition: 0,
-        signInLink: oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + clientId + '&redirect_uri=' + redirectUri + 
-          '&code_challenge_method=S256' + '&code_challenge=' + codeChallenge +
-          '&state=12345',
+        signInLink: signInLink,
         groups : [
           {
             title: 'The Wizard',
