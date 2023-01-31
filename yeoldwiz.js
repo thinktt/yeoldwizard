@@ -64,9 +64,10 @@ async function doAccountFlow() {
     console.log('User ' + window.localStorage.user + ' found')
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
-        
+    
+    app.isLoading = true
     await app.loadUserGames()
-    await new Promise(r => setTimeout(r, 60 * 1000 * 60))
+    // await new Promise(r => setTimeout(r, 60 * 1000 * 60))
     app.isLoading = false
     await new Promise(r => setTimeout(r, 0))
     app.goToCmp(localStorage.lastCmp || 'Wizard')
@@ -127,7 +128,9 @@ async function doAccountFlow() {
       app.user = account.username
 
       // now that we have an account we can connnect to users games
+      app.isLoading = true
       await app.loadUserGames()
+      app.isLoading = false
       app.goToCmp(localStorage.lastCmp || 'Wizard')
       app.groupsAreHidden = false
 
@@ -192,7 +195,7 @@ async function startApp(user) {
           moves: [],
         },
         drawOfferState: '',
-        isLoading: true,
+        isLoading: false,
         loadState : {
           nullGameCount : 0, 
           found: 0, 
