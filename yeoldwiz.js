@@ -66,6 +66,7 @@ async function doAccountFlow() {
     tokens = JSON.parse(localStorage.tokens) 
         
     await app.loadUserGames()
+    // await new Promise(r => setTimeout(r, 60 * 1000 * 60))
     app.isLoading = false
     await new Promise(r => setTimeout(r, 0))
     app.goToCmp(localStorage.lastCmp || 'Wizard')
@@ -192,7 +193,14 @@ async function startApp(user) {
         },
         drawOfferState: '',
         isLoading: true,
-        loadState : {loaded: 0, found: 0, toGet: 0, total: 0, isDone: false},
+        loadState : {
+          nullGameCount : 0, 
+          found: 0, 
+          loaded: 0, 
+          toGet: 0, 
+          total: 0, 
+          isDone: false
+        },
         shouldShowSignOut: false,
         selectionIsLocked: false,
         isInPlayMode: false,

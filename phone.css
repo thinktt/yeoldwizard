@@ -85,6 +85,16 @@
     visibility: hidden;
   }
 
+  .loader {
+    margin-top: 10rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
   .games {
     margin-left: auto;
     margin-right: auto;

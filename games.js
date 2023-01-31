@@ -12,6 +12,8 @@ export default {
   getGames,
   getGamesByOpponent,
   getGamesWithMoves : getGames,
+  setNullGameCount,
+  getNullGameCount,
   getColorToPlay,
   getCurrentGames,
   getCurrentLatestGame,
@@ -72,7 +74,7 @@ async function loadGames(loadState) {
   }
 
   console.log('Attempting to update the local storage game list')
-  const storedGames = getGames() //.slice(300)
+  const storedGames = getGames()
   const storedCurrentGames = getCurrentGames()
   let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
   console.log('last game time found: ' + lastGameTime)
@@ -115,32 +117,49 @@ async function loadGames(loadState) {
     console.log(opponentlessGames.length, 'opponentless games found')
     console.log(abortedGames.length, 'aborted games found')
     console.log(currentGames.length, 'current games found')
-    const gamesToStore = deDupeGames(games.concat(storedGames)) 
+    let sortedGames = games.sort((g0, g1) => g1.createdAt - g0.createdAt)
+    const gamesToStore = deDupeGames(sortedGames.concat(storedGames)) 
     setGames(gamesToStore)
     setCurrentGames(currentGames)
+    setNullGameCount(abortedGames.length + opponentlessGames.length)
     
     // everytime game list is updated we will forward missing games to the YOW API
     fowardGamesToYowApi()
-    // loadState.isDone = true
+    loadState.isDone = true
     resolve()
   }
 
+  // loadState.nullGameCount = getNullGameCount()
   loadState.found = storedGames.length
   loadState.total = await lichessApi.getGamesCount(user)
-  loadState.toGet = loadState.total - loadState.found
+  loadState.toGet = loadState.total - loadState.found - loadState.nullGameCount
   lichessApi.getGames2(user, lastGameTime, handler, onDone)
   return promise
 }
 
 
+function setNullGameCount(count) {
+  const previousCount = Number(localStorage.nullGamesCount) || 0
+  localStorage.nullGamesCount = previousCount + count 
+} 
+
+function getNullGameCount() {
+  return localStorage.nullGamesCount || 0
+}
+
+
+window.abortCount = 0
 async function buildLocalGame(game) {
   const {id, createdAt, lastMoveAt, status, players, winner, moves : movesStr } = game
 
   if (status === 'aborted') {
+    window.abortCount ++
     return { id, status: 'aborted' }
   }
 
-  let opponent = await getOpponent(id)
+  let { opponent, opponentSource} = await getOpponent(id)
+  let wasForwardedToYowApi
+  if (opponentSource = 'yowApi') wasForwardedToYowApi = true 
 
   if (!opponent) {
     return { id, opponent: null }
@@ -161,7 +180,8 @@ async function buildLocalGame(game) {
   const conclusion = parseGameConclusion(players, winner)
   const playedAs = parsePlayedAs(players)
   const drawType = getDrawType(conclusion, moves)
-  const localGame = {id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, playedAs, moves}
+  const localGame = {id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, 
+    playedAs, moves, wasForwardedToYowApi }
   
   return localGame
 }
@@ -202,7 +222,7 @@ async function buildGamesFromLichess(user, lastGameTime) {
       continue
     }
     
-    let opponent = await getOpponent(id)
+    let { opponent } = await getOpponent(id)
 
     // we were unbale to find a opponent, skip this game and record it
     if (!opponent) {
@@ -303,7 +323,9 @@ function setGames(games) {
   localStorage.gameKeys = JSON.stringify(gameKeys)
   const gameRowsStr = JSON.stringify(gameRows)
   localStorage[user + '_gameRows'] = gameRowsStr
-  return dumbHash(gameRowsStr)
+  const hash = dumbHash(gameRowsStr)
+  console.log('dbhash:', hash)
+  return hash
 }
 
 
@@ -468,6 +490,7 @@ async function getOpponent(id) {
   // first let's try to get the opponent from any game currently being played
   const storedCurrentGames = getCurrentGames()
   let opponent = ''
+  let opponentSource = ''
   if (storedCurrentGames[id]) {
     opponent = storedCurrentGames[id].opponent
   }
@@ -475,15 +498,16 @@ async function getOpponent(id) {
   // we don't have an opponent for this game locally, try yowApi
   if (!opponent) {
     opponent = await getOpponentFromYowApi(id)
+    opponentSource = 'yowApi'
   }
 
   // we also didn't find this opponent the yowApi. Last resort let's try
   // checking lichess chat logs
-  if (!opponent) {
-    opponent = await getOpponentFromChat(id)
-  }
+  // if (!opponent) {
+  //   opponent = await getOpponentFromChat(id)
+  // }
 
-  return opponent
+  return { opponent, opponentSource }
 }
 
 async function getOpponentFromYowApi(gameId) {

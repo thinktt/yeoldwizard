@@ -299,16 +299,10 @@ cg-board {
   width: 40rem;
   text-align: center;
   content-visibility: auto
-
 }
 
 .games.loading-message {
   margin-top: 10rem;
-}
-
-.games.games.loading-message .knight {
-  font-size: 2.5rem;
-  margin-top: 1rem;
 }
 
 .game-info-box {

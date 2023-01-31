@@ -259,6 +259,36 @@ nav a {
   margin-bottom: 1rem;
 }
 
+.loader {
+  margin-top: 13rem;
+  margin-left: 35%;
+  width: 40rem;
+  text-align: center;
+  content-visibility: auto
+}
+
+.loader.loading-message .knight {
+  margin: auto;
+  font-size: 2.5rem;
+  margin-top: 1rem;
+  overflow: auto;
+}
+
+.loader .loader-bar {
+  width: 30rem;
+  height: 1rem;
+  border-color: goldenrod;
+  border-style: solid;
+  margin: auto;
+  /* background-color: green; */
+}
+
+.loader-bar .inner-bar {
+  background-color: green;
+  width: 0;
+  height: 1rem;
+}
+
 .groups {
   margin-top: 3rem;
   margin-left: 25rem;
