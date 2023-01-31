@@ -340,6 +340,7 @@ async function startApp(user) {
           this.loadBoard(game)
         }
         this.infoMode = 'board'
+        this.wizKidMode = 'control'
         this.navIsOn = false
       },
       switchScoreMode(mode) {
@@ -518,7 +519,7 @@ async function startApp(user) {
         const boardGame = this.currentGame //games.getCurrentLatestGame() || {}
         console.log(`Attempting to stream ${boardGame.id}`)
         
-        const stream =  await lichessApi.getGameStream(boardGame.id, (event) => {
+        lichessApi.getGameStream(boardGame.id, (event) => {
           switch(event.type) {
             case 'gameFull': 
               console.log(`Succefully connected to Game:`)
@@ -548,7 +549,7 @@ async function startApp(user) {
               }
              const endStates = ['mate', 'resign', 'stalemate', 'aborted', 'draw']
              if (endStates.includes(event.status)) {
-                console.log(event)
+                // console.log(event)
                 console.log('Game ended!')
                 // this.messageType = 'ended'
                 // this.message = `You have completed your game with ${this.selected.name}`
@@ -578,6 +579,8 @@ async function startApp(user) {
               console.log('unhandled game event: ' +  event.type)
               console.log(event)
           } 
+        }, () => {
+          console.log(`game stream ${boardGame.id} has ended`)
         })
 
       },
