@@ -86,20 +86,9 @@ async function doAccountFlow() {
     console.log("Auth callback detected, attempting to fetch tokens")
     const code = match[1]
     try {
-      const tokens = await lichessApi.getToken(code, redirectUri, clientId)
-
-      console.log('Setting tokens in local storage and lichessApi')
-      tokens.fetchTime = Math.floor(Date.now() / 1000)
-      window.localStorage.tokens = JSON.stringify(tokens)
-      lichessApi.setTokens(tokens)
-      const res = await fetch('https://lichess.org/api/account', {
-        headers: {
-          'Authorization' : 'Bearer ' + tokens.access_token, 
-        }
-      }) 
-      if (!res.ok) throw res.error
-
-      const account = await res.json()
+      const token = await lichessApi.getToken(code)
+      lichessApi.storeToken(token)
+      const account = await lichessApi.getAccount()
       console.log('Setting user ' + account.username + ' in local storage')
       localStorage.user = account.username
       app.user = account.username

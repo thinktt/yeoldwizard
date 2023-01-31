@@ -1,7 +1,8 @@
 export default {
-  setTokens,
+  storeToken,
   getSignInLink, 
   getToken,
+  getAccount,
   getGames,
   getGames2,
   getGamesCount,
@@ -26,8 +27,11 @@ if (localStorage.tokens) {
    console.log('no api tokens found for api')
 }
 
-function setTokens(tokensToSet) {
-  tokens = tokensToSet
+function storeToken(tokenToSet) {
+  console.log('Setting and storing Lichess API token')
+  tokenToSet.fetchTime = Math.floor(Date.now() / 1000)
+  localStorage.tokens = JSON.stringify(tokenToSet)
+  tokens = tokenToSet
 }
 
 async function getSignInLink() {
@@ -45,7 +49,7 @@ async function getSignInLink() {
     return signInLink
 }
 
-async function getToken(code, redirectUri, clientId) {
+async function getToken(code) {
   const url = 'https://lichess.org/api/token'
   const query =  `?code=${code}&redirect_uri=${redirectUri}`
   const body = {
@@ -76,7 +80,15 @@ async function getToken(code, redirectUri, clientId) {
 }
 
 async function getAccount() {
+  const res = await fetch('https://lichess.org/api/account', {
+    headers: {
+      'Authorization' : 'Bearer ' + tokens.access_token, 
+    }
+  }) 
+  if (!res.ok) throw res.error
 
+  const account = await res.json()
+  return account
 }
 
 
