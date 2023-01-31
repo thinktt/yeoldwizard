@@ -6,7 +6,7 @@ const chess = new Chess()
 
 export default { 
   setUser,
-  updateGameList,
+  // updateGameList,
   loadGames,
   setGames,
   getGames,
@@ -40,26 +40,26 @@ let user = ''
 
 
 // Check if any new games have been played and adds them to the localStoage list
-async function updateGameList(user) {
-  console.log('Attempting to update the local storage game list')
-  setUser(user)
-  const storedGames = getGames()
-  const storedCurrentGames = getCurrentGames()
-  let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
-  console.log('last game time found: ' + lastGameTime)
+// async function updateGameList(user) {
+//   console.log('Attempting to update the local storage game list')
+//   setUser(user)
+//   const storedGames = getGames()
+//   const storedCurrentGames = getCurrentGames()
+//   let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
+//   console.log('last game time found: ' + lastGameTime)
   
-  // we'll add one so we will only get new games
-  lastGameTime = lastGameTime + 1
-  const { games : newGames, currentGames } = await buildGamesFromLichess(user, lastGameTime)
+//   // we'll add one so we will only get new games
+//   lastGameTime = lastGameTime + 1
+//   const { games : newGames, currentGames } = await buildGamesFromLichess(user, lastGameTime)
 
-  const games = deDupeGames(newGames.concat(storedGames)) 
-  setGames(games)
-  setCurrentGames(currentGames)
+//   const games = deDupeGames(newGames.concat(storedGames)) 
+//   setGames(games)
+//   setCurrentGames(currentGames)
   
-  // everytime game list is updated we will forward missing games to the YOW API
-  fowardGamesToYowApi()
-  return opponentMap
-}
+//   // everytime game list is updated we will forward missing games to the YOW API
+//   fowardGamesToYowApi()
+//   return opponentMap
+// }
 
 
 function getGamesByOpponent() {
@@ -80,14 +80,16 @@ async function loadGames(loadState) {
   console.log('last game time found: ' + lastGameTime)
   
   // we'll add one so we will only get new games
-  // lastGameTime = lastGameTime + 1
+  lastGameTime = lastGameTime + 1
 
   const games = [] 
   const abortedGames = []
   const opponentlessGames = []
   const currentGames = []
+  let buildQue = 0
   
   const handler =  async (lichessGame) => {
+    buildQue ++
     const game = await buildLocalGame(lichessGame)
     loadState.loaded ++
     
@@ -95,24 +97,31 @@ async function loadGames(loadState) {
       // clear aborted game from current games
       deleteCurrentGame(game.id)
       abortedGames.push(game.id) 
+      buildQue --
       return 
     }
     if (!game.opponent) {
       // console.log('oponentless game')
       opponentlessGames.push(game.id)
+      buildQue --
       return 
     }
     if (game.status === 'started') {
       currentGames.push(game)
+      buildQue --
       return 
     }
 
     games.push(game)
+    buildQue --
   }
   
   let resolve
   const promise = new Promise(r => resolve = r) 
-  const onDone = () => {
+  const onDone = async () => {
+    while (buildQue) {
+      await new Promise(r => setTimeout(r, 0))
+    }
     console.log(games.length, 'valid new games found')
     console.log(opponentlessGames.length, 'opponentless games found')
     console.log(abortedGames.length, 'aborted games found')
@@ -159,7 +168,7 @@ async function buildLocalGame(game) {
 
   let { opponent, opponentSource} = await getOpponent(id)
   let wasForwardedToYowApi
-  if (opponentSource = 'yowApi') wasForwardedToYowApi = true 
+  if (opponentSource === 'yowApi') wasForwardedToYowApi = true 
 
   if (!opponent) {
     return { id, opponent: null }
@@ -390,7 +399,9 @@ async function setCurrentGames(games) {
     gameMap[game.id] = game 
   }
 
+  console.log('Howdy', games)
   localStorage[user + '_currentGames'] = JSON.stringify(gameMap)
+
 }
 
 function getCurrentGames() {
