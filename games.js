@@ -74,7 +74,7 @@ async function loadGames(loadState) {
   }
 
   console.log('Attempting to update the local storage game list')
-  const storedGames = getGames()// .slice(50)
+  const storedGames = getGames()//.slice(300)
   const storedCurrentGames = getCurrentGames()
   let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
   console.log('last game time found: ' + lastGameTime)

@@ -12,7 +12,7 @@ const template = html`
       </div>
       <!-- <h2> {{loadState.found}} Games found in local storage </h2> -->
       <!-- <h2>{{loadState.total}} Games found in lichess</h2> -->
-      <h2>{{loadState.loaded}} of {{loadState.toGet}} games loaded</h2>
+      <h2>{{loadState.loaded}} Games Loaded</h2>
       <!-- <h2>{{loadState.nullGameCount}} previous nullgames recorded</h2> -->
       <!-- <h2> This may take some time... </h2> -->
       <!-- <h2>{{percent}}</h2> -->
