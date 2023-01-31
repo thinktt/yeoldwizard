@@ -29,12 +29,12 @@ const template = html`
     </span> 
 
     <span v-if="score === 0" @click="$emit('selectionMade', 'score')"
-      :title="'Your score is even with ' + cmpName"
-      class="score badge score-even" :class="{'selected' :selection === 'score'}">
-        <span>
-            EVEN
+      :title="'Your Wiz Score against ' + cmpName + ' is ' + score"
+      class="badge score-even" :class="{'selected' : selection === 'score'}">
+        <span class="circle"> 
         </span>
-    </span>
+        <span class="score">EVEN</span>
+    </span> 
 
     <span v-if="isNemesis" @click="$emit('selectionMade', 'nemesis')"
       :title="cmpName + ' is your Nemesis'"

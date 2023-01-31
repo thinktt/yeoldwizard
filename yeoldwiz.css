@@ -630,6 +630,16 @@ a.phone-nav {
   right: -.9rem;
 }
 
+.badge.score-even .circle {
+  display: block;
+  height: 2rem;
+  width: 3rem;
+  background-color: gray;
+  border-radius: 1.5rem;
+  position: absolute;
+  top: 0.1rem;
+}
+ 
 .badge-box-2 .circle {
   display: block;
   height: 2.2rem;
@@ -638,6 +648,7 @@ a.phone-nav {
   border-radius: 2rem;
   position: absolute;
   left: .25rem;
+  top: .1rem;
 }
 
 .badge-box-2 .badge.score-down .circle {
@@ -657,17 +668,12 @@ a.phone-nav {
 }
 
 .badge-box-2 .score-even .score {
-  position: absolute;
-  top: -.050rem;
-  left: .25rem;
-  height: 1.25rem;
-  padding: .5rem;
+  top: .60rem;
+  left: .5rem;
   font-size: 1.25rem;
-  background-color: gray;
-  border-radius: 2rem;
-  line-height: 1.5rem;
-  margin-right: 1rem;
 }
+
+
 
 
 .badge-box-2 .badguy {
