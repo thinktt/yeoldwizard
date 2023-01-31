@@ -23,14 +23,7 @@ window.games = games
 
 // cssLoader.render()
 // let redirectUri = 'http://localhost:8080'
-// yowProxyUrl = 'http://localhost:5000'
-// let yowProxyUrl = 'https://yowproxy.herokuapp.com'
 
-const oauthUrl = 'https://lichess.org/oauth' 
-const oauthQuery = '?response_type=code'
-const scope = 'board:play'
-const clientId = 'L47TqpZn7iaJppGM'
-const redirectUri = 'https://thinktt.github.io/yeoldwizard'
 let devHost = localStorage.devHost || 'localhost:8080'
 let tokens, codeChallenge
 
@@ -43,20 +36,9 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
       window.location = `http://${devHost}` + query
 }
 
-// more dev env shenanigins 
-let dummyCode
-if (window.location.host.includes('192.168')) {
-  console.log('Using dummy account for local dev address')
-  dummyCode = 'EzUA-uZDIDR-E6-8XZgnvVpr0KvYQwWAjiVUk3E7ZoY'
-  window.localStorage.user = 'dummyjoe'
-}
-
 doAccountFlow()
 
 async function doAccountFlow() {
-  localStorage.codeVerifier = localStorage.codeVerifier || genRandomString()
-  codeChallenge = dummyCode || await genChallengeCode(localStorage.codeVerifier)
-
   // User is already signed in and stored in localstorage
   if (window.localStorage.user) {
     console.log('User ' + window.localStorage.user + ' found')
@@ -746,50 +728,8 @@ async function delLichessToken() {
   } else {
     console.log("Unable to delete token from lichess:", res.status, res.statusText )
   }
-
 }
 
 function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
-}
-
-function genRandomString() {
-  const PKCE_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-  const RECOMMENDED_CODE_VERIFIER_LENGTH = 96
-  const output = new Uint32Array(RECOMMENDED_CODE_VERIFIER_LENGTH);
-  crypto.getRandomValues(output);
-  const randStr = base64urlEncode(Array
-    .from(output)
-    .map((num) => PKCE_CHARSET[num % PKCE_CHARSET.length])
-    .join(''));
- 
-  return randStr
-}
-
-
-async function genChallengeCode(codeVerifier) {
-  let codes = crypto
-    .subtle
-    .digest('SHA-256', (new TextEncoder()).encode(codeVerifier))
-    .then((buffer) => {
-      let hash = new Uint8Array(buffer);
-      let binary = '';
-      let hashLength = hash.byteLength;
-      for (let i = 0; i < hashLength; i++) {
-        binary += String.fromCharCode(hash[i]);
-      }
-      return binary;
-    })
-    .then(base64urlEncode)
-    .then((codeChallenge) => ({ codeChallenge, codeVerifier }));
-
-  return (await codes).codeChallenge;
-}
-
-function base64urlEncode(value) {
-  let base64 = btoa(value);
-  base64 = base64.replace(/\+/g, '-');
-  base64 = base64.replace(/\//g, '_');
-  base64 = base64.replace(/=/g, '');
-  return base64;
 }
