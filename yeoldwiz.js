@@ -19,6 +19,7 @@ import { cssLoader } from './pageTools.js'
 import lichessApi from './lichessApi.js'
 import { applyAnimation } from './lib/chessground/js/config.js'
 import { Chessground } from './lib/chessground/js/chessground.js'
+import yowApi from './yowApi.js'
 window.games = games
 
 // cssLoader.render()
@@ -473,6 +474,8 @@ async function startApp(user) {
         }
         const challenge = await res.json()
         const gameId = challenge.challenge.id
+        setOpponentInYowApi(gameId, opponent)
+
       
         // give some time for the game to start, this is crappy but hopefuly works
         await new Promise(resolve => setTimeout(resolve, 3000));
@@ -681,8 +684,18 @@ async function checkGame(gameId) {
   return false
 }
 
+async function setOpponentInYowApi(gameId, opponent) {
+  const user = localStorage.user
+  const res = await yowApi.addGame({id: gameId, user, opponent})
+  if (res.ok) {
+    console.log('current game Id and opponent sent to yowApi')
+    return true
+  }
+  console.log('failed to set opponent in yowApi')
+}
 
 async function setOpponent(gameId, opponent) {
+  console.log('attempting to set opponent in chat')
   const tokens = JSON.parse(window.localStorage.tokens)
   const res1 = await fetch(`https://lichess.org/api/board/game/${gameId}/chat`, {
     headers: {
