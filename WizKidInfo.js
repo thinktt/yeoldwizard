@@ -36,15 +36,14 @@ const template =  html`
         </div> -->
       </wiz-badges-2>
       <div v-if="view === 'top'" class="buttons">
-        <!-- <a v-if="user && currentGameId" 
-          class="button blue" 
+        <a v-if="user && currentGameId && currentOpponent === cmp.name" 
+          class="button blue phone-nav" 
           :class="{'phone-nav': currentGameId == boardGameId && mainView === 'board'}"
           @click="$emit('goToCurrentGame')">
-            Finish {{currentOpponent}} Game
-        </a>    -->
-        <a v-if="user && currentGameId" 
+            Go to Game
+        </a>
+        <a v-if="user && currentGameId && currentOpponent !== cmp.name" 
           class="button blue" 
-          :class="{'phone-nav': currentGameId == boardGameId && mainView === 'board'}"
           @click="$emit('goToCurrentGame')">
             Finish {{currentOpponent}} Game
         </a>   
