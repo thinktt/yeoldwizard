@@ -170,7 +170,7 @@
   .board-room .top-panel {
     display: flex;
     width: 30rem;
-    background-color: var(--wizbrownfade);
+    /* background-color: var(--wizbrownfade); */
     padding-top: 3rem;
   }
 
@@ -189,6 +189,8 @@
     justify-content: center;
     flex-direction: column;
     margin: auto;
+    height: 100vh;
+    background-color: var(--wizbrownfade);
   }
 
   .board-nav {
@@ -197,6 +199,7 @@
     padding: 0;
     width: 30rem;
     height: unset;
+    background-color: unset;
   }
 
   .board-nav .pgn-viewer {
