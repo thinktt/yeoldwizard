@@ -13,6 +13,7 @@ export default {
   resign,
   offerDraw,
   abortGame,
+  getChatOpponent,
 }
 
 const clientId = 'L47TqpZn7iaJppGM'
@@ -325,6 +326,38 @@ async function abortGame(gameId) {
   }
 
   return true
+}
+
+async function getChatOpponent(gameId) {
+  const tokens = JSON.parse(localStorage.tokens)
+  
+  const res = await fetch(`https://lichess.org/api/board/game/${gameId}/chat`, {    
+    headers: {
+      'Authorization' : 'Bearer ' + tokens.access_token,
+      'Accept': 'application/x-ndjson',
+    }
+  })
+  if (!res.ok) {
+    console.log(`Error getting chat logs for ${gameId}`)
+    return null
+  }
+  const chatLines = await res.json()
+
+  // we need to ask them who they want to play
+  const wizMessages = chatLines.filter(
+    line => line.user === 'yeoldwiz' && line.text.includes('Playing as')
+  )
+
+  if (wizMessages.length === 0) {
+    console.log(`no opponent found for game ${gameId}`)
+    return null
+  } 
+
+  const opponent = 
+    wizMessages[0].text.match(/Playing as [A-Za-z0-9]*/)[0].replace('Playing as ', '')
+
+  console.log(`chat says ${gameId} was played by ${opponent}`)
+  return opponent
 }
 
 
