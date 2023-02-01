@@ -11,6 +11,7 @@ export default {
   getGames,
   getGamesByOpponent,
   getGamesWithMoves : getGames,
+  getOpponentFromChat,
   setNullGameCount,
   getNullGameCount,
   getColorToPlay,
