@@ -26,7 +26,18 @@ window.games = games
 // let redirectUri = 'http://localhost:8080'
 
 let devHost = localStorage.devHost || 'localhost:8080'
-let tokens, codeChallenge
+let tokens = localStorage.tokens
+let user = localStorage.user
+
+// flush local db if we changed the format since user used the app
+const dbVersion = '1'
+if (localStorage.dbVersion !== dbVersion) { 
+  console.log(`DB does not match current version, flushing db`)
+  localStorage.clear()
+}
+localStorage.dbVersion = '1'
+localStorage.tokens = tokens
+localStorage.user = user
 
 
 // a way to get dev to work using the same lichess client id

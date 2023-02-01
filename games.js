@@ -178,7 +178,7 @@ function getGames(opponent) {
     return gameCache
   }
   if (!localStorage[user + '_gameRows']) { 
-    console.log('no stored games found for' + user)
+    console.log('no stored games found for ' + user)
     return []
   }
 
