@@ -36,8 +36,19 @@ const template =  html`
         </div> -->
       </wiz-badges-2>
       <div v-if="view === 'top'" class="buttons">
+        <!-- <a v-if="user && currentGameId" 
+          class="button blue" 
+          :class="{'phone-nav': currentGameId == boardGameId && mainView === 'board'}"
+          @click="$emit('goToCurrentGame')">
+            Finish {{currentOpponent}} Game
+        </a>    -->
+        <a v-if="user && currentGameId" 
+          class="button blue" 
+          :class="{'phone-nav': currentGameId == boardGameId && mainView === 'board'}"
+          @click="$emit('goToCurrentGame')">
+            Finish {{currentOpponent}} Game
+        </a>   
         <a v-if="user && !currentGameId" class="button blue" @click="startGame(cmp.name)">Play</a>
-        <a v-if="user && currentGameId" class="button blue phone-nav" @click="$emit('goToCurrentGame')">Go To Game</a>
         <a v-else-if="!user" :href="signInLink" class="button blue">Sign in to Play</a>
         <a class="button yellow" @click="show('bio')">Bio</a>
         <a class="button yellow" @click="show('about')">Chess Style</a>
@@ -85,6 +96,7 @@ const template =  html`
         <p>{{cmp.bio}}</p>
         <a class="button yellow" @click="show('top')">Back</a>
       </div>
+
     </template>
   </div>  
 `
@@ -107,7 +119,18 @@ export default {
     'isNemesis',
     'topFeat',
     'currentGameId',
+    'boardGameId',
+    'mainView',
+    'currentOpponent',
   ],
+  computed: {
+    shouldShowGoto() {
+      if (this.user && this.curentGameId) {
+        return true
+      }
+      return false
+    }
+  },
   methods: {
     startGame(cmpName) {
       console.log('Start game with ' + cmpName)
