@@ -108,6 +108,7 @@
       <wiz-board-room 
         @move="doMove"
         @quit-action="doQuitAction"
+        @route-back="route('back')"
         :class="{noshow: infoMode !== 'board'}" 
         :draw-offer-state="drawOfferState"
         :game="boardGame"

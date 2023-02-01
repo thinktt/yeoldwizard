@@ -485,6 +485,10 @@ a.phone-nav {
   display: none;
 }
 
+button.phone-nav {
+  display: none;
+}
+
 .cmp-container  {
   position: relative;
 }

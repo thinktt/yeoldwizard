@@ -27,6 +27,7 @@ const template = html`
         @go-forward="goForward"
         @go-end="goEnd"
         @go-index="goIndex"
+        @route-back="$emit('route-back')"
         :draw-offer-state=drawOfferState
         :game="game"
         :navIndex="navIndex"

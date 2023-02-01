@@ -69,6 +69,10 @@
     display: inline-block;
   }
 
+  button.phone-nav {
+    display: inline-block;
+  }
+
   .groups {
     margin-left: 0rem;
     margin-right: 0rem;
@@ -211,6 +215,11 @@
     margin: 0;
   }
 
+  .board-nav .nav-buttons.lower {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
   .nav-buttons button:hover {
     border-color: goldenrod;
     color: goldenrod;
@@ -230,7 +239,7 @@
   }
 
   .nav-buttons button {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
   .board-room .board-container {

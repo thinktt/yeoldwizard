@@ -27,12 +27,16 @@ const template = html`
     <h2 class="user-name">{{userName}}</h2>
       
 
-    <div v-if="shouldShowActions" class="nav-buttons">
+    <div v-if="shouldShowActions" class="nav-buttons lower">
       <!-- <a :href="'https://lichess.org/' + game.id + '/' + game.playedAs" target="_blank" rel="noopener noreferrer">
         &#xe901;
       </a> -->
  
       <template v-if="game.moves.length > 1 && !comfirmMessage && !isWaiting">
+        <button @click="$emit('route-back')" title="back" class="phone-nav" >
+          &#xe05c;
+        </button>
+
         <button class="lichess-button" @click="openGame" title="play on Lichess">
           &#xe901;
         </button>
@@ -48,6 +52,12 @@ const template = html`
       </template>
     
       <template v-else-if="!comfirmMessage && !isWaiting">
+        <button @click="$emit('route-back')" title="back" class="phone-nav" >
+          &#xe05c;
+        </button>
+        <button title="view on Lichess" class="lichess-button" @click="openGame">
+          &#xe901;
+        </button>
         <button @click="comfirmMessage = 'Abort Game'" id="abort-button" title="abort game">&#xea0e;</button>
       </template>
     
@@ -63,13 +73,18 @@ const template = html`
       <div v-if="drawOfferState === 'offered' || isWaiting" class="icon knight spin">
         ♞
       </div>
-    
     </div>
-    <wiz-game-status :game="game"></wiz-game-status>
 
-    <button v-if="game.status !=='started'" title="view on Lichess" class="lichess-button" @click="openGame">
-      &#xe901;
-    </button>
+    <wiz-game-status :game="game"></wiz-game-status>
+    
+    <div v-if="game.status !=='started'">
+      <button @click="$emit('route-back')" title="back" class="lichess-button phone-nav" >
+        &#xe05c;
+      </button>
+      <button  title="view on Lichess" class="lichess-button" @click="openGame">
+        &#xe901;
+      </button>
+    </div>
     
     <div v-if="game.status !== 'started'" class="nav-buttons">
     </div>
