@@ -19,6 +19,15 @@ export default {
 const clientId = 'L47TqpZn7iaJppGM'
 const redirectUri = 'https://thinktt.github.io/yeoldwizard'
 
+
+// let dummyCode
+// if (window.location.host.includes('192.168')) {
+//   console.log('Using dummy account for local dev address')
+//   dummyCode = 'EzUA-uZDIDR-E6-8XZgnvVpr0KvYQwWAjiVUk3E7ZoY'
+//   window.localStorage.user = 'dummyjoe'
+// }
+// codeChallenge = dummyCode || await genChallengeCode(localStorage.codeVerifier)
+
 const baseUrl = 'https://lichess.org/api'
 let tokens
 if (localStorage.tokens) {
@@ -41,7 +50,12 @@ async function getSignInLink() {
   const scope = 'board:play'
   const codeVerifier = localStorage.codeVerifier || genRandomString()
   localStorage.codeVerifier = codeVerifier
-  const codeChallenge = await genChallengeCode(codeVerifier)
+  let dummyCode
+  if (window.location.host.includes('192.168')) {
+    console.log('using dummy code')
+    dummyCode = 'EzUA-uZDIDR-E6-8XZgnvVpr0KvYQwWAjiVUk3E7ZoY'
+  }
+  const codeChallenge = dummyCode || await genChallengeCode(localStorage.codeVerifier)
 
   const signInLink = oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + 
     clientId + '&redirect_uri=' + redirectUri + '&code_challenge_method=S256' + 
@@ -404,14 +418,3 @@ function base64urlEncode(value) {
   base64 = base64.replace(/=/g, '');
   return base64;
 }
-
-
-// let dummyCode
-// if (window.location.host.includes('192.168')) {
-//   console.log('Using dummy account for local dev address')
-//   dummyCode = 'EzUA-uZDIDR-E6-8XZgnvVpr0KvYQwWAjiVUk3E7ZoY'
-//   window.localStorage.user = 'dummyjoe'
-// }
-// codeChallenge = dummyCode || await genChallengeCode(localStorage.codeVerifier)
-
-// https://lichess.org/api/bot
