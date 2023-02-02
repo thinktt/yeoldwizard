@@ -173,17 +173,19 @@
   .board-room {
     margin-top: 0;
     margin-left: 0;
+    height: 100vh;
+    background-color: var(--wizbrownfade);
   }
 
   .board-room .top-panel {
     display: flex;
-    width: 30rem;
+    width: 99vw;
     /* background-color: var(--wizbrownfade); */
     padding-top: 3rem;
   }
 
   .board-room .top-panel .wiz-kid-name {
-    width: 30rem;
+    width: 99vw;
   }
 
   .board-room .top-panel h2 {
@@ -193,19 +195,18 @@
   }
   
   .board-and-nav-2 {
-    width: 30rem;
+    width: 99vw;
     justify-content: center;
     flex-direction: column;
     margin: auto;
     height: 100vh;
-    background-color: var(--wizbrownfade);
   }
 
   .board-nav {
     grid-template-rows: unset;
     margin: 0;
     padding: 0;
-    width: 30rem;
+    width: 99vw;
     height: unset;
     background-color: unset;
   }
@@ -254,8 +255,8 @@
   }
 
   .board-room .board-container {
-    width: 30rem;
-    height: 30rem;
+    width: 99vw;
+    height: 99vw;
     margin: 0;
   }
 
