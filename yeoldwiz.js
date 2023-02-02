@@ -257,9 +257,9 @@ async function startApp(user) {
     },
     methods : {
       async doMove(move) {
-        const sloppyMoves = this.boardGame.moves.slice()
-        sloppyMoves.push(move)
-        this.boardGame.moves = games.getAlgebraMoves(sloppyMoves.join(' ')) 
+        const moves = this.boardGame.moves.slice()
+        moves.push(move)
+        this.boardGame.moves = moves
         let err
         const res = await lichessApi.makeMove(this.boardGame.id, move).catch((e) => err = e )
         if (err) {

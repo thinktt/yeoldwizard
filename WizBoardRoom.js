@@ -82,19 +82,30 @@ export default {
     }
   },
   watch : {
+    'game.moves'(newMoves, oldMoves) {
+      // if this is a newley loaded game we let game.id watcher process the moves
+      if (this.hasFreshMoves) {
+        console.log('game.id watcher will process moves')
+        this.hasFreshMoves = false
+        return 
+      }
+      if (newMoves.length > oldMoves.length) {
+        const newMove = newMoves[newMoves.length - 1]
+        this.boardState.move(newMove, { sloppy: true })
+        this.fensByMove.push(this.boardState.fen())
+        this.navIndex = this.game.moves.length
+      }
+    },
     'game.id'() {
+      this.hasFreshMoves = true
       console.log('new game')
       this.boardState = new Chess()
       for (const move of this.game.moves) {
-        this.boardState.move(move) 
+        this.boardState.move(move, { sloppy: true }) 
         this.fensByMove.push(this.boardState.fen())
       }
       this.algebraMoves = this.boardState.history()
-    },
-    'game.moves'() {
-      console.log('new moves')
       this.navIndex = this.game.moves.length
-
     },
   },
   methods: {
