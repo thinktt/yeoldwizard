@@ -95,8 +95,10 @@ export default {
     window.cg = this.cg
   },
   watch: {
-    gameId() {
-      console.log('new game on board')
+    async gameId() {
+      // console.log('new game on board')
+      cg.set({ animation: { enabled: false } })
+      // await this.$nextTick()
     },
     fen() {
       this.game.reset()
