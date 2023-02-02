@@ -97,7 +97,6 @@ export default {
         this.algebraMoves = this.boardState.history()
         this.navIndex = this.game.moves.length
       }
-      console.log('new moves', this.game.moves, this.navIndex)
     },
     'game.id'() {
       this.hasFreshMoves = true
