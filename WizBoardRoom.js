@@ -20,7 +20,8 @@ const template = html`
         :moves="boardMoves" 
         :fen="boardPosition"
         :color-side="game.playedAs"
-        :is-locked="isLocked">
+        :is-locked="isLocked"
+        :game-id="game.id">
       </wiz-board-2>
       
       <wiz-board-nav
@@ -86,7 +87,7 @@ export default {
     'game.moves'(newMoves, oldMoves) {
       // if this is a newley loaded game we let game.id watcher process the moves
       if (this.hasFreshMoves) {
-        console.log('game.id watcher will process moves')
+        // console.log('game.id watcher will process moves')
         this.hasFreshMoves = false
         return 
       }
@@ -108,7 +109,7 @@ export default {
       }
       this.algebraMoves = this.boardState.history()
       this.navIndex = this.game.moves.length
-      console.log('new game', this.game.moves, this.navIndex)
+      // console.log('new game', this.game.moves, this.navIndex)
     },
   },
   methods: {

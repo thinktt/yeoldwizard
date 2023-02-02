@@ -29,7 +29,7 @@ const template =  html`
 
 
 export default {
-  props : [  'id', 'fen', 'colorSide', 'isLocked' ],
+  props : [  'id', 'fen', 'colorSide', 'isLocked', 'gameId' ],
   data() {
     const { 
       color, 
@@ -95,6 +95,9 @@ export default {
     window.cg = this.cg
   },
   watch: {
+    gameId() {
+      console.log('new game on board')
+    },
     fen() {
       this.game.reset()
       this.game.load(this.fen) 
