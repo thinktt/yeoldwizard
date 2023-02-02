@@ -85,7 +85,7 @@ export default {
     'game.moves'(newMoves, oldMoves) {
       // if this is a newley loaded game we let game.id watcher process the moves
       if (this.hasFreshMoves) {
-        console.log('game.id watcher will process moves')
+        // console.log('game.id watcher will process moves')
         this.hasFreshMoves = false
         return 
       }
@@ -93,12 +93,13 @@ export default {
         const newMove = newMoves[newMoves.length - 1]
         this.boardState.move(newMove, { sloppy: true })
         this.fensByMove.push(this.boardState.fen())
+        this.algebraMoves = this.boardState.history()
         this.navIndex = this.game.moves.length
       }
     },
     'game.id'() {
       this.hasFreshMoves = true
-      console.log('new game')
+      this.fensByMove = []
       this.boardState = new Chess()
       for (const move of this.game.moves) {
         this.boardState.move(move, { sloppy: true }) 
@@ -119,7 +120,6 @@ export default {
     goForward() {
       if (this.navIndex === this.game.moves.length) return 
       this.navIndex ++
-      console.log(this.navIndex)
     },
     goEnd() {
       this.navIndex = this.game.moves.length 

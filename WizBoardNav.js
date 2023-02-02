@@ -107,16 +107,6 @@ export default {
       else this.shouldShowActions = false
   },
   computed: {
-    // gameHistory() {
-    //   console.log('howdy', this.algebraMoves)
-
-    //   return this.algebraMoves
-    //   // const game = new Chess() 
-    //   // for (const move of this.game.moves) {
-    //   //   game.move(move) 
-    //   // }
-    //   // return game.history()
-    // },
     drawsAreOnHold() {
       const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
       return this.moveOfDrawOffer !==0 && movesSinceDrawOffer < 22
