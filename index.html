@@ -53,8 +53,8 @@
     </header>
 
     <main>
-      <div class="nav-and-info" 
-        :class="{focus: infoMode == 'selected' || messageType !== 'none' || navIsOn}">
+      <div class="nav-and-info"
+        :class="{focus: infoMode == 'selected' || messageType !== 'none' || navIsOn, 'nav-is-on': navIsOn}">
         
         <section v-if="!navIsOn" class="info">
 

@@ -48,17 +48,27 @@
   .nav-and-info {
     width: 100%;
     margin-right: 5rem;
+    display: block;
+    position: unset;
+    margin-right: 0;
+    height: 100vh;
+    display: none;
+    margin: unset;
+    padding: unset;
   }
 
   nav {
-    margin-top: 3rem;
-    margin-right: 3rem;
+    margin-top: 8rem;
     transform: scale(1.1);
+    position: fixed;
+    width: 100%;
   }
-
+  
   .info {
-    margin-right: 7rem;
-    margin-left: 4rem;
+    display: none;
+    margin-right: 2rem;
+    margin-left: 2rem;
+    margin-top: 4.5rem;
   }
 
   .info p {
@@ -143,6 +153,10 @@
     display: block;
   }
 
+  .nav-and-info.nav-is-on {
+    position: fixed;
+  }
+
   .focus .info {
     display: block;
   }
@@ -152,14 +166,6 @@
     position: absolute;
     left: 1rem;
     bottom: 1rem;
-  }
-
-  .info {
-    display: none;
-  }
-
-  .nav-and-info {
-    display: none;
   }
 
   .board-room {
