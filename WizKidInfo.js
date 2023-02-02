@@ -37,7 +37,7 @@ const template =  html`
       </wiz-badges-2>
       <div v-if="view === 'top'" class="buttons">
         <a v-if="user && currentGameId && currentOpponent === cmp.name" 
-          class="button blue phone-nav" 
+          class="button blue" 
           :class="{'phone-nav': currentGameId == boardGameId && mainView === 'board'}"
           @click="$emit('goToCurrentGame')">
             Go to Game
