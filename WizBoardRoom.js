@@ -32,6 +32,7 @@ const template = html`
         @route-back="$emit('route-back')"
         :draw-offer-state=drawOfferState
         :game="game"
+        :algebra-moves="algebraMoves"
         :navIndex="navIndex"
         :userName="user">
       </wiz-board-nav>
@@ -88,6 +89,7 @@ export default {
         this.boardState.move(move) 
         this.fensByMove.push(this.boardState.fen())
       }
+      this.algebraMoves = this.boardState.history()
     },
     'game.moves'() {
       console.log('new moves')

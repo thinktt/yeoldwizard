@@ -6,7 +6,7 @@ const template = html`
   <div class="board-nav">
     <h2 class="wiz-kid-name">{{game.opponent}}</h2>
     <div class="pgn-viewer">
-      <template v-for="(move, index) in gameHistory">
+      <template v-for="(move, index) in algebraMoves">
         <span v-if="index % 2 === 0" class="move-number">{{index / 2 + 1}}.</span>
         <span 
           :class="{highlight: navIndex - 1 === index}" 
@@ -92,7 +92,7 @@ const template = html`
 `
 
 export default {
-  props : ['game', 'navIndex', 'userName', 'drawOfferState'],
+  props : ['game', 'algebraMoves', 'navIndex', 'userName', 'drawOfferState'],
   data() {
     return {
       comfirmMessage: '',
@@ -107,13 +107,16 @@ export default {
       else this.shouldShowActions = false
   },
   computed: {
-    gameHistory() {
-      const game = new Chess() 
-      for (const move of this.game.moves) {
-        game.move(move) 
-      }
-      return game.history()
-    },
+    // gameHistory() {
+    //   console.log('howdy', this.algebraMoves)
+
+    //   return this.algebraMoves
+    //   // const game = new Chess() 
+    //   // for (const move of this.game.moves) {
+    //   //   game.move(move) 
+    //   // }
+    //   // return game.history()
+    // },
     drawsAreOnHold() {
       const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
       return this.moveOfDrawOffer !==0 && movesSinceDrawOffer < 22
