@@ -156,44 +156,44 @@ export default {
       const move = from + to + piece
       this.$emit('move', move)
     }, 
-    goStart() {
-      this.game.reset()
-      this.navIndex = 0
-      updateBoard(this.game, this.cg)
-    },
-    goBack() {
-      const lastAlgebraMove = this.game.history().slice(-1)[0]
-      if (lastAlgebraMove && lastAlgebraMove.includes('=')) {
-        this.cg.set({ animation: { enabled: false } })
-      }
+    // goStart() {
+    //   this.game.reset()
+    //   this.navIndex = 0
+    //   updateBoard(this.game, this.cg)
+    // },
+    // goBack() {
+    //   const lastAlgebraMove = this.game.history().slice(-1)[0]
+    //   if (lastAlgebraMove && lastAlgebraMove.includes('=')) {
+    //     this.cg.set({ animation: { enabled: false } })
+    //   }
     
-      this.game.undo()
-      this.navIndex = this.game.history().length
-      const lastMove = getLastMove(this.game)
-      updateBoard(this.game, this.cg)
-    },
-    goForward() {
-      const currentPosition = this.game.history().length
-      const nextMove = this.gameHistory[currentPosition]
-      if (nextMove && nextMove.includes('=')) { 
-        this.cg.set({ animation: { enabled: false } })
-      }
+    //   this.game.undo()
+    //   this.navIndex = this.game.history().length
+    //   const lastMove = getLastMove(this.game)
+    //   updateBoard(this.game, this.cg)
+    // },
+    // goForward() {
+    //   const currentPosition = this.game.history().length
+    //   const nextMove = this.gameHistory[currentPosition]
+    //   if (nextMove && nextMove.includes('=')) { 
+    //     this.cg.set({ animation: { enabled: false } })
+    //   }
       
-      if (!nextMove) return
-      this.game.move(nextMove)
-      this.navIndex = this.game.history().length
-      updateBoard(this.game, this.cg)
-      this.checkSquare = this.game.fen()
-    },
-    goEnd() {
-      this.game.reset()
-      for (const move of this.gameHistory) {
-        console.log(move)
-        this.game.move(move)
-      }
-      this.navIndex = this.game.history().length
-      updateBoard(this.game, this.cg)
-    }
+    //   if (!nextMove) return
+    //   this.game.move(nextMove)
+    //   this.navIndex = this.game.history().length
+    //   updateBoard(this.game, this.cg)
+    //   this.checkSquare = this.game.fen()
+    // },
+    // goEnd() {
+    //   this.game.reset()
+    //   for (const move of this.gameHistory) {
+    //     console.log(move)
+    //     this.game.move(move)
+    //   }
+    //   this.navIndex = this.game.history().length
+    //   updateBoard(this.game, this.cg)
+    // }
   },
   name: 'WizBoard',
   template,
