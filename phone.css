@@ -259,6 +259,9 @@
     margin: 0;
   }
 
+  .pgn-viewer::-webkit-scrollbar {
+    display: none;
+  }
 
 
 }
