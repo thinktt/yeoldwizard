@@ -28,6 +28,7 @@ export default {
   getOpponent,
   getGameById,
   addFensToGameCache,
+  chessjsTest,
 }
 
 window.dumbHash = dumbHash
@@ -572,6 +573,29 @@ function dumbHash (itemToHash) {
   }
   return new Uint32Array([hash])[0].toString(36);
 };
+
+function chessjsTest() {
+  const game = games.getGameById('qQTvezgg')
+  // .35ms
+  const chess = new Chess()
+  
+  // 49ms
+  for (const move of game.moves) {
+    chess.move(move)
+  }
+
+  //.16ms
+  console.log(chess.fen())
+  
+  //.2ms
+  chess.load('5rk1/3r2b1/6R1/1BP1B1N1/1P2P3/5P2/1P3P1P/4K3 w - - 0 34')
+  
+  console.time('chessjs')
+  chess.fen()
+  chess.history()
+  
+  console.timeEnd('chessjs')
+}
 
 // const opponent = await getWizPlayerFromChat('5ZAXEu4YAk5S')
 // console.log(opponent) 
