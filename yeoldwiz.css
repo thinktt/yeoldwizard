@@ -70,6 +70,19 @@ body::-webkit-scrollbar-thumb {
   z-index: 1;  
 }
 
+main.down {
+  margin: auto;
+  margin-top: 3rem;
+  flex-direction: column;
+  width: 20rem;
+  align-items: center;
+}
+
+.down .face {
+  width: 10rem;
+  height: auto;
+}
+
 .hidden {
   visibility: hidden;
 }
