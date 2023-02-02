@@ -535,7 +535,7 @@ async function startApp(user) {
               console.log(`Succefully connected to Game:`)
               console.log(event.id, event.createdAt, event.state.status) 
 
-              boardGame.moves = games.getAlgebraMoves(event.state.moves)
+              boardGame.moves = event.state.moves.split(' ')
               if (event.white.id == this.user) { 
                 boardGame.playedAs = 'white'
               } else {
@@ -546,7 +546,7 @@ async function startApp(user) {
               break;
             case 'gameState':
               // console.log('normal game event')
-              this.currentGame.moves = games.getAlgebraMoves(event.moves)
+              this.currentGame.moves = event.moves.split(' ')
               if (this.boardGame.id === this.currentGame.id) {
                 this.boardGame.move = this.currentGame.moves
               }

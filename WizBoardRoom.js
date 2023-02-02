@@ -1,3 +1,4 @@
+import { Chessground } from './lib/chessground/js/chessground.js'
 import { html } from './pageTools.js'
 
 const template = html`
@@ -16,6 +17,7 @@ const template = html`
         @move="(move) => $emit('move', move)"  
         id="main-board"
         :moves="boardMoves" 
+        :fen="boardPosition"
         :color-side="game.playedAs"
         :is-locked="isLocked">
       </wiz-board-2>
@@ -43,6 +45,9 @@ export default {
   data() {
     return {
       navIndex: 0,
+      fensByMove: [],
+      algebraMoves: [],
+      boardState: null,
     }
   },
   created() {
@@ -60,6 +65,12 @@ export default {
     el.scrollIntoView({block: "center"})
   },
   computed: {
+    boardPosition() {
+      const startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+      const i = this.navIndex - 1
+      const fen = this.fensByMove[i] || startFen
+      return fen
+    },
     boardMoves() {
       return this.game.moves.slice(0, this.navIndex)
     },
@@ -70,14 +81,19 @@ export default {
     }
   },
   watch : {
-    game: {
-      handler(game) {
-        this.navIndex = game.moves.length
-        const query = '#move' + (this.navIndex)
-        const el = document.querySelector(query)
-      },
-      deep: true, 
-    }
+    'game.id'() {
+      console.log('new game')
+      this.boardState = new Chess()
+      for (const move of this.game.moves) {
+        this.boardState.move(move) 
+        this.fensByMove.push(this.boardState.fen())
+      }
+    },
+    'game.moves'() {
+      console.log('new moves')
+      this.navIndex = this.game.moves.length
+
+    },
   },
   methods: {
     goStart() {
@@ -90,9 +106,11 @@ export default {
     goForward() {
       if (this.navIndex === this.game.moves.length) return 
       this.navIndex ++
+      console.log(this.navIndex)
     },
     goEnd() {
       this.navIndex = this.game.moves.length 
+      console.log(this.navIndex)
     },
     goIndex(index) {
       this.navIndex = index + 1

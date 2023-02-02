@@ -29,7 +29,7 @@ const template =  html`
 
 
 export default {
-  props : [  'id', 'moves', 'colorSide', 'isLocked' ],
+  props : [  'id', 'fen', 'colorSide', 'isLocked' ],
   data() {
     const { 
       color, 
@@ -57,30 +57,30 @@ export default {
   },
   mounted: function() {
     this.game = new Chess()
-    for (const move of this.moves) {
-      this.game.move(move) 
-    }
-    let checkColor = null
-    if (this.game.in_check()) {
-      checkColor = this.game.turn() === 'w' ? 'white' : 'black'
-    }
-    window.chess = this.game
-    this.checkSquare = this.game.fen()
-    this.gameHistory = this.game.history()
-    window.gameHistory = this.gameHistory
-    this.navIndex = this.gameHistory.length
+    // for (const move of this.moves) {
+    //   this.game.move(move) 
+    // }
+    // let checkColor = null
+    // if (this.game.in_check()) {
+    //   checkColor = this.game.turn() === 'w' ? 'white' : 'black'
+    // }
+    // window.chess = this.game
+    // this.checkSquare = this.game.fen()
+    // this.gameHistory = this.game.history()
+    // window.gameHistory = this.gameHistory
+    // this.navIndex = this.gameHistory.length
     
     this.cg = Chessground(document.getElementById(this.id), {
-      orientation: this.colorSide,  
-      turnColor: this.colorSide,
+      // orientation: this.colorSide,  
+      // turnColor: this.colorSide,
       // viewOnly: true,
       coordinates: false,
-      fen: this.game.fen(),
-      check: checkColor, 
+      // fen: this.game.fen(),
+      // check: checkColor, 
       movable: {
         free: false,
         color: this.colorSide, //this.color,
-        dests: getLeglaMoves(this.game),
+        // dests: getLeglaMoves(this.game),
         showDests: false,
         events: {
           after: this.onMove
@@ -107,11 +107,13 @@ export default {
     window.cg = this.cg
   },
   watch: {
-    moves(moves) {
+    fen() {
+      console.log(this.fen)
       this.game.reset()
-      for (const move of moves) {
-        this.game.move(move) 
-      }
+      this.game.load(this.fen) 
+      // for (const move of moves) {
+      //   this.game.move(move) 
+      // }
       updateBoard(this.game, this.cg, this.isLocked)
     },
     colorSide(color) {
