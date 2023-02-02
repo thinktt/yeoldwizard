@@ -98,7 +98,8 @@ export default {
     async gameId() {
       // console.log('new game on board')
       cg.set({ animation: { enabled: false } })
-      // await this.$nextTick()
+      await this.$nextTick()
+      cg.set({ animation: { enabled: true } })
     },
     fen() {
       this.game.reset()

@@ -214,8 +214,8 @@
     display: flex;
     padding-left: 1rem;
     gap: .50rem;
-    /* padding-top: 1rem; */
     hyphens: none;
+    height: 2rem;
   }
 
   .board-nav .wiz-kid-name {
