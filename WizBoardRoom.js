@@ -123,7 +123,6 @@ export default {
     },
     goEnd() {
       this.navIndex = this.game.moves.length 
-      console.log(this.navIndex)
     },
     goIndex(index) {
       this.navIndex = index + 1
