@@ -68,7 +68,7 @@ export default {
       movable: {
         free: false,
         color: this.colorSide, //this.color,
-        // dests: getLeglaMoves(this.game),
+        dests: getLeglaMoves(this.game),
         showDests: false,
         events: {
           after: this.onMove
@@ -88,7 +88,7 @@ export default {
         enabled: false,
       },
       animation: { 
-        enabled: false 
+        enabled: true 
       },
     })
 

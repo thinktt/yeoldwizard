@@ -534,8 +534,9 @@ async function startApp(user) {
             case 'gameFull': 
               console.log(`Succefully connected to Game:`)
               console.log(event.id, event.createdAt, event.state.status) 
+              console.log(event.state.moves)
 
-              boardGame.moves = event.state.moves.split(' ')
+              boardGame.moves = event.state.moves ? event.state.moves.split(' ') : []
               if (event.white.id == this.user) { 
                 boardGame.playedAs = 'white'
               } else {

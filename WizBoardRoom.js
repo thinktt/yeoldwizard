@@ -1,3 +1,4 @@
+import games from './games.js'
 import { Chessground } from './lib/chessground/js/chessground.js'
 import { html } from './pageTools.js'
 
@@ -85,7 +86,7 @@ export default {
     'game.moves'(newMoves, oldMoves) {
       // if this is a newley loaded game we let game.id watcher process the moves
       if (this.hasFreshMoves) {
-        // console.log('game.id watcher will process moves')
+        console.log('game.id watcher will process moves')
         this.hasFreshMoves = false
         return 
       }
@@ -96,6 +97,7 @@ export default {
         this.algebraMoves = this.boardState.history()
         this.navIndex = this.game.moves.length
       }
+      console.log('new moves', this.game.moves, this.navIndex)
     },
     'game.id'() {
       this.hasFreshMoves = true
@@ -107,6 +109,7 @@ export default {
       }
       this.algebraMoves = this.boardState.history()
       this.navIndex = this.game.moves.length
+      console.log('new game', this.game.moves, this.navIndex)
     },
   },
   methods: {
