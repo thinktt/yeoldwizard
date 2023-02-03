@@ -229,7 +229,7 @@
 
   .board-nav .nav-buttons.lower {
     margin-top: 1rem;
-    margin-bottom: 1rem;
+    /* margin-bottom: 1rem; */
   }
 
   .nav-buttons button:hover {
