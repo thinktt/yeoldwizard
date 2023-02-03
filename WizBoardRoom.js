@@ -17,7 +17,6 @@ const template = html`
       <wiz-board-2
         @move="(move) => $emit('move', move)"  
         id="main-board"
-        :moves="boardMoves" 
         :fen="boardPosition"
         :color-side="game.playedAs"
         :is-locked="isLocked"
