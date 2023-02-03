@@ -199,7 +199,7 @@
     justify-content: center;
     flex-direction: column;
     margin: auto;
-    height: 100vh;
+    /* height: 100vh; */
   }
 
   .board-nav {
@@ -266,3 +266,9 @@
 
 
 }
+
+/* @media screen and (max-height: 1334) {
+  .board-room {
+    height:  unset;
+  }
+} */
