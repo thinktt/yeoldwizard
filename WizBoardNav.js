@@ -86,8 +86,8 @@ const template = html`
       </button>
     </div>
     
-    <div v-if="game.status !== 'started'" class="nav-buttons">
-    </div>
+    <!-- <div v-if="game.status !== 'started'" class="nav-buttons">
+    </div> -->
   </div>
 `
 
