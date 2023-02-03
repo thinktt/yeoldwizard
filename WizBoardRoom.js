@@ -65,6 +65,11 @@ export default {
     }
     const el = document.querySelector('#move' + this.navIndex)
     if (!el) return
+
+    if (isInPhoneMode()) {
+      el.scrollIntoView({block: "nearest", inline: 'center'})
+      return
+    }
     el.scrollIntoView({block: "center"})
   },
   computed: {
@@ -138,4 +143,8 @@ export default {
     },
   },
   template,
+}
+
+function isInPhoneMode () {
+  return window.matchMedia('(max-width: 1080px)').matches
 }
