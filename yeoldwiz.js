@@ -529,7 +529,7 @@ async function startApp(user) {
         
         let resolve
         const startPromise = new Promise(r => resolve = r)
-        lichessApi.getGameStream(boardGame.id, async (event) => {
+        this.currentGame.stream = await lichessApi.getGameStream(boardGame.id, async (event) => {
           switch(event.type) {
             case 'gameFull': 
               console.log(`Succefully connected to Game:`)

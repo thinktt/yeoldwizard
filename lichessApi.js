@@ -228,28 +228,49 @@ async function startStream(endpoint, callback, onDone) {
     'Authorization' : 'Bearer ' + tokens.access_token,
     'Accept': 'application/x-ndjson',
   }
-  const res = await fetch('https://lichess.org/api' + endpoint, {
+
+
+  const res = await fetch(baseUrl + endpoint, {
     headers,
     signal,
   })
   const reader = res.body.pipeThrough(new TextDecoderStream()).getReader()
 
   const doStreamEventLoop = async () => {
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      if (value) {
-        const outs = value.split('\n')
-        for (const out of outs) {
-          if (out !== '') callback(JSON.parse(out))
+    try {
+      while (true) {
+        if (signal.aborted) {
+          console.log('stream was aborted')
+          break
+        }
+        const { value, done } = await reader.read();
+        if (done) break;
+        if (value) {
+          const outs = value.split('\n')
+          for (const out of outs) {
+            if (out !== '') callback(JSON.parse(out))
+          }
         }
       }
+      if (onDone) onDone()
+    } catch (err) {
+      console.log('from stream:', err.message)
     }
-    if (onDone) onDone()
+  }
+
+  const abortStream = () => {
+    console.log('aborting stream')
+    controller.abort()
+  }
+
+  const restartStream = () => {
+    abortStream()
+    console.log('restarting stream')
+    return startStream(endpoint, callback, onDone)
   }
 
   doStreamEventLoop() 
-
+  return { abort: abortStream, restart: restartStream }
 }
 
 
