@@ -264,6 +264,19 @@ async function startApp(user) {
         const res = await lichessApi.makeMove(this.boardGame.id, move).catch((e) => err = e )
         if (err) {
           console.log('Error making move', err)
+          return
+        }
+        this.checkForDeadStream()
+      },
+      async checkForDeadStream() {
+        const checkTime = Date.now()
+        await new Promise(r => setTimeout(r, 1000))
+        const timeGap = checkTime - this.currentGame.lastEventTime
+        // console.log(checkTime, this.currentGame.lastEventTime, timeGap)
+        // if the last even time is greater than the check time no event came through
+        if (timeGap > 0) {
+          console.log('looks like a dead stream, restarting')
+          this.currentGame.stream = await this.currentGame.stream.restart()
         }
       },
       async doQuitAction(action) {
@@ -545,7 +558,7 @@ async function startApp(user) {
               resolve()
               break;
             case 'gameState':
-              // console.log('normal game event')
+              this.currentGame.lastEventTime = Date.now()
               this.currentGame.moves = event.moves.split(' ')
               if (this.boardGame.id === this.currentGame.id) {
                 this.boardGame.move = this.currentGame.moves
