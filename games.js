@@ -272,7 +272,7 @@ function getDrawType(conclusion, moves) {
   if (conclusion !== 'draw') return null
   const chess = new Chess() 
   for (const move of moves) {
-    chess.move(move) 
+    chess.move(move, { sloppy: true }) 
   }
   if (chess.insufficient_material()) return "material"
   if (chess.in_stalemate()) return "stalemate"
@@ -335,7 +335,7 @@ function deleteCurrentGame(gameId) {
 function sortGames(games) {
   const gamesByOpponet = {}
   const gamesById = {}
-
+  
   for (const game of games.slice().reverse()) {
     gamesById[game.id] = game
     

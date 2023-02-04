@@ -571,7 +571,7 @@ async function startApp(user) {
                 this.boardGame.lastMoveAt = Date.now()
                 if (event.status === 'draw' || event.status === 'stalemate') { 
                   this.boardGame.conclusion = 'draw'
-                  this.boardGame.drawType = games.getDrawType(this.boardGame)
+                  this.boardGame.drawType = games.getDrawType(this.boardGame.conclusion, this.boardGame.moves)
                 } else if (this.boardGame.playedAs === event.winner) {
                   this.boardGame.conclusion = 'won'
                 } else {
