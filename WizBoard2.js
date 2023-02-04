@@ -102,7 +102,6 @@ export default {
       cg.set({ animation: { enabled: true } })
     },
     fen() {
-      console.log(this.lastMove)
       this.game.reset()
       this.game.load(this.fen) 
       updateBoard(this.game, this.cg, this.isLocked, this.lastMove)

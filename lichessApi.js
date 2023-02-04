@@ -222,24 +222,34 @@ async function getStream(url, handler, onDone) {
 
 async function startStream(endpoint, callback, onDone) {
   const tokens = JSON.parse(window.localStorage.tokens)
-  const reader = await fetch('https://lichess.org/api' + endpoint,  {
-    headers: {
-      'Authorization' : 'Bearer ' + tokens.access_token,
-      'Accept': 'application/x-ndjson',
-    }
-  }).then((res) => res.body.pipeThrough(new TextDecoderStream()).getReader())
+  const controller = new AbortController()
+  const signal = controller.signal
+  const headers =  {
+    'Authorization' : 'Bearer ' + tokens.access_token,
+    'Accept': 'application/x-ndjson',
+  }
+  const res = await fetch('https://lichess.org/api' + endpoint, {
+    headers,
+    signal,
+  })
+  const reader = res.body.pipeThrough(new TextDecoderStream()).getReader()
 
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    if (value) {
-      const outs = value.split('\n')
-      for (const out of outs) {
-        if (out !== '') callback(JSON.parse(out))
+  const doStreamEventLoop = async () => {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      if (value) {
+        const outs = value.split('\n')
+        for (const out of outs) {
+          if (out !== '') callback(JSON.parse(out))
+        }
       }
     }
+    if (onDone) onDone()
   }
-  if (onDone) onDone()
+
+  doStreamEventLoop() 
+
 }
 
 
