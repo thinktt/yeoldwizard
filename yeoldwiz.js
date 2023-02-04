@@ -566,6 +566,7 @@ async function startApp(user) {
               
                 // a hacky way to update the board game status in real time
                 // need to create a better state flow from games module
+                if (event.status !== 'aborted') this.boardGame.hasJustEnded = true
                 this.boardGame.status = event.status
                 this.boardGame.lastMoveAt = Date.now()
                 if (event.status === 'draw' || event.status === 'stalemate') { 

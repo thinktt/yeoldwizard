@@ -12,13 +12,13 @@ const template = html`
 
   <div v-else class="game-status">
     <div v-if="game.conclusion ==='draw'">
-      <img class="king" src="images/king-draw.png">
+      <img class="king" :class="{pop_spin: doPopSpin}" src="images/king-draw.png">
     </div>
     <div v-if="game.conclusion === 'won'">
-      <img class="king" src="images/king-won.png">
+      <img class="king" :class="{pop_spin: doPopSpin}" src="images/king-won.png">
     </div>
     <div v-if="game.conclusion === 'lost'">
-      <img class="king" src="images/king-lost.png">
+      <img class="king" :class="{pop_spin: doPopSpin}" src="images/king-lost.png">
     </div>
     <p v-if="shouldShowPlayedAs">You played as {{playedAs}}</p>
     <p v-if="game.status === 'resign'">
@@ -40,7 +40,7 @@ const template = html`
 
 
 export default {
-  props: ['game', "shouldShowPlayedAs"],
+  props: ['game', "shouldShowPlayedAs", "doPopSpin"],
   template,
   computed : {
     playedAs() {

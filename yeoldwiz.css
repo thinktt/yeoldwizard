@@ -513,6 +513,41 @@ button.phone-nav {
 }
 
 
+.pop_spin {
+  animation: pop_spin 1s;
+}
+
+@keyframes pop_spin {
+  0% {
+    /* opacity: 0; */
+    transform: rotate(0deg) scale(0);
+    /* transform: scale(0)  */
+  }
+
+  25% {
+    transform: rotate(90deg);
+  }
+
+  50% {
+    /* opacity: 1; */
+    transform: rotate(180deg);
+    /* transform: scale(2) rotate(240deg); */
+  }
+
+  75% {
+    transform: rotate(270deg);
+  }
+
+  100% {
+       /* opacity: 1; */
+       transform: rotate(360deg) scale(1);
+       /* transform: scale(1) rotate(360deg); */
+  }
+}
+
+
+
+
 .colorize {
   animation: color-change 15s infinite;
 }

@@ -75,7 +75,7 @@ const template = html`
       </div>
     </div>
 
-    <wiz-game-status :game="game"></wiz-game-status>
+    <wiz-game-status :game="game" :do-pop-spin="doPopSpin"></wiz-game-status>
     
     <div v-if="game.status !=='started'">
       <button @click="$emit('route-back')" title="back" class="lichess-button phone-nav" >
@@ -100,6 +100,7 @@ export default {
       moveOfDrawOffer: 0,
       drawWasOffered: false,
       isWaiting: false,
+      doPopSpin: false, 
     }
   },
   beforeUpdate() {
@@ -128,6 +129,14 @@ export default {
       this.drawWasOffered = false
       this.isWaiting = false
       this.$emit('quitAction', 'clearDrawOffer')
+    },
+    async 'game.status'(newStatus, oldStatus) {
+      // create an animation any time the game status goes from started to a conclusion
+      if (oldStatus === 'started' && this.game.hasJustEnded) {
+        this.doPopSpin = true
+        await new Promise(r => setTimeout(r, 500))
+        this.doPopSpin = false
+      }
     }
  },
   methods: {
