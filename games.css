@@ -9,6 +9,10 @@
   src: url(fonts/icomoon.ttf);
 }
 
+/* cg-board square.last-move {
+  background-color: rgba(155, 199, 0, 0.41);
+} */
+
 .board-container {
   width: 20rem;
   height: 20rem;

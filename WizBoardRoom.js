@@ -20,6 +20,7 @@ const template = html`
         :fen="boardPosition"
         :color-side="game.playedAs"
         :is-locked="isLocked"
+        :last-move="lastMove"
         :game-id="game.id">
       </wiz-board-2>
       
@@ -50,6 +51,7 @@ export default {
       fensByMove: [],
       algebraMoves: [],
       boardState: null,
+      lastMove: null,
     }
   },
   created() {
@@ -72,6 +74,9 @@ export default {
     el.scrollIntoView({block: "center"})
   },
   computed: {
+    // lastMove() {
+    //   return getLastMove(this.game, this.navIndex)
+    // },
     boardPosition() {
       const startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
       const i = this.navIndex - 1
@@ -101,6 +106,7 @@ export default {
         this.fensByMove.push(this.boardState.fen())
         this.algebraMoves = this.boardState.history()
         this.navIndex = this.game.moves.length
+        // this.lastMove = getLastMove(this.boardState, this.navIndex)
       }
     },
     'game.id'() {
@@ -113,8 +119,12 @@ export default {
       }
       this.algebraMoves = this.boardState.history()
       this.navIndex = this.game.moves.length
+      // this.lastMove = getLastMove(this.boardState, this.navIndex)
       // console.log('new game', this.game.moves, this.navIndex)
     },
+    navIndex() {
+      this.lastMove = getLastMove(this.boardState, this.navIndex)
+    }
   },
   methods: {
     goStart() {
@@ -146,4 +156,14 @@ export default {
 
 function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
+}
+
+function getLastMove(game, moveIndex) {
+  const moves = game.history({ verbose: true })
+  const lastMove = moves[moveIndex - 1]
+  // const lastMove = moves.length ? moves.pop() : null
+  if (!lastMove) return null
+
+  const { from, to } = lastMove 
+  return [ from, to ]
 }

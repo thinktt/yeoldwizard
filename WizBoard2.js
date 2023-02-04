@@ -29,7 +29,7 @@ const template =  html`
 
 
 export default {
-  props : [  'id', 'fen', 'colorSide', 'isLocked', 'gameId' ],
+  props : [  'id', 'fen', 'colorSide', 'isLocked', 'lastMove','gameId' ],
   data() {
     const { 
       color, 
@@ -68,7 +68,7 @@ export default {
       movable: {
         free: false,
         color: this.colorSide, //this.color,
-        dests: getLeglaMoves(this.game),
+        dests: getLegalMoves(this.game),
         showDests: false,
         events: {
           after: this.onMove
@@ -102,9 +102,10 @@ export default {
       cg.set({ animation: { enabled: true } })
     },
     fen() {
+      console.log(this.lastMove)
       this.game.reset()
       this.game.load(this.fen) 
-      updateBoard(this.game, this.cg, this.isLocked)
+      updateBoard(this.game, this.cg, this.isLocked, this.lastMove)
     },
     colorSide(color) {
       this.cg.set({ 
@@ -141,7 +142,7 @@ export default {
       const to = this.promoteToSquare
       this.game.move({ from, to, promotion: piece })
       const lastAlgebraMove = this.game.history().slice(-1)[0]
-      updateBoard(this.game, this.cg)
+      updateBoard(this.game, this.cg, this.isLocked, this.lastMove)
       this.isPromoting = false
       const move = from + to + piece
       this.$emit('move', move)
@@ -152,8 +153,7 @@ export default {
 }
 
 
-function updateBoard(game, cg, isLocked) {
-  const lastMove = getLastMove(game)
+function updateBoard(game, cg, isLocked, lastMove) {
 
   if (isLocked) {
     cg.set({
@@ -172,7 +172,7 @@ function updateBoard(game, cg, isLocked) {
     check: game.in_check(),
     movable: {
       // color: getTurn(game),
-      dests: getLeglaMoves(game),
+      dests: getLegalMoves(game),
     },
     turnColor: getTurn(game),
     lastMove,
@@ -180,7 +180,7 @@ function updateBoard(game, cg, isLocked) {
   cg.set({ animation: { enabled: true } })
 }
 
-function getLeglaMoves(game)  {
+function getLegalMoves(game)  {
   const dests = new Map();
   game.SQUARES.forEach(s => {
     const ms = game.moves({square: s, verbose: true});
@@ -224,15 +224,6 @@ function getPromoConfig(toSquare) {
 
 function getTurn(game) {
   return (game.turn() === 'w') ? 'white' : 'black';
-}
-
-function getLastMove(game) {
-  const moves = game.history({ verbose: true })
-  const lastMove = moves.length ? moves.pop() : null
-  if (!lastMove) return null
-
-  const { from, to } = lastMove 
-  return [ from, to ]
 }
 
 function isPromotion(fromSquare, toSquare, game) {
