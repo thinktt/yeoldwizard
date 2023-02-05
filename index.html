@@ -169,7 +169,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.js"></script>
   <!-- Serive worker setup-->
   <script> 
-    if (!navigator.serviceWorker.controller) {
+    if (navigator.serviceWorker && !navigator.serviceWorker.controller) {
         navigator.serviceWorker.register("sw.js")
         .then(function(reg) {
             console.log("Service worker has been registered for scope: " + reg.scope);

@@ -269,10 +269,13 @@ async function startApp(user) {
         this.checkForDeadStream()
       },
       async checkForDeadStream() {
+        console.log('checking for dead stream')
         const checkTime = Date.now()
         await new Promise(r => setTimeout(r, 1000))
         const timeGap = checkTime - this.currentGame.lastEventTime
-        // console.log(checkTime, this.currentGame.lastEventTime, timeGap)
+        console.log('checkTime:', checkTime)
+        console.log('lastEventTime:', this.currentGame.lastEventTime)
+        console.log('gap:', timeGap)
         // if the last even time is greater than the check time no event came through
         if (timeGap > 0) {
           console.log('looks like a dead stream, restarting')
