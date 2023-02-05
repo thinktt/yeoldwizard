@@ -6,7 +6,7 @@
     "display": "standalone",
     "start_url": "https://thinktt.github.io/yeoldwizard/",
     "description": "Play Chess with the Wizard again!",
-    "orientation": "any",
+    "orientation": "portrait",
     "icons": [
         {
             "src": "https://thinktt.github.io/yeoldwizard/images/android-chrome-512x512.png",
