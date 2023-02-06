@@ -550,7 +550,7 @@ async function startApp(user) {
             case 'gameFull': 
               console.log(`Succefully connected to Game:`)
               console.log(event.id, event.createdAt, event.state.status) 
-
+              
               boardGame.moves = event.state.moves ? event.state.moves.split(' ') : []
               if (event.white.id == this.user) { 
                 boardGame.playedAs = 'white'
@@ -558,6 +558,7 @@ async function startApp(user) {
                 boardGame.playedAs = 'black'
               }
               await this.loadBoard(boardGame)
+              this.currentGame.lastEventTime = Date.now()
               resolve()
               break;
             case 'gameState':
