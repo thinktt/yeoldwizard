@@ -101,7 +101,10 @@ async function doAccountFlow() {
   }
  
   // startApp with no user starts app in a singed out state
-  const app = await startApp()
+  // const app = await startApp()
+  //redirect to another web page on this site
+  window.location = 'http://localhost:8081/signin' 
+
   app.groupsAreHidden = false
 }
 

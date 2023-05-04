@@ -1,0 +1,24 @@
+main.down {
+  width: 40rem;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  background: var(--wizblackfade);
+}
+
+a.button.red {
+  border:0.16em solid red;
+  color:red;
+}
+
+a.button.red:hover{
+  /* color:#DDDDDD; */
+  /* border-color:rgb(78, 134, 255); */
+  border-color:#DDDDDD;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 1080px) {
+  main.down {
+    width: 90%;
+  }
+}
