@@ -40,8 +40,7 @@ const template = html`
       Your use of this website constitutes your acceptance of this legal disclaimer, and your continued use of the website signifies your agreement to any modifications or updates to this disclaimer that may be posted from time to time.
     </p>
 
-    <a class="button yellow" @click="$emit('accept')">I Agree</a>
-    <!-- <a class="button red">No thanks</a> -->
+    <a class="button yellow" @click="$emit('accept')">I Accept</a>
   </main>
 `
 

@@ -5,6 +5,14 @@ main.down {
   background: var(--wizblackfade);
 }
 
+h2 {
+  margin-bottom: 1.5rem
+}
+
+main.down.front-wall {
+  text-align: center;
+}
+
 a.button.red {
   border:0.16em solid red;
   color:red;

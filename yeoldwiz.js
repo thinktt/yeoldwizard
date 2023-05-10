@@ -50,6 +50,12 @@ doAccountFlow()
 async function doAccountFlow() {
   // User is already signed in and stored in localstorage
   if (window.localStorage.user) {
+    
+    if (!localStorage.egnineFileVerfied || !localStorage.disclaimerAccepted) {
+      window.location = 'http://localhost:8081/signin'
+      return
+    }
+
     console.log('User ' + window.localStorage.user + ' found')
     const app = await startApp(window.localStorage.user)
     tokens = JSON.parse(localStorage.tokens) 
@@ -83,6 +89,11 @@ async function doAccountFlow() {
       console.log('Setting user ' + account.username + ' in local storage')
       localStorage.user = account.username
       app.user = account.username
+
+      if (!localStorage.egnineFileVerfied || !localStorage.disclaimerAccepted) {
+        window.location = 'http://localhost:8081/signin'
+        return
+      }
 
       // now that we have an account we can connnect to users games
       app.isLoading = true
@@ -452,6 +463,9 @@ async function startApp(user) {
         window.localStorage.lastCmp = 'Wizard'
         this.goToCmp('Wizard')
         this.games = {}
+        localStorage.removeItem('engineIsVerified')
+        localStorage.removeItem('disclaimerAccepted')
+        window.location = 'http://localhost:8081/signin' 
       },
       setError(message) {
         this.route('')
