@@ -14,6 +14,11 @@ main.down.front-wall {
   padding: 1.5rem;
 }
 
+main.down.front-wall.disclaimer {
+  text-align: justify;
+  height: unset;
+}
+
 a.button.red {
   border:0.16em solid red;
   color:red;
@@ -31,11 +36,19 @@ a.button.red:hover{
     margin-top: 0;
     margin: 0;
     width: 90%;
-    height: 95%;
+    height: 93%;
     padding: 0;
-    padding-top: 10%;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding-top: 7vh;
+    padding-left: 5vw;
+    padding-right: 5vw;
 
   }
+}
+
+@media screen and (max-height: 670px) {
+  h2 {
+    font-size: 1.2rem;
+  }
+}
+  
 }
