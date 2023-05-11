@@ -474,6 +474,10 @@ async function startApp(user) {
         app1.unmount()
         window.location = localStorage.rootPath + 'signin' 
       },
+      clearLegal() {
+        localStorage.engineIsVerified = false
+        localStorage.disclaimerIsAccepted = false
+      },
       setError(message) {
         this.route('')
         this.selected = cmpsObj.Wizard
