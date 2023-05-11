@@ -17,6 +17,7 @@ main.down.front-wall {
 main.down.front-wall.disclaimer {
   text-align: justify;
   height: unset;
+  margin-top: 3rem;
 }
 
 a.button.red {
@@ -42,6 +43,10 @@ a.button.red:hover{
     padding-left: 5vw;
     padding-right: 5vw;
 
+  }
+
+  main.down.front-wall.disclaimer {
+    margin-top: 0;
   }
 }
 

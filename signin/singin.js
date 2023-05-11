@@ -62,9 +62,8 @@ const app = createApp({
   methods: {
     accept() {
       this.view = 'signIn'
-      // this.disclaimerIsAccepted = true
+      this.disclaimerIsAccepted = true
       localStorage.disclaimerIsAccepted = true
-      window.location = localStorage.rootPath
     },
     goToDisclaimer() {
       this.view = 'disclaimer'
