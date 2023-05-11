@@ -2,7 +2,7 @@ import { html } from '../pageTools.js'
 
 
 const template = html`
-  <main class="down">
+  <main class="front-wall disclaimer">
     <h1 class="down-title">Ye Old Wizard</h1>
     <!-- <img class="face" src="images/faces/Dude.png" :alt="Wizard"> -->
     <!-- <h2> The Wiz is Offline </h2> -->

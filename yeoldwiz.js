@@ -25,6 +25,7 @@ window.games = games
 // cssLoader.render()
 // let redirectUri = 'http://localhost:8080'
 
+localStorage.rootPath = window.location.href
 let devHost = localStorage.devHost || 'localhost:8080'
 let tokens
 
@@ -91,7 +92,7 @@ async function doAccountFlow() {
       app.user = account.username
 
       if (!localStorage.egnineFileVerfied || !localStorage.disclaimerAccepted) {
-        window.location = 'http://localhost:8081/signin'
+        window.location = localStorage.rootPath + 'signin'
         return
       }
 
@@ -113,8 +114,9 @@ async function doAccountFlow() {
  
   // startApp with no user starts app in a singed out state
   // const app = await startApp()
-  //redirect to another web page on this site
-  window.location = 'http://localhost:8081/signin' 
+
+  //redirect to signin page
+  window.location = localStorage.rootPath + 'signin'
 
   app.groupsAreHidden = false
 }
@@ -466,7 +468,7 @@ async function startApp(user) {
         localStorage.removeItem('engineIsVerified')
         localStorage.removeItem('disclaimerAccepted')
         app1.unmount()
-        window.location = 'http://localhost:8081/signin' 
+        window.location = localStorage.rootPath + 'signin' 
       },
       setError(message) {
         this.route('')
