@@ -78,7 +78,7 @@ async function doAccountFlow() {
     window.history.replaceState({}, null, window.location.origin + window.location.pathname)
 
     //null starts the app with knight spining to show it's trying to connect
-    const app = await startApp(null)
+    // const app = await startApp(null)
 
     console.log("Auth callback detected, attempting to fetch tokens")
     const code = match[1]
@@ -465,6 +465,7 @@ async function startApp(user) {
         this.games = {}
         localStorage.removeItem('engineIsVerified')
         localStorage.removeItem('disclaimerAccepted')
+        app1.unmount()
         window.location = 'http://localhost:8081/signin' 
       },
       setError(message) {

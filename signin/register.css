@@ -1,8 +1,7 @@
 main.down {
   width: 40rem;
-  padding: 2rem;
   margin-bottom: 3rem;
-  background: var(--wizblackfade);
+  background: var(--wizbrownfade);
 }
 
 h2 {
@@ -11,6 +10,8 @@ h2 {
 
 main.down.front-wall {
   text-align: center;
+  margin-top: 8rem;
+  padding: 1.5rem;
 }
 
 a.button.red {
@@ -27,6 +28,11 @@ a.button.red:hover{
 
 @media screen and (max-width: 1080px) {
   main.down {
-    width: 90%;
+    margin-top: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    /* padding-top: 0; */
+    /* padding-top: 10%; */
   }
 }

@@ -11,7 +11,7 @@ const template = html`
     <h1 class="down-title">Ye Old Wizard</h1>
     <img class="face" src="../images/faces/Dude.png" alt="Wizard">
     <h2 v-if="user === null"> 
-      Why Hello there. Welcome to Ye Old Wizard. I'm the Wizard. Here you can play me and my 180 Chess 
+      Welcome to Ye Old Wizard. I'm the Wizard. Here you can play me and my 180 Chess 
       personalities, all brought back to life from the Chessmaster game series. I uses Lichess to play 
       the personalities and track your scores against  each one. To get started sign in to Lichess.
     </h2>
@@ -19,8 +19,7 @@ const template = html`
       Before we get started, please click below to read and agree to the disclaimer.
     </h2>
     <h2 v-else-if="!egnineFileVerfied">
-      One more step! Click below to upload the King Chess Engine. This is my brain and I use it to play 
-      the personalities.You can upload the engine from the Chessmaster 9000, 10th Edition, or 11th 
+      {{preMessage}} You can upload the engine from the Chessmaster 9000, 10th Edition, or 11th 
       Edition. On your CD, DVD, or install directory look for the file "TheKing.exe" or "TheKing350.exe".
     </h2>
     <wiz-sign-in 
@@ -48,17 +47,19 @@ const app = createApp({
       user: null,
       egnineFileVerfied: false,
       disclaimerAccepted: false,
+      preMessage: `One more step! Click below to upload the King Chess Engine. 
+        This is my brain and I use it to play the personalities.`
       // text: introText,
       // introText,
       // disclaimerRequest,
       // engineUploadRequest,
     }
   },
-  watch: {
-    egnineFileVerfied(value) {
-      if(value === true)  window.location = 'http://localhost:8081' 
-    },
-  },
+  // watch: {
+  //   egnineFileVerfied(value) {
+  //     if(value === true)  window.location = 'http://localhost:8081' 
+  //   },
+  // },
   mounted() {
     console.log('mounted')
     this.user = localStorage.getItem('user') 
@@ -91,14 +92,18 @@ const app = createApp({
         // console.log(hashHex)
         if (!kingHashes.includes(hashHex)) {
           console.log('incorrect king hash')
-          this.$emit('notVerfied')
+          this.failedToVerify()
           return
         }
-        this.egnineFileVerfied = true
+        // this.egnineFileVerfied = true
         localStorage.setItem('egnineFileVerfied', true)
+        window.location = 'http://localhost:8081'
         // this.$emit('verfied')
       })
       fileInput.click()
+    },
+    failedToVerify() {
+      this.preMessage = `I didn't recongize that version of the King Chess Engine.`
     }
   },
   template
@@ -106,5 +111,3 @@ const app = createApp({
 app.component('WizDisclaimer', WizDisclaimer)
 app.component('WizSignIn', WizSignIn)
 const singIn = app.mount('#app')
-
-// hash and array buffer with javascript crypto library
