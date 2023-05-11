@@ -25,7 +25,7 @@ window.games = games
 // cssLoader.render()
 // let redirectUri = 'http://localhost:8080'
 
-localStorage.rootPath = window.location.href
+localStorage.rootPath = window.location.origin + window.location.pathname
 let devHost = localStorage.devHost || 'localhost:8080'
 let tokens
 
@@ -48,14 +48,21 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
 
 doAccountFlow()
 
+function checkLegalStuff() {
+  const engineIsVerified = localStorage.engineIsVerified === 'true'
+  const disclaimerIsAccepted = localStorage.disclaimerIsAccepted === 'true'
+  console.log(`engineIsVerified: ${engineIsVerified}, disclaimerIsAccepted: ${disclaimerIsAccepted}`)
+  if (!engineIsVerified || !disclaimerIsAccepted) {
+    window.location = localStorage.rootPath + 'signin' 
+  }
+}
+
+
 async function doAccountFlow() {
+
   // User is already signed in and stored in localstorage
   if (window.localStorage.user) {
-    
-    if (!localStorage.egnineFileVerfied || !localStorage.disclaimerAccepted) {
-      window.location = 'http://localhost:8081/signin'
-      return
-    }
+     checkLegalStuff()
 
     console.log('User ' + window.localStorage.user + ' found')
     const app = await startApp(window.localStorage.user)
@@ -79,7 +86,7 @@ async function doAccountFlow() {
     window.history.replaceState({}, null, window.location.origin + window.location.pathname)
 
     //null starts the app with knight spining to show it's trying to connect
-    // const app = await startApp(null)
+    const app = await startApp(null)
 
     console.log("Auth callback detected, attempting to fetch tokens")
     const code = match[1]
@@ -90,11 +97,8 @@ async function doAccountFlow() {
       console.log('Setting user ' + account.username + ' in local storage')
       localStorage.user = account.username
       app.user = account.username
-
-      if (!localStorage.egnineFileVerfied || !localStorage.disclaimerAccepted) {
-        window.location = localStorage.rootPath + 'signin'
-        return
-      }
+      
+      checkLegalStuff()
 
       // now that we have an account we can connnect to users games
       app.isLoading = true
@@ -104,9 +108,9 @@ async function doAccountFlow() {
       app.groupsAreHidden = false
 
     } catch (err) {
+      console.log(err)
       app.signInFailed = true
       app.setError("There was an error signing into Lichess")
-      console.log(err)
       window.err = err
     }
     return     
@@ -465,8 +469,8 @@ async function startApp(user) {
         window.localStorage.lastCmp = 'Wizard'
         this.goToCmp('Wizard')
         this.games = {}
-        localStorage.removeItem('engineIsVerified')
-        localStorage.removeItem('disclaimerAccepted')
+        // localStorage.removeItem('engineIsVerified')
+        // localStorage.removeItem('disclaimerIsAccepted')
         app1.unmount()
         window.location = localStorage.rootPath + 'signin' 
       },

@@ -10,15 +10,15 @@ const template = html`
   <main class="down front-wall" v-else>
     <h1 class="down-title">Ye Old Wizard</h1>
     <img class="face" src="../images/faces/Dude.png" alt="Wizard">
-    <h2 v-if="user === null"> 
+    <h2 v-if="!user"> 
       Welcome to Ye Old Wizard. I'm the Wizard. Here you can play me and my 180 Chess 
       personalities, all brought back to life from the Chessmaster game series. I uses Lichess to play 
       the personalities and track your scores against  each one. To get started sign in to Lichess.
     </h2>
-    <h2 v-else-if="!disclaimerAccepted">
+    <h2 v-else-if="!disclaimerIsAccepted">
       Before we get started, please click below to read and agree to the disclaimer.
     </h2>
-    <h2 v-else-if="!egnineFileVerfied">
+    <h2 v-else-if="!engineIsVerified">
       {{preMessage}} You can upload the engine from the Chessmaster 9000, 10th Edition, or 11th 
       Edition. On your CD, DVD, or install directory look for the file "TheKing.exe" or "TheKing350.exe".
     </h2>
@@ -26,8 +26,8 @@ const template = html`
       @go-to-disclaimer="goToDisclaimer" 
       @upload="upload"
       :user="user"
-      :egnineFileVerfied="egnineFileVerfied"
-      :disclaimerAccepted="disclaimerAccepted"
+      :engineIsVerified="engineIsVerified"
+      :disclaimerIsAccepted="disclaimerIsAccepted"
     >
     </wiz-sign-in>
   </main>
@@ -44,33 +44,27 @@ const app = createApp({
   data() {
     return {
       view: 'signIn',
-      user: null,
-      egnineFileVerfied: false,
-      disclaimerAccepted: false,
+      user: localStorage.user,
+      engineIsVerified: localStorage.engineIsVerified === 'true',
+      disclaimerIsAccepted: localStorage.disclaimerIsAccepted === 'true',
       preMessage: `One more step! Click below to upload the King Chess Engine. 
         This is my brain and I use it to play the personalities.`
-      // text: introText,
-      // introText,
-      // disclaimerRequest,
-      // engineUploadRequest,
     }
   },
-  // watch: {
-  //   egnineFileVerfied(value) {
-  //     if(value === true)  window.location = 'http://localhost:8081' 
-  //   },
-  // },
-  mounted() {
-    console.log('mounted')
-    this.user = localStorage.getItem('user') 
-    // this.egnineFileVerfied = JSON.parse(localStorage.egnineFileVerfied)
-    // this.disclaimerAccepted = JSON.parse(localStorage.disclaimerAccepted)
+  beforeMount() {
+    // there's no reason to be here go to the main app
+    if (this.user && this.engineIsVerified && this.disclaimerIsAccepted) {
+      window.location = localStorage.rootPath
+      console.log('we can leave')
+      return
+    }
   },
   methods: {
     accept() {
       this.view = 'signIn'
-      this.disclaimerAccepted = true
-      localStorage.setItem('disclaimerAccepted', true)
+      // this.disclaimerIsAccepted = true
+      localStorage.disclaimerIsAccepted = true
+      window.location = localStorage.rootPath
     },
     goToDisclaimer() {
       this.view = 'disclaimer'
@@ -95,10 +89,8 @@ const app = createApp({
           this.failedToVerify()
           return
         }
-        // this.egnineFileVerfied = true
-        localStorage.setItem('egnineFileVerfied', true)
-        window.location = 'http://localhost:8081'
-        // this.$emit('verfied')
+        localStorage.engineIsVerified = true
+        window.location = localStorage.rootPath
       })
       fileInput.click()
     },
