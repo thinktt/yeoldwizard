@@ -16,8 +16,8 @@ export default {
   getChatOpponent,
 }
 
-const clientId = 'L47TqpZn7iaJppGM'
-const redirectUri = 'https://thinktt.github.io/yeoldwizard'
+const clientId = 'yeoldwizard.com'
+const redirectUri = 'https://yeoldwizard.com/'
 
 
 // let dummyCode
@@ -60,7 +60,7 @@ async function getSignInLink() {
   const signInLink = oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + 
     clientId + '&redirect_uri=' + redirectUri + '&code_challenge_method=S256' + 
     '&code_challenge=' + codeChallenge + '&state=12345'
-  
+ 
     return signInLink
 }
 
