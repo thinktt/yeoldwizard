@@ -17,7 +17,7 @@ export default {
 }
 
 const clientId = 'L47TqpZn7iaJppGM'
-const redirectUri = 'https://thinktt.github.io/yeoldwizard'
+const redirectUri = 'https://yeoldwizard.com'
 
 
 // let dummyCode
