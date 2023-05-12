@@ -23,9 +23,8 @@ import yowApi from './yowApi.js'
 window.games = games
 
 // cssLoader.render()
-// let redirectUri = 'http://localhost:8080'
-
-localStorage.rootPath = window.location.origin + window.location.pathname
+const pathName = window.location.pathname || '/'
+localStorage.rootPath = window.location.origin + pathName
 let devHost = localStorage.devHost || 'localhost:8080'
 let tokens
 
@@ -53,7 +52,7 @@ function checkLegalStuff() {
   const disclaimerIsAccepted = localStorage.disclaimerIsAccepted === 'true'
   console.log(`engineIsVerified: ${engineIsVerified}, disclaimerIsAccepted: ${disclaimerIsAccepted}`)
   if (!engineIsVerified || !disclaimerIsAccepted) {
-    window.location = localStorage.rootPath + 'signin' 
+    window.location = window.location.origin + '/signin'
   }
 }
 
@@ -120,7 +119,7 @@ async function doAccountFlow() {
   // const app = await startApp()
 
   //redirect to signin page
-  window.location = localStorage.rootPath + 'signin'
+  window.location = window.location.origin + '/signin'
 
   app.groupsAreHidden = false
 }

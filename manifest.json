@@ -1,19 +1,19 @@
 {
     "name": "Ye Old Wizard",
-    "short_name": "yeoldwiz",
+    "short_name": "Ye Old Wizard",
     "theme_color": "#3b1f11",
     "background_color": "#3b1f11",
     "display": "standalone",
-    "start_url": "https://thinktt.github.io/yeoldwizard/",
+    "start_url": "https://yeoldwizard.com/",
     "description": "Play Chess with the Wizard again!",
     "icons": [
         {
-            "src": "https://thinktt.github.io/yeoldwizard/images/android-chrome-512x512.png",
+            "src": "https://yeoldwizard.com/images/android-chrome-512x512.png",
             "sizes": "512x512",
             "purpose": "maskable"
         },
         {
-            "src": "https://thinktt.github.io/yeoldwizard/images/android-chrome-512x512.png",
+            "src": "https://yeoldwizard.com/images/android-chrome-512x512.png",
             "sizes": "512x512",
             "purpose": "any"
         }
