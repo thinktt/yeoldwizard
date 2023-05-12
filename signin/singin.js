@@ -11,16 +11,17 @@ const template = html`
     <h1 class="down-title">Ye Old Wizard</h1>
     <img class="face" src="../images/faces/Dude.png" alt="Wizard">
     <h2 v-if="!user"> 
-      Welcome to Ye Old Wizard. I'm the Wizard. Here you can play me and my 180 Chess 
-      personalities, all brought back to life from the Chessmaster game series. I uses Lichess to play 
-      the personalities and track your scores against  each one. To get started sign in to Lichess.
+      Welcome to the Ye Old Wizard. <br>
+      Here you can play the Chessmaster bots on your phone or the web. <br>
+      Sign in with Lichess to get started.
     </h2>
     <h2 v-else-if="!disclaimerIsAccepted">
       Before we get started, please click below to read and agree to the disclaimer.
     </h2>
     <h2 v-else-if="!engineIsVerified">
-      {{preMessage}} You can upload the engine from the Chessmaster 9000, 10th Edition, or 11th 
-      Edition. On your CD, DVD, or install directory look for the file "TheKing.exe" or "TheKing350.exe".
+      Upload the King Chess Engine from the Chessmaster 9000, 10th Edition, or 11th 
+      Edition.
+      On your CD, DVD, or install directory look for the file "TheKing.exe" or "TheKing350.exe".
     </h2>
     <wiz-sign-in 
       @go-to-disclaimer="goToDisclaimer" 
@@ -47,8 +48,8 @@ const app = createApp({
       user: localStorage.user,
       engineIsVerified: localStorage.engineIsVerified === 'true',
       disclaimerIsAccepted: localStorage.disclaimerIsAccepted === 'true',
-      preMessage: `One more step! Click below to upload the King Chess Engine. 
-        This is my brain and I use it to play the personalities.`
+      preMessage: `Click below to upload the King Chess Engine. <br>
+        This is my brain and I use it to play the personalities. <br>`
     }
   },
   beforeMount() {
@@ -102,3 +103,44 @@ const app = createApp({
 app.component('WizDisclaimer', WizDisclaimer)
 app.component('WizSignIn', WizSignIn)
 const singIn = app.mount('#app')
+
+
+
+let devHost = localStorage.devHost || 'localhost:8080'
+let tokens
+
+// a way to get dev to work using the same lichess client id
+if (localStorage.redirectToDev === 'true' && window.location.search && 
+    window.location.host !== devHost) {
+      console.log('Forwarding to dev')
+      const query = window.location.search 
+      window.location = `http://${devHost}/signin` + query
+}
+
+
+async function doAccountFlow() {
+  // first check if this is a Athorization callback
+  const authCodeRegex = /code\=([_a-zA-Z0-9]*)/
+  const match = authCodeRegex.exec(window.location.search.substr(1))
+  if (match) {
+    // go ahead and clear the query string as we no longer need it
+    window.history.replaceState({}, null, window.location.origin + window.location.pathname)
+
+    console.log("Auth callback detected, attempting to fetch tokens")
+    const code = match[1]
+    try {
+      const token = await lichessApi.getToken(code)
+      lichessApi.storeToken(token)
+      const account = await lichessApi.getAccount()
+      console.log('Setting user ' + account.username + ' in local storage')
+      localStorage.user = account.username
+
+    } catch (err) {
+      console.log(err)
+      app.signInFailed = true
+      app.setError("There was an error signing into Lichess")
+      window.err = err
+    }
+    return     
+  }
+}

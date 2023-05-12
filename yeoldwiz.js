@@ -46,13 +46,34 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
 }
 
 doAccountFlow()
+// checkUser()
+// preStart()
 
 function checkLegalStuff() {
+  const user = localStorage.user
   const engineIsVerified = localStorage.engineIsVerified === 'true'
   const disclaimerIsAccepted = localStorage.disclaimerIsAccepted === 'true'
-  console.log(`engineIsVerified: ${engineIsVerified}, disclaimerIsAccepted: ${disclaimerIsAccepted}`)
-  if (!engineIsVerified || !disclaimerIsAccepted) {
+  if (!user || !engineIsVerified || !disclaimerIsAccepted) {
     window.location = window.location.origin + '/signin'
+  }
+}
+
+
+async function preStart() {
+  // User is already signed in and stored in localstorage
+  if (window.localStorage.user) {
+
+    console.log('User ' + window.localStorage.user + ' found')
+    const app = await startApp(window.localStorage.user)
+    tokens = JSON.parse(localStorage.tokens) 
+    
+    app.isLoading = true
+    await app.loadUserGames()
+    app.isLoading = false
+    await new Promise(r => setTimeout(r, 0))
+    app.goToCmp(localStorage.lastCmp || 'Wizard')
+    app.groupsAreHidden = false
+    return
   }
 }
 

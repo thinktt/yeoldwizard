@@ -2,15 +2,17 @@ main.down {
   width: 40rem;
   margin-bottom: 3rem;
   background: var(--wizbrownfade);
+  border-radius: 0.5rem;
 }
 
-h2 {
-  margin-bottom: 1.5rem
+.front-wall h2 {
+  margin-bottom: 1.5rem;
+  width: 30rem;
 }
 
 main.down.front-wall {
   text-align: center;
-  margin-top: 8rem;
+  margin-top: 5rem;
   padding: 1.5rem;
 }
 
@@ -42,19 +44,23 @@ a.button.red:hover{
     padding-top: 7vh;
     padding-left: 5vw;
     padding-right: 5vw;
-
   }
 
   main.down.front-wall.disclaimer {
     margin-top: 0;
     padding-top: 1rem;
   }
+
+  .front-wall h2 {
+    width: unset;
+  }
+
 }
 
 @media screen and (max-height: 670px) {
-  h2 {
+  .front-wall h2 {
     font-size: 1.2rem;
   }
 }
   
-}
+
