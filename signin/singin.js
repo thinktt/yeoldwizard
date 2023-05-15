@@ -2,6 +2,10 @@ import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import WizDisclaimer from './WizDisclaimer.js'
 import WizSignIn from './WizSignIn.js'
 import { html } from '../pageTools.js'
+import lichessApi  from '../lichessApi.js'
+
+
+const signInLink = await lichessApi.getSignInLink()
 
 
 const template = html`
@@ -10,29 +14,35 @@ const template = html`
   <main class="down front-wall" v-else>
     <h1 class="down-title">Ye Old Wizard</h1>
     <img class="face" src="../images/faces/Dude.png" alt="Wizard">
-    <h2 v-if="!user"> 
-      Welcome to the Ye Old Wizard. <br>
-      Here you can play the Chessmaster bots on your phone or the web. <br>
-      Sign in with Lichess to get started.
-    </h2>
-    <h2 v-else-if="!disclaimerIsAccepted">
-      Before we get started, please click below to read and agree to the disclaimer.
-    </h2>
-    <h2 v-else-if="!engineIsVerified">
-      Upload the King Chess Engine from the Chessmaster 9000, 10th Edition, or 11th 
-      Edition.
-      On your CD, DVD, or install directory look for the file "TheKing.exe" or "TheKing350.exe".
-    </h2>
-    <wiz-sign-in 
-      @go-to-disclaimer="goToDisclaimer" 
-      @upload="upload"
-      :user="user"
-      :engineIsVerified="engineIsVerified"
-      :disclaimerIsAccepted="disclaimerIsAccepted"
-    >
-    </wiz-sign-in>
+    <div v-if="!user">
+      <h2> 
+        Welcome to the Ye Old Wizard. <br>
+        Here you can play the Chessmaster bots on your phone or the web. <br>
+        Sign in with Lichess to get started.
+      </h2>
+      <a class="button yellow" :href="signInLink">
+        Sign In with Lichess
+      </a>
+    </div>
+    <div  v-else-if="!disclaimerIsAccepted">
+      <h2>
+        Before we get started, please click below to read and agree to the disclaimer.
+      </h2>
+      <a class="button blue" @click="goToDisclaimer">
+        View Disclaimer
+      </a>
+    </div>
+    <div v-else-if="!engineIsVerified">
+      <h2>
+        Upload the King Chess Engine from the Chessmaster 9000, 10th Edition, or 11th 
+        Edition.
+        On your CD, DVD, or install directory look for the file "TheKing.exe" or "TheKing350.exe".
+      </h2>
+      <a class="button blue" @click="upload">
+        Upload The King Chess Engine
+      </a>
+    </div>
   </main>
-
 `
 
 const kingHashes = [
@@ -48,10 +58,9 @@ const app = createApp({
       user: localStorage.user,
       engineIsVerified: localStorage.engineIsVerified === 'true',
       disclaimerIsAccepted: localStorage.disclaimerIsAccepted === 'true',
-      preMessage: `Click below to upload the King Chess Engine. <br>
-        This is my brain and I use it to play the personalities. <br>`
-    }
-  },
+      signInLink,
+   }
+  },  
   beforeMount() {
     // there's no reason to be here go to the main app
     if (this.user && this.engineIsVerified && this.disclaimerIsAccepted) {

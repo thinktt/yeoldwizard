@@ -8,6 +8,7 @@ main.down {
 .front-wall h2 {
   margin-bottom: 1.5rem;
   width: 30rem;
+  text-align: center;
 }
 
 main.down.front-wall {
