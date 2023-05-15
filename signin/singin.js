@@ -1,6 +1,5 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import WizDisclaimer from './WizDisclaimer.js'
-import WizSignIn from './WizSignIn.js'
 import { html } from '../pageTools.js'
 import lichessApi  from '../lichessApi.js'
 
@@ -110,7 +109,6 @@ const app = createApp({
   template
 })
 app.component('WizDisclaimer', WizDisclaimer)
-app.component('WizSignIn', WizSignIn)
 const singIn = app.mount('#app')
 
 
