@@ -14,7 +14,11 @@ const template = html`
     <h1 class="down-title">Ye Old Wizard</h1>
     <img class="face" src="../images/faces/Dude.png" alt="Wizard">
     <div v-if="!user">
-      <h2> 
+      <h2 v-if="signInFailed" class="error">
+        Failed to connect to Lichess. <br> Please try again. <br>
+        If the problem continues conatact your Wiz Admin.
+      </h2>
+      <h2 v-else> 
         Welcome to the Ye Old Wizard. <br>
         Here you can play the Chessmaster bots on your phone or the web. <br>
         Sign in with Lichess to get started.
@@ -58,6 +62,7 @@ const app = createApp({
       engineIsVerified: localStorage.engineIsVerified === 'true',
       disclaimerIsAccepted: localStorage.disclaimerIsAccepted === 'true',
       signInLink,
+      signInFailed: localStorage.signInFailed === 'true',
    }
   },  
   beforeMount() {
@@ -67,6 +72,8 @@ const app = createApp({
       console.log('we can leave')
       return
     }
+    // clear any local storage error
+    localStorage.signInFailed = false
   },
   methods: {
     accept() {
@@ -110,44 +117,3 @@ const app = createApp({
 })
 app.component('WizDisclaimer', WizDisclaimer)
 const singIn = app.mount('#app')
-
-
-
-let devHost = localStorage.devHost || 'localhost:8080'
-let tokens
-
-// a way to get dev to work using the same lichess client id
-if (localStorage.redirectToDev === 'true' && window.location.search && 
-    window.location.host !== devHost) {
-      console.log('Forwarding to dev')
-      const query = window.location.search 
-      window.location = `http://${devHost}/signin` + query
-}
-
-
-async function doAccountFlow() {
-  // first check if this is a Athorization callback
-  const authCodeRegex = /code\=([_a-zA-Z0-9]*)/
-  const match = authCodeRegex.exec(window.location.search.substr(1))
-  if (match) {
-    // go ahead and clear the query string as we no longer need it
-    window.history.replaceState({}, null, window.location.origin + window.location.pathname)
-
-    console.log("Auth callback detected, attempting to fetch tokens")
-    const code = match[1]
-    try {
-      const token = await lichessApi.getToken(code)
-      lichessApi.storeToken(token)
-      const account = await lichessApi.getAccount()
-      console.log('Setting user ' + account.username + ' in local storage')
-      localStorage.user = account.username
-
-    } catch (err) {
-      console.log(err)
-      app.signInFailed = true
-      app.setError("There was an error signing into Lichess")
-      window.err = err
-    }
-    return     
-  }
-}
