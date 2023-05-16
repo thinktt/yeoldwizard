@@ -45,9 +45,34 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
       window.location = `http://${devHost}` + query
 }
 
-doAccountFlow()
-// checkUser()
-// preStart()
+await doAccountFlow()
+checkLegalStuff()
+
+async function doAccountFlow() {
+  // first check if this is a Athorization callback
+  const authCodeRegex = /code\=([_a-zA-Z0-9]*)/
+  const match = authCodeRegex.exec(window.location.search.substr(1))
+  if (match) {
+    // go ahead and clear the query string as we no longer need it
+    window.history.replaceState({}, null, window.location.origin + window.location.pathname)
+
+    console.log("Auth callback detected, attempting to fetch tokens")
+    const code = match[1]
+    // appInstance.connecting = true
+    try {
+      const token = await lichessApi.getToken(code)
+      lichessApi.storeToken(token)
+      const account = await lichessApi.getAccount()
+      console.log('Setting user ' + account.username + ' in local storage')
+      localStorage.user = account.username
+      console.log('Successfully signed in as ' + account.username)
+    } catch (err) {
+      console.log(err)
+      localStorage.signInFailed = true
+    }
+    return     
+  }
+}
 
 function checkLegalStuff() {
   const user = localStorage.user
@@ -55,7 +80,9 @@ function checkLegalStuff() {
   const disclaimerIsAccepted = localStorage.disclaimerIsAccepted === 'true'
   if (!user || !engineIsVerified || !disclaimerIsAccepted) {
     window.location = window.location.origin + '/signin'
+    return
   }
+  preStart()
 }
 
 
@@ -77,8 +104,7 @@ async function preStart() {
   }
 }
 
-
-async function doAccountFlow() {
+async function doAccountFlowOld() {
 
   // User is already signed in and stored in localstorage
   if (window.localStorage.user) {
