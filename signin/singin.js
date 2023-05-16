@@ -38,11 +38,26 @@ const template = html`
     <div v-else-if="!engineIsVerified">
       <h2>
         Upload the King Chess Engine from the Chessmaster 9000, 10th Edition, or 11th 
-        Edition.
         On your CD, DVD, or install directory look for the file "TheKing.exe" or "TheKing350.exe".
+        Edition.
       </h2>
       <a class="button blue" @click="upload">
         Upload The King Chess Engine
+      </a>
+      <h2 v-if="verificationFailed" class="error">
+        Could not verify the King Chess Engine. Please try again.
+      </h2>
+      <br>
+      <!-- <div class="icon knight spin">♞</div> -->
+    </div>
+    <div v-else>
+      <h2>
+        You are now reginstered to play games with Ye Old Wizard! 
+        On the next screen you will see all the bots you can play. 
+        Select the bot you want to play and then select "Play" 
+      </h2>
+      <a class="button blue" :href="rootPath">
+        Continue
       </a>
     </div>
   </main>
@@ -63,6 +78,8 @@ const app = createApp({
       disclaimerIsAccepted: localStorage.disclaimerIsAccepted === 'true',
       signInLink,
       signInFailed: localStorage.signInFailed === 'true',
+      verificationFailed: false,
+      rootPath: window.location.origin,
    }
   },  
   beforeMount() {
@@ -85,6 +102,7 @@ const app = createApp({
       this.view = 'disclaimer'
     },
     upload() {
+      this.verificationFailed = false
       const fileInput = document.createElement('input')
       fileInput.type = 'file'
       
@@ -92,7 +110,7 @@ const app = createApp({
         const file = fileInput.files[0]
         if (file.size > 208896) {
           console.log('file too big')
-          // this.$emit('notVerfied')
+          this.verificationFailed = true
           return
         }
         const hashBuffer = await crypto.subtle.digest('SHA-256', await file.arrayBuffer())
@@ -101,17 +119,15 @@ const app = createApp({
         // console.log(hashHex)
         if (!kingHashes.includes(hashHex)) {
           console.log('incorrect king hash')
-          this.failedToVerify()
+          this.verificationFailed = true
           return
         }
         localStorage.engineIsVerified = true
-        window.location = localStorage.rootPath
+        this.engineIsVerified = true
+        // window.location = localStorage.rootPath
       })
       fileInput.click()
     },
-    failedToVerify() {
-      this.preMessage = `I didn't recongize that version of the King Chess Engine.`
-    }
   },
   template
 })
