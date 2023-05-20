@@ -20,6 +20,7 @@ import lichessApi from './lichessApi.js'
 import { applyAnimation } from './lib/chessground/js/config.js'
 import { Chessground } from './lib/chessground/js/chessground.js'
 import yowApi from './yowApi.js'
+import { start } from './lib/chessground/js/draw.js'
 window.games = games
 
 // cssLoader.render()
@@ -43,10 +44,11 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
       console.log('Forwarding to dev')
       const query = window.location.search 
       window.location = `http://${devHost}` + query
+} else {
+  await doAccountFlow()
+  checkLegalStuff()
 }
 
-await doAccountFlow()
-checkLegalStuff()
 
 async function doAccountFlow() {
   // first check if this is a Athorization callback
@@ -78,6 +80,14 @@ function checkLegalStuff() {
   const user = localStorage.user
   const engineIsVerified = localStorage.engineIsVerified === 'true'
   const disclaimerIsAccepted = localStorage.disclaimerIsAccepted === 'true'
+  const botBrowsingIsSet = localStorage.botBrowsingIsSet === 'true'
+  
+  if (!user && botBrowsingIsSet) {
+    localStorage.botBrowsingIsSet = false
+    preStart()
+    return
+  }
+
   if (!user || !engineIsVerified || !disclaimerIsAccepted) {
     window.location = window.location.origin + '/signin'
     return
@@ -102,6 +112,9 @@ async function preStart() {
     app.groupsAreHidden = false
     return
   }
+  
+  const app = await startApp('') // start with no user
+  app.groupsAreHidden = false
 }
 
 async function doAccountFlowOld() {

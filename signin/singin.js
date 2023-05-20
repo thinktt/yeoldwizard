@@ -25,6 +25,12 @@ const template = html`
       </h2>
       <a class="button yellow" :href="signInLink">
         Sign In with Lichess
+      </a> <br>
+      <a class="button blue" @click="allowBotBrowsing">
+        Browse the Bots
+      </a> <br>
+      <a class="button blue" @click="goToDisclaimer">
+        View Disclaimer
       </a>
     </div>
     <div  v-else-if="!disclaimerIsAccepted">
@@ -100,6 +106,10 @@ const app = createApp({
     },
     goToDisclaimer() {
       this.view = 'disclaimer'
+    },
+    allowBotBrowsing() {
+      localStorage.botBrowsingIsSet = true
+      window.location = window.location.origin
     },
     upload() {
       this.verificationFailed = false
