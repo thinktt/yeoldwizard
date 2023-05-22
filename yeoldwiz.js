@@ -69,7 +69,7 @@ async function doAccountFlow() {
       localStorage.user = account.username
       console.log('Successfully signed in as ' + account.username)
     } catch (err) {
-      console.log(err)
+      console.log('howdy', err)
       localStorage.signInFailed = true
     }
     return     
@@ -81,6 +81,7 @@ function checkLegalStuff() {
   const engineIsVerified = localStorage.engineIsVerified === 'true'
   const disclaimerIsAccepted = localStorage.disclaimerIsAccepted === 'true'
   const botBrowsingIsSet = localStorage.botBrowsingIsSet === 'true'
+  const signInFailed = localStorage.signInFailed === 'true'
   
   if (!user && botBrowsingIsSet) {
     localStorage.botBrowsingIsSet = false
@@ -88,7 +89,7 @@ function checkLegalStuff() {
     return
   }
 
-  if (!user || !engineIsVerified || !disclaimerIsAccepted) {
+  if (!user || !engineIsVerified || !disclaimerIsAccepted || signInFailed ) {
     window.location = window.location.origin + '/signin'
     return
   }

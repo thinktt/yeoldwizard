@@ -1,6 +1,6 @@
 main.down {
   width: 40rem;
-  margin-bottom: 3rem;
+  /* margin-bottom: 3rem; */
   background: var(--wizbrownfade);
   border-radius: 0.5rem;
 }
@@ -13,7 +13,7 @@ main.down {
 
 main.down.front-wall {
   text-align: center;
-  margin-top: 7rem;
+  margin-top: 10vh;
   padding: 1.5rem;
 }
 
