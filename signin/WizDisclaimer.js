@@ -25,7 +25,7 @@ const template = html`
     </p>
       
     <p>
-      If you are the owner of any intellectual property rights used on this website and believe that your rights have been infringed, please contact us at [your email address] so that we can address your concerns and, if necessary, remove any infringing materials.
+      If you are the owner of any intellectual property rights used on this website and believe that your rights have been infringed, please contact us at wizwrangler@yeoldwizard.com so that we can address your concerns and, if necessary, remove any infringing materials.
     </p>
       
     <p>
