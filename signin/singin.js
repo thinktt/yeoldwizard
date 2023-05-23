@@ -43,9 +43,8 @@ const template = html`
     </div>
     <div v-else-if="!engineIsVerified">
       <h2>
-        Upload the King Chess Engine from the Chessmaster 9000, 10th Edition, or 11th 
+        Upload the King Chess Engine from the Chessmaster 9000, 10th Edition, or 11th Edition.
         On your CD, DVD, or install directory look for the file "TheKing.exe" or "TheKing350.exe".
-        Edition.
       </h2>
       <a class="button blue" @click="upload">
         Upload The King Chess Engine
