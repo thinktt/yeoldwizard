@@ -107,9 +107,8 @@ const app = createApp({
     goToDisclaimer() {
       this.view = 'disclaimer'
     },
-    allowBotBrowsing() {
-      localStorage.botBrowsingIsSet = true
-      window.location = window.location.origin
+    async allowBotBrowsing() {
+      window.location = window.location.origin + '?botBrowsing=true'
     },
     upload() {
       this.verificationFailed = false

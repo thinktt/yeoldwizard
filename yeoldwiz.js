@@ -28,6 +28,7 @@ const pathName = window.location.pathname || '/'
 localStorage.rootPath = window.location.origin + pathName
 let devHost = localStorage.devHost || 'localhost:8080'
 let tokens
+let botBrowsingIsSet = false
 
 // flush local db if we changed the format since user used the app
 const dbVersion = '1.1'
@@ -51,6 +52,13 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
 
 
 async function doAccountFlow() {
+  // check query for botBrowsing
+  if (window.location.search.includes('botBrowsing=true')) {
+    window.history.replaceState({}, null, window.location.origin + window.location.pathname)
+    botBrowsingIsSet = true
+    return
+  }
+
   // first check if this is a Athorization callback
   const authCodeRegex = /code\=([_a-zA-Z0-9]*)/
   const match = authCodeRegex.exec(window.location.search.substr(1))
@@ -80,7 +88,7 @@ function checkLegalStuff() {
   const user = localStorage.user
   const engineIsVerified = localStorage.engineIsVerified === 'true'
   const disclaimerIsAccepted = localStorage.disclaimerIsAccepted === 'true'
-  const botBrowsingIsSet = localStorage.botBrowsingIsSet === 'true'
+  // const botBrowsingIsSet = localStorage.botBrowsingIsSet === 'true'
   const signInFailed = localStorage.signInFailed === 'true'
   
   if (!user && botBrowsingIsSet) {
