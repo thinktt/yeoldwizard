@@ -44,18 +44,18 @@ function storeToken(tokenToSet) {
   tokens = tokenToSet
 }
 
-async function getSignInLink() {
+async function getSignInLink(codeVerifier) {
   const oauthUrl = 'https://lichess.org/oauth' 
   const oauthQuery = '?response_type=code'
   const scope = 'board:play'
-  const codeVerifier = localStorage.codeVerifier || genRandomString()
-  localStorage.codeVerifier = codeVerifier
+  // const codeVerifier = localStorage.codeVerifier || genRandomString()
+  // localStorage.codeVerifier = codeVerifier
   let dummyCode
   if (window.location.host.includes('192.168')) {
     console.log('using dummy code')
     dummyCode = 'EzUA-uZDIDR-E6-8XZgnvVpr0KvYQwWAjiVUk3E7ZoY'
   }
-  const codeChallenge = dummyCode || await genChallengeCode(localStorage.codeVerifier)
+  const codeChallenge = dummyCode || await genChallengeCode(codeVerifier)
 
   const signInLink = oauthUrl + oauthQuery + '&scope=' + scope + '&client_id=' + 
     clientId + '&redirect_uri=' + redirectUri + '&code_challenge_method=S256' + 
@@ -64,13 +64,16 @@ async function getSignInLink() {
     return signInLink
 }
 
-async function getToken(code) {
+async function getToken(code, codeVerifier) {
+  // const codeVerifier = localStorage.getItem('codeVerifier')
+  console.log('code verifier', codeVerifier)
+  console.log(localStorage)
   const url = 'https://lichess.org/api/token'
   const query =  `?code=${code}&redirect_uri=${redirectUri}`
   const body = {
     grant_type : 'authorization_code',
     code: code,
-    code_verifier: localStorage.codeVerifier,
+    code_verifier: codeVerifier,
     redirect_uri: redirectUri,
     client_id: clientId,
   }

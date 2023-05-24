@@ -22,6 +22,7 @@ import { Chessground } from './lib/chessground/js/chessground.js'
 import yowApi from './yowApi.js'
 import { start } from './lib/chessground/js/draw.js'
 window.games = games
+const codeVerifier = localStorage.codeVerifier
 
 // cssLoader.render()
 const pathName = window.location.pathname || '/'
@@ -75,7 +76,7 @@ async function doAccountFlow() {
   console.log("Auth callback detected, attempting to fetch tokens")
   const code = authCode[1]
   let err = null
-  const token = await lichessApi.getToken(code).catch(e => err = e)
+  const token = await lichessApi.getToken(code, codeVerifier).catch(e => err = e)
   if (err) {
     console.error('failed to get token', err.message)
     localStorage.signInFailed = true
@@ -168,7 +169,7 @@ async function preStart() {
 
 async function startApp(user) {
   const res = await fetch('personalities.json')
-  const signInLink = await lichessApi.getSignInLink()
+  const signInLink = await lichessApi.getSignInLink(codeVerifier)
   const cmpsObj = await res.json()
 
   // Map the CMP Object to an array, sort them by rating, reverse them 
@@ -845,3 +846,4 @@ async function delLichessToken() {
 function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
 }
+

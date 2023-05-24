@@ -5,8 +5,8 @@ import yowApi from '../yowApi.js'
 import lichessApi  from '../lichessApi.js'
 import king from './king.js'
 
-
-const signInLink = await lichessApi.getSignInLink()
+const codeVerifier = getCodeVerifier()
+const signInLink = await lichessApi.getSignInLink(codeVerifier)
 
 const template = html`
   <wiz-disclaimer v-if="view === 'disclaimer'" @accept="accept">
@@ -176,3 +176,29 @@ function b64ToBuffer(b64) {
   return ab
 }
 
+function getCodeVerifier() {
+  const codeVerifier = localStorage.codeVerifier
+  if (codeVerifier) {
+    return codeVerifier
+  }
+
+  const PKCE_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const RECOMMENDED_CODE_VERIFIER_LENGTH = 96
+  const output = new Uint32Array(RECOMMENDED_CODE_VERIFIER_LENGTH);
+  crypto.getRandomValues(output);
+  const randStr = base64urlEncode(Array
+    .from(output)
+    .map((num) => PKCE_CHARSET[num % PKCE_CHARSET.length])
+    .join(''));
+  
+  localStorage.codeVerifier = randStr
+  return randStr
+}
+
+function base64urlEncode(value) {
+  let base64 = btoa(value);
+  base64 = base64.replace(/\+/g, '-');
+  base64 = base64.replace(/\//g, '_');
+  base64 = base64.replace(/=/g, '');
+  return base64;
+}
