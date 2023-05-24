@@ -7,11 +7,10 @@ import lichessApi  from '../lichessApi.js'
 
 const signInLink = await lichessApi.getSignInLink()
 
-
 const template = html`
   <wiz-disclaimer v-if="view === 'disclaimer'" @accept="accept">
   </wiz-disclaimer>
-  <main class="down front-wall" v-else>
+  <main class="down front-wall" :class="{hidden: isHidden}" v-else>
     <h1 class="down-title">Ye Old Wizard</h1>
     <img class="face" src="../images/faces/Dude.png" alt="Wizard">
     <div v-if="!user">
@@ -86,17 +85,19 @@ const app = createApp({
       signInFailed: localStorage.signInFailed === 'true',
       verificationFailed: false,
       rootPath: window.location.origin,
+      isHidden: true,
    }
   },  
   beforeMount() {
     // there's no reason to be here go to the main app
     if (this.user && this.engineIsVerified && this.disclaimerIsAccepted) {
-      window.location = localStorage.rootPath
-      console.log('we can leave')
+      window.location = window.location.origin
       return
     }
+
     // clear any local storage error
     localStorage.signInFailed = false
+    this.isHidden = false
   },
   methods: {
     accept() {
@@ -134,11 +135,8 @@ const app = createApp({
           this.verificationFailed = true
         }
 
-        return
-
         localStorage.engineIsVerified = true
         this.engineIsVerified = true
-        // window.location = localStorage.rootPath
       })
       fileInput.click()
     },

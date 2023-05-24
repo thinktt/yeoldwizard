@@ -64,7 +64,7 @@ async function addUser(user) {
   const data = await res.json()
 
   if (!res.ok) {
-    throw new Error(`${res.status}: ${data.message || data}`)
+    throw new Error(`${res.status}: ${data.message || data.error}`)
   }
 
   return data
