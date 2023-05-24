@@ -71,18 +71,18 @@ async function addUser(user) {
 }
 
 async function getUser(id) {
-  if (yowApiIsDown) {
-    return apiIsDownRes
-  }
   const res = await fetch(`${yowApiUrl}/users/${id}`, {
     headers: {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
     },    
-  }).catch((err) => {
-    yowApiIsDown = true
-    return {ok: false, status: 502, message: 'connection refused' }
   })
 
-  return res
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw new Error(`${res.status}: ${data.message || data.error}`)
+  }
+
+  return data
 }

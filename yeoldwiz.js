@@ -47,7 +47,7 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
       window.location = `http://${devHost}` + query
 } else {
   await doAccountFlow()
-  checkLegalStuff()
+  await checkLegalStuff()
 }
 
 
@@ -105,16 +105,41 @@ async function checkLegalStuff() {
   // const botBrowsingIsSet = localStorage.botBrowsingIsSet === 'true'
   const signInFailed = localStorage.signInFailed === 'true'
   
+  // this allows the app to run singed out for bot browsing
   if (!user && botBrowsingIsSet) {
     localStorage.botBrowsingIsSet = false
     preStart()
     return
   }
 
-  if (!user || !engineIsVerified || !disclaimerIsAccepted || signInFailed ) {
+  // no user or sign in failed, so go to sign in page
+  if (!user || signInFailed ) {
     window.location = window.location.origin + '/signin'
     return
   }
+
+  // has the user done the legal stuff, if so we're good
+  if (engineIsVerified && disclaimerIsAccepted) {
+    console.log(user + ' has done the legal stuff')
+    preStart()
+    return
+  }
+
+  // let's check yowApi to see if the user has done the legal stuff
+  console.log('Checking yowApi for user ' + user)
+  let err = null
+  const yowUser = await yowApi.getUser(user).catch(e => err = e)
+  if (err) {
+    console.error('failed to get yow user', err.message)
+    window.location = window.location.origin + '/signin'
+    return
+  }
+
+  // user is registered so mark legal stuff as done
+  console.log(yowUser)
+  localStorage.engineIsVerified = true
+  localStorage.disclaimerIsAccepted = true
+
   preStart()
 }
 

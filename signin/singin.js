@@ -3,6 +3,7 @@ import WizDisclaimer from './WizDisclaimer.js'
 import { html } from '../pageTools.js'
 import yowApi from '../yowApi.js'
 import lichessApi  from '../lichessApi.js'
+import king from './king.js'
 
 
 const signInLink = await lichessApi.getSignInLink()
@@ -124,15 +125,24 @@ const app = createApp({
           return
         }
 
+        // do a frotnend check before uploading
         const kingBlob = await fileToB64(file)
+        const kingHasValidHash = await king.getVersion(kingBlob)
+        if (!kingHasValidHash) {
+          console.log('precheck of king failed')
+          this.verificationFailed = true
+          return
+        }
+
+        // upload user info and king blob for backend check and registration
         const id = localStorage.user
         const user = { id, kingBlob, hasAcceptedDisclaimer: true }
-        
         let err = null
         const res = await yowApi.addUser(user).catch(e => err = e)
         if (err) {
           console.log('error uploading king', err.message)
           this.verificationFailed = true
+          return
         }
 
         localStorage.engineIsVerified = true
@@ -166,17 +176,3 @@ function b64ToBuffer(b64) {
   return ab
 }
 
-
-
-// const hashBuffer = await crypto.subtle.digest('SHA-256', ab)
-// const hashArray = Array.from(new Uint8Array(hashBuffer))
-// const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-// console.log(hashHex)
-
-// if (!kingHashes.includes(hashHex)) {
-//   console.log('incorrect king hash')
-//   this.verificationFailed = true
-//   return
-// }
-
-// console.log('ver-fide')
