@@ -59,32 +59,46 @@ async function doAccountFlow() {
     return
   }
 
-  // first check if this is a Athorization callback
+  // check for athorization callback
   const authCodeRegex = /code\=([_a-zA-Z0-9]*)/
-  const match = authCodeRegex.exec(window.location.search.substr(1))
-  if (match) {
-    // go ahead and clear the query string as we no longer need it
-    window.history.replaceState({}, null, window.location.origin + window.location.pathname)
-
-    console.log("Auth callback detected, attempting to fetch tokens")
-    const code = match[1]
-    // appInstance.connecting = true
-    try {
-      const token = await lichessApi.getToken(code)
-      lichessApi.storeToken(token)
-      const account = await lichessApi.getAccount()
-      console.log('Setting user ' + account.username + ' in local storage')
-      localStorage.user = account.username
-      console.log('Successfully signed in as ' + account.username)
-    } catch (err) {
-      console.log('howdy', err)
-      localStorage.signInFailed = true
-    }
-    return     
+  const authCode = authCodeRegex.exec(window.location.search.substring(1))
+  
+  // go ahead and clear the query string as we no longer need it
+  window.history.replaceState({}, null, window.location.origin + window.location.pathname)
+  
+  // no auth code was found, so we are done
+  if (!authCode) {
+    return
   }
+
+  // we have and auth code to process now
+  console.log("Auth callback detected, attempting to fetch tokens")
+  const code = authCode[1]
+  let err = null
+  const token = await lichessApi.getToken(code).catch(e => err = e)
+  if (err) {
+    console.error('failed to get token', err.message)
+    localStorage.signInFailed = true
+    return
+  }
+  lichessApi.storeToken(token)
+    
+  err = null
+  const account = await lichessApi.getAccount().catch(e => err = e)
+  if (err) {
+    console.error('failed to get account', err.message)
+    localStorage.signInFailed = true
+    return
+  }
+    
+  console.log('Setting user ' + account.username + ' in local storage')
+  localStorage.user = account.username
+  console.log('Successfully signed in as ' + account.username)
+  
+  return
 }
 
-function checkLegalStuff() {
+async function checkLegalStuff() {
   const user = localStorage.user
   const engineIsVerified = localStorage.engineIsVerified === 'true'
   const disclaimerIsAccepted = localStorage.disclaimerIsAccepted === 'true'
@@ -126,75 +140,8 @@ async function preStart() {
   app.groupsAreHidden = false
 }
 
-async function doAccountFlowOld() {
-
-  // User is already signed in and stored in localstorage
-  if (window.localStorage.user) {
-     checkLegalStuff()
-
-    console.log('User ' + window.localStorage.user + ' found')
-    const app = await startApp(window.localStorage.user)
-    tokens = JSON.parse(localStorage.tokens) 
-    
-    app.isLoading = true
-    await app.loadUserGames()
-    // await new Promise(r => setTimeout(r, 60 * 1000 * 60))
-    app.isLoading = false
-    await new Promise(r => setTimeout(r, 0))
-    app.goToCmp(localStorage.lastCmp || 'Wizard')
-    app.groupsAreHidden = false
-    return
-  }
-
-  // first check if this is a Athorization callback
-  const authCodeRegex = /code\=([_a-zA-Z0-9]*)/
-  const match = authCodeRegex.exec(window.location.search.substr(1))
-  if (match) {
-    // go ahead and clear the query string as we no longer need it
-    window.history.replaceState({}, null, window.location.origin + window.location.pathname)
-
-    //null starts the app with knight spining to show it's trying to connect
-    const app = await startApp(null)
-
-    console.log("Auth callback detected, attempting to fetch tokens")
-    const code = match[1]
-    try {
-      const token = await lichessApi.getToken(code)
-      lichessApi.storeToken(token)
-      const account = await lichessApi.getAccount()
-      console.log('Setting user ' + account.username + ' in local storage')
-      localStorage.user = account.username
-      app.user = account.username
-      
-      checkLegalStuff()
-
-      // now that we have an account we can connnect to users games
-      app.isLoading = true
-      await app.loadUserGames()
-      app.isLoading = false
-      app.goToCmp(localStorage.lastCmp || 'Wizard')
-      app.groupsAreHidden = false
-
-    } catch (err) {
-      console.log(err)
-      app.signInFailed = true
-      app.setError("There was an error signing into Lichess")
-      window.err = err
-    }
-    return     
-  }
- 
-  // startApp with no user starts app in a singed out state
-  // const app = await startApp()
-
-  //redirect to signin page
-  window.location = window.location.origin + '/signin'
-
-  app.groupsAreHidden = false
-}
 
 async function startApp(user) {
-  
   const res = await fetch('personalities.json')
   const signInLink = await lichessApi.getSignInLink()
   const cmpsObj = await res.json()
