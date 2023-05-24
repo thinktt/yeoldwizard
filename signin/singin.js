@@ -1,6 +1,7 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import WizDisclaimer from './WizDisclaimer.js'
 import { html } from '../pageTools.js'
+import yowApi from '../yowApi.js'
 import lichessApi  from '../lichessApi.js'
 
 
@@ -121,15 +122,20 @@ const app = createApp({
           this.verificationFailed = true
           return
         }
-        const hashBuffer = await crypto.subtle.digest('SHA-256', await file.arrayBuffer())
-        const hashArray = Array.from(new Uint8Array(hashBuffer))
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-        // console.log(hashHex)
-        if (!kingHashes.includes(hashHex)) {
-          console.log('incorrect king hash')
+
+        const kingBlob = await fileToB64(file)
+        console.log(kingBlob)
+        const id = localStorage.user
+        const user = { id, kingBlob, hasAcceptedDisclaimer: true }
+        
+        const res = await yowApi.addUser(user)
+        if (res.status !== 200) {
+          console.log('error uploading king', res.status, res.body.json())
           this.verificationFailed = true
-          return
         }
+
+        return
+
         localStorage.engineIsVerified = true
         this.engineIsVerified = true
         // window.location = localStorage.rootPath
@@ -141,3 +147,38 @@ const app = createApp({
 })
 app.component('WizDisclaimer', WizDisclaimer)
 const singIn = app.mount('#app')
+
+async function fileToB64(file) { 
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+  })
+}
+
+// function that conversts base64 to buffer
+function b64ToBuffer(b64) {
+  const byteString = atob(b64.split(',')[1])
+  const ab = new ArrayBuffer(byteString.length)
+  const ia = new Uint8Array(ab)
+  for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i)
+  }
+  return ab
+}
+
+
+
+// const hashBuffer = await crypto.subtle.digest('SHA-256', ab)
+// const hashArray = Array.from(new Uint8Array(hashBuffer))
+// const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+// console.log(hashHex)
+
+// if (!kingHashes.includes(hashHex)) {
+//   console.log('incorrect king hash')
+//   this.verificationFailed = true
+//   return
+// }
+
+// console.log('ver-fide')

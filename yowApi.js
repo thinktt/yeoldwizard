@@ -1,6 +1,8 @@
 export default { 
   addGame,
   getGame,
+  addUser,
+  getUser,
 }
 
 // we'll use this to mark the api as down if we get a refused connection
@@ -41,6 +43,42 @@ async function getGame(id) {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
     },
+  }).catch((err) => {
+    yowApiIsDown = true
+    return {ok: false, status: 502, message: 'connection refused' }
+  })
+
+  return res
+}
+
+async function addUser(user) {
+  if (yowApiIsDown) {
+    return apiIsDownRes
+  }
+  const res = await fetch(`${yowApiUrl}/users/`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },    
+    body: JSON.stringify(user)
+  }).catch((err) => {
+    yowApiIsDown = true
+    return {ok: false, status: 502, message: 'connection refused' }
+  })
+
+  return res
+}
+
+async function getUser(id) {
+  if (yowApiIsDown) {
+    return apiIsDownRes
+  }
+  const res = await fetch(`${yowApiUrl}/users/${id}`, {
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },    
   }).catch((err) => {
     yowApiIsDown = true
     return {ok: false, status: 502, message: 'connection refused' }
