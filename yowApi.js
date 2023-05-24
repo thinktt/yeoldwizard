@@ -10,8 +10,8 @@ export default {
 // if yowApi is down for now
 let yowApiIsDown = false
 
-// const yowApiUrl = 'http://localhost:5000'dock
-const yowApiUrl = 'https://yeoldwiz.duckdns.org:64355'
+const yowApiUrl = 'http://localhost:64355'
+// const yowApiUrl = 'https://yeoldwiz.duckdns.org:64355'
 const apiIsDownRes = {ok: false, status: 502, message: 'yowApi is marked as down' }
 
 async function addGame(game) {
@@ -52,9 +52,6 @@ async function getGame(id) {
 }
 
 async function addUser(user) {
-  if (yowApiIsDown) {
-    return apiIsDownRes
-  }
   const res = await fetch(`${yowApiUrl}/users/`, {
     method: 'POST',
     headers: {
@@ -62,12 +59,15 @@ async function addUser(user) {
       'Content-Type': 'application/json'
     },    
     body: JSON.stringify(user)
-  }).catch((err) => {
-    yowApiIsDown = true
-    return {ok: false, status: 502, message: 'connection refused' }
   })
 
-  return res
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw new Error(`${res.status}: ${data.message || data}`)
+  }
+
+  return data
 }
 
 async function getUser(id) {

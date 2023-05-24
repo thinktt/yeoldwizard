@@ -124,13 +124,13 @@ const app = createApp({
         }
 
         const kingBlob = await fileToB64(file)
-        console.log(kingBlob)
         const id = localStorage.user
         const user = { id, kingBlob, hasAcceptedDisclaimer: true }
         
-        const res = await yowApi.addUser(user)
-        if (res.status !== 200) {
-          console.log('error uploading king', res.status, res.body.json())
+        let err = null
+        const res = await yowApi.addUser(user).catch(e => err = e)
+        if (err) {
+          console.log('error uploading king', err.message)
           this.verificationFailed = true
         }
 
