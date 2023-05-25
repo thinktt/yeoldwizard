@@ -1,6 +1,10 @@
-export default {
-  getVersion: () => true,
-}
+
+const rawKingHashes = [
+  '511de09ec25fd8de0a41640c8e53ced4ebab1daeac01a8a9a3116a04f4ed7585',
+  'bc4d67847a6c34ce6792e4b0e52e53abba46e71438e1c4e7b22c91122b48e554',
+  '9bd6c1b16251e3a462c61c63b4811605a6072fbeb2311ebe7c05842dd0bfc236',
+]
+
 
 const kingHashMap = {
   'f33e751f2b8467193bceee7e480f796b37deeca7259dcc2d420ae395f78de524' : 'D',
@@ -33,4 +37,51 @@ async function getStringHash(str) {
   return hashHex
 }
 
-window.getStringHash = getStringHash
+
+async function fileToB64(file) { 
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+  })
+}
+
+// function that conversts base64 to buffer
+function b64ToBuffer(b64) {
+  const byteString = atob(b64.split(',')[1])
+  const ab = new ArrayBuffer(byteString.length)
+  const ia = new Uint8Array(ab)
+  for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i)
+  }
+  return ab
+}
+
+async function bufferToHash(ab) {
+  return await crypto.subtle.digest('SHA-256', ab)
+} 
+
+function arrayToBase64String(a) {
+  return btoa(String.fromCharCode(...a))
+}
+
+function base64StringToArray(s) {
+  let asciiString = atob(s)
+  return new Uint8Array([...asciiString].map(char => char.charCodeAt(0)))
+}
+
+window.king = {
+  getVersion,
+  rawKingHashes,
+  kingHashMap,
+  fileToB64,
+  b64ToBuffer,
+  bufferToHash,
+  getStringHash,
+  base64StringToArray,
+  arrayToBase64String,
+}
+
+export default window.king
+

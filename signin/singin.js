@@ -69,12 +69,6 @@ const template = html`
   </main>
 `
 
-const kingHashes = [
-  '511de09ec25fd8de0a41640c8e53ced4ebab1daeac01a8a9a3116a04f4ed7585',
-  'bc4d67847a6c34ce6792e4b0e52e53abba46e71438e1c4e7b22c91122b48e554',
-  '9bd6c1b16251e3a462c61c63b4811605a6072fbeb2311ebe7c05842dd0bfc236',
-]
-
 const app = createApp({
   data() {
     return {
@@ -125,8 +119,10 @@ const app = createApp({
           return
         }
 
+        window.file = file
+
         // do a frotnend check before uploading
-        const kingBlob = await fileToB64(file)
+        const kingBlob = await king.fileToB64(file)
         const kingHasValidHash = await king.getVersion(kingBlob)
         if (!kingHasValidHash) {
           console.log('precheck of king failed')
@@ -144,6 +140,7 @@ const app = createApp({
           this.verificationFailed = true
           return
         }
+        return
 
         localStorage.engineIsVerified = true
         this.engineIsVerified = true
@@ -155,26 +152,6 @@ const app = createApp({
 })
 app.component('WizDisclaimer', WizDisclaimer)
 const singIn = app.mount('#app')
-
-async function fileToB64(file) { 
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = reject
-  })
-}
-
-// function that conversts base64 to buffer
-function b64ToBuffer(b64) {
-  const byteString = atob(b64.split(',')[1])
-  const ab = new ArrayBuffer(byteString.length)
-  const ia = new Uint8Array(ab)
-  for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i)
-  }
-  return ab
-}
 
 function getCodeVerifier() {
   const codeVerifier = localStorage.codeVerifier
