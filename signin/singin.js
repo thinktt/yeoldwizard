@@ -140,7 +140,6 @@ const app = createApp({
           this.verificationFailed = true
           return
         }
-        return
 
         localStorage.engineIsVerified = true
         this.engineIsVerified = true
