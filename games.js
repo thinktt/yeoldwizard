@@ -207,10 +207,6 @@ function getGames(opponent) {
   return games
 }
 
-function getGameById(id) {
-  return idMap[id]
-}
-
 function setGames(games) {
   if (!user) {
     console.error('Cannot set games, no user found')
@@ -640,8 +636,9 @@ function getDemoGame(name) {
 }
 
 function setDemoGames() {
-  setUser('demobob')
-  setGames(demoGames)
+  shouldUseDemoGames = true
+  // setUser('demobob')
+  // setGames(demoGames)
 }
 
 function hackDemoOpponetName(name) {
@@ -650,4 +647,11 @@ function hackDemoOpponetName(name) {
 }
 
 
+function getGameById(id) {
+  console.log(id, shouldUseDemoGames)
+  if (shouldUseDemoGames) {
+    return getDemoGame(id)
+  }
+  return idMap[id]
+}
 
