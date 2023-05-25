@@ -78,6 +78,7 @@
             @deselect="route('back')" :user="user" 
             @start-game="() => startGame(selected.name)"
             @show-games="route('games', selected.name)"
+            @show-demo="showDemo(selected)"
             @go-to-current-game="goToCurrentGame">
           </wiz-kid-info>
           

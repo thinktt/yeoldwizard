@@ -49,6 +49,7 @@ const template =  html`
         </a>   
         <a v-if="user && !currentGameId" class="button blue" @click="startGame(cmp.name)">Play</a>
         <a v-else-if="!user" :href="signInLink" class="button blue">Sign in to Play</a>
+        <a v-if="!user" class="button yellow phone-nav" @click="showDemo()">See Demo</a>
         <a class="button yellow" @click="show('bio')">Bio</a>
         <a class="button yellow" @click="show('about')">Chess Style</a>
         <a v-if="user" class="button yellow phone-nav" @click="showGames()">See Games</a>
@@ -145,6 +146,9 @@ export default {
     showGames() {
       console.log('show games')
       this.$emit('showGames')
+    },
+    showDemo() {
+      this.$emit('showDemo')
     },
     doBadgeSelection(badgeToSelect) {
       this.badgeSelection = badgeToSelect
