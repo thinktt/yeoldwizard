@@ -1,5 +1,5 @@
 export default {
-  getVersion
+  getVersion: () => true,
 }
 
 const kingHashMap = {
@@ -32,3 +32,5 @@ async function getStringHash(str) {
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
   return hashHex
 }
+
+window.getStringHash = getStringHash
