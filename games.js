@@ -630,20 +630,22 @@ let shouldUseDemoGames = false
 
 function getDemoGame(name) {
   const game = demoGames[0]
-  game.opponent = name
-  game.id = name + 'DemoGame'
-  return { ...game }
+  game.id = name
+  return game
+  // game.opponent = name
+  // game.id = name + 'DemoGame'
+  // return { ...game }
 }
 
 function setDemoGames() {
-  shouldUseDemoGames = true
-  // setUser('demobob')
-  // setGames(demoGames)
+  // shouldUseDemoGames = true
+  setUser('demobob')
+  setGames(demoGames)
 }
 
 function hackDemoOpponetName(name) {
   demoGames[0].opponent = name
-  demoGames[0].id = name + 'DemoGame'
+  // demoGames[0].id = name + 'DemoGame'
 }
 
 

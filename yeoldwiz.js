@@ -376,8 +376,8 @@ async function startApp(user) {
       routeToCmp(cmp) {
         // hackery to play demo games when not signed in
         if (botBrowsingIsSet && !isInPhoneMode()) {
-          // games.hackDemoOpponetName(cmp.name)
-          this.route('board', cmp.name)
+          games.hackDemoOpponetName(cmp.name)
+          this.route('board', 'dXI5xOQ4')
           return
         }
         this.route('selected', cmp.name)
