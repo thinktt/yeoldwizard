@@ -611,19 +611,21 @@ const demoGames = [
     "demoPlayer": "Stanley"
   },
   {
-    "id":"xyzzy",
-    "createdAt":1684792432628,
-    "lastMoveAt":1684793023692,
+    "id":"nK5NvFyC",
+    "createdAt":1674491181604,
+    "lastMoveAt":1674495352492,
     "status":"mate",
     "conclusion":"won",
     "drawType":null,
-    "opponent":"Cassie",
+    "opponent":"Stanley",
     "playedAs":"black",
-    "moves":["Nf3","e5","h3","e4","Rg1","exf3","gxf3","Bc5","Rg3","Bxf2+","Kxf2","Qh4","e3","Nf6","Kg2","Nh5","Kg1","Qxg3+","Kh1","d6","Na3","Bxh3","Nb5","Bxf1","Qxf1","Nc6","c3","Ne5","e4","Nxf3","Qg2","Qh4+","Qh3","Ng3+","Kg2","Ne1+","Kf2","Nd3+","Kg2","Qxe4+","Kh2","Qf3","Nxc7+","Kf8","Qxg3","Qe2+","Kh3","Nf2+","Kh4","Qe4+","Kh5","Qf5+","Qg5","g6+","Kh6","Qh3+","Qh4","Ng4+","Kg5","f6+","Kf4","Qxh4","Rb1","f5","Nd5","Qf2+","Kg5","Kg7","a3","h6#"],
-    "wasForwardedToYowApi":true, 
-    "demoPlayer": "Stanley"
-  },
+    "moves":["h4","e5","b4","Bxb4","f3","Nc6","h5","h6","c3","Qg5","Kf2","Bc5+","d4","exd4","Bxg5","hxg5","Kg3","d6","e4","Ne5","Be2","g4","Rh3","gxh3","Nxh3","Rxh5","cxd4","Bxd4","Nd2","Nf6","Qb3","Rh6","Ng1","Rg6+","Kh2","Nfg4+","Kg3","Nf2+","Kh4","f6","Qc3","Rh6+","Kg3","g5","Qc6+","Bd7","Nh3","Nxh3","Nc4","Nf4","Ne3","Bxe3","Qxd7+","Kxd7","Bf1","Rh4","Bb5+","c6","Bxc6+","bxc6","a3","Nh5#"],"wasForwardedToYowApi":true,
+    "demoPlayer": 'Cassie',
+  }
 ]
+
+
+
 
 
 let shouldUseDemoGames = false
