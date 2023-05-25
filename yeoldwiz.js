@@ -148,7 +148,7 @@ async function checkLegalStuff() {
 async function botBrowsingStart() {
   const app = await startApp('') // start with no user
   app.groupsAreHidden = false
-  games.setDemoGames()
+  // games.setDemoGames()
 }
 
 async function preStart() {
@@ -372,6 +372,15 @@ async function startApp(user) {
       },
       hasTrophy(group, games) {
         return hasTrophy(group, games)
+      },
+      routeToCmp(cmp) {
+        // hackery to play demo games when not signed in
+        if (botBrowsingIsSet && !isInPhoneMode()) {
+          games.hackDemoOpponetName(cmp.name)
+          this.route('board', cmp.name + 'DemoGame')
+          return
+        }
+        this.route('selected', cmp.name)
       },
       select(cmp) {
         this.selected = cmpsObj[cmp.name]

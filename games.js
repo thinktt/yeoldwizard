@@ -30,6 +30,7 @@ export default {
   addFensToGameCache,
   chessjsTest,
   setDemoGames,
+  getDemoGame,
   hackDemoOpponetName,
 }
 
@@ -628,6 +629,16 @@ const demoGames = [
   },
 ]
 
+
+let shouldUseDemoGames = false
+
+function getDemoGame(name) {
+  const game = demoGames[0]
+  game.opponent = name
+  game.id = name + 'DemoGame'
+  return { ...game }
+}
+
 function setDemoGames() {
   setUser('demobob')
   setGames(demoGames)
@@ -635,6 +646,7 @@ function setDemoGames() {
 
 function hackDemoOpponetName(name) {
   demoGames[0].opponent = name
+  demoGames[0].id = name + 'DemoGame'
 }
 
 

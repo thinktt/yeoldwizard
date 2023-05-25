@@ -143,6 +143,7 @@ export default {
       this.$emit('deselect')  
     },
     showGames() {
+      console.log('show games')
       this.$emit('showGames')
     },
     doBadgeSelection(badgeToSelect) {

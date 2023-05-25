@@ -113,7 +113,7 @@ function goToView(view, cmp) {
     case undefined:
       app.deselect(cmp)
       break
-}
+  }
 }
 
 

@@ -151,7 +151,7 @@
                   :selected-name="selected.name"
                   :selection-is-locked="selectionIsLocked"
                   @mouseover="this.selected=cmp"
-                  @click="route('selected', cmp.name)">
+                  @click="routeToCmp(cmp)">
                 </wiz-face>
               </div>
            
