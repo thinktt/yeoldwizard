@@ -29,6 +29,8 @@ export default {
   getGameById,
   addFensToGameCache,
   chessjsTest,
+  setDemoGames,
+  hackDemoOpponetName,
 }
 
 window.dumbHash = dumbHash
@@ -597,11 +599,43 @@ function chessjsTest() {
   console.timeEnd('chessjs')
 }
 
-// const opponent = await getWizPlayerFromChat('5ZAXEu4YAk5S')
-// console.log(opponent) 
-// const games = await getGames('1617328317956')
-// localStorage['thinktt_games'] = JSON.stringify(games)
+const demoGames = [
+  {
+    "id":"dXI5xOQ4",
+    "createdAt":1684792432628,
+    "lastMoveAt":1684793023692,
+    "status":"started",
+    "conclusion":"won",
+    "drawType":null,
+    "opponent":"Cassie",
+    "playedAs":"black",
+    "moves":["Nf3","e5","h3","e4","Rg1","exf3","gxf3","Bc5","Rg3","Bxf2+","Kxf2","Qh4","e3","Nf6","Kg2","Nh5","Kg1","Qxg3+","Kh1","d6","Na3","Bxh3","Nb5","Bxf1","Qxf1","Nc6","c3","Ne5","e4","Nxf3","Qg2","Qh4+","Qh3","Ng3+","Kg2","Ne1+","Kf2","Nd3+","Kg2","Qxe4+","Kh2","Qf3","Nxc7+","Kf8","Qxg3","Qe2+","Kh3","Nf2+","Kh4","Qe4+","Kh5","Qf5+","Qg5","g6+","Kh6","Qh3+","Qh4","Ng4+","Kg5","f6+","Kf4","Qxh4","Rb1","f5","Nd5","Qf2+","Kg5","Kg7","a3", "h6#"],
+    "wasForwardedToYowApi":true, 
+    "demoPlayer": "Stanley"
+  },
+  {
+    "id":"xyzzy",
+    "createdAt":1684792432628,
+    "lastMoveAt":1684793023692,
+    "status":"mate",
+    "conclusion":"won",
+    "drawType":null,
+    "opponent":"Cassie",
+    "playedAs":"black",
+    "moves":["Nf3","e5","h3","e4","Rg1","exf3","gxf3","Bc5","Rg3","Bxf2+","Kxf2","Qh4","e3","Nf6","Kg2","Nh5","Kg1","Qxg3+","Kh1","d6","Na3","Bxh3","Nb5","Bxf1","Qxf1","Nc6","c3","Ne5","e4","Nxf3","Qg2","Qh4+","Qh3","Ng3+","Kg2","Ne1+","Kf2","Nd3+","Kg2","Qxe4+","Kh2","Qf3","Nxc7+","Kf8","Qxg3","Qe2+","Kh3","Nf2+","Kh4","Qe4+","Kh5","Qf5+","Qg5","g6+","Kh6","Qh3+","Qh4","Ng4+","Kg5","f6+","Kf4","Qxh4","Rb1","f5","Nd5","Qf2+","Kg5","Kg7","a3","h6#"],
+    "wasForwardedToYowApi":true, 
+    "demoPlayer": "Stanley"
+  },
+]
 
-// updateGameList('thinktt')
+function setDemoGames() {
+  setUser('demobob')
+  setGames(demoGames)
+}
+
+function hackDemoOpponetName(name) {
+  demoGames[0].opponent = name
+}
+
 
 

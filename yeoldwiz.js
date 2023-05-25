@@ -109,7 +109,7 @@ async function checkLegalStuff() {
   // this allows the app to run singed out for bot browsing
   if (!user && botBrowsingIsSet) {
     localStorage.botBrowsingIsSet = false
-    preStart()
+    botBrowsingStart()
     return
   }
 
@@ -144,6 +144,12 @@ async function checkLegalStuff() {
   preStart()
 }
 
+
+async function botBrowsingStart() {
+  const app = await startApp('') // start with no user
+  app.groupsAreHidden = false
+  games.setDemoGames()
+}
 
 async function preStart() {
   // User is already signed in and stored in localstorage

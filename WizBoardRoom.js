@@ -1,4 +1,5 @@
 import games from './games.js'
+import { userMove } from './lib/chessground/js/board.js'
 import { Chessground } from './lib/chessground/js/chessground.js'
 import { html } from './pageTools.js'
 
@@ -11,7 +12,6 @@ const template = html`
         <span class="wiz-kid-name">
           <h2>{{game.opponent}}</h2>
         </span>
-        <!-- <wiz-badges-2></wiz-badges-2> -->
       </div>
       
       <wiz-board-2
@@ -25,6 +25,7 @@ const template = html`
       </wiz-board-2>
       
       <wiz-board-nav
+        @click="stopDemo"
         @quit-action="(action) => $emit('quitAction', action)"
         @go-start="goStart"
         @go-back="goBack"
@@ -36,7 +37,7 @@ const template = html`
         :game="game"
         :algebra-moves="algebraMoves"
         :navIndex="navIndex"
-        :userName="user">
+        :userName="player">
       </wiz-board-nav>
     </div>
   </div>
@@ -52,6 +53,8 @@ export default {
       algebraMoves: [],
       boardState: null,
       lastMove: null,
+      player: this.user,
+      demoIsRunning : false,
     }
   },
   created() {
@@ -96,7 +99,6 @@ export default {
     'game.moves'(newMoves, oldMoves) {
       // if this is a newley loaded game we let game.id watcher process the moves
       if (this.hasFreshMoves) {
-        // console.log('game.id watcher will process moves')
         this.hasFreshMoves = false
         return 
       }
@@ -106,7 +108,6 @@ export default {
         this.fensByMove.push(this.boardState.fen())
         this.algebraMoves = this.boardState.history()
         this.navIndex = this.game.moves.length
-        // this.lastMove = getLastMove(this.boardState, this.navIndex)
       }
     },
     'game.id'() {
@@ -118,9 +119,11 @@ export default {
         this.fensByMove.push(this.boardState.fen())
       }
       this.algebraMoves = this.boardState.history()
+      if (this.game.demoPlayer) {
+        this.runDemo()
+        return
+      }
       this.navIndex = this.game.moves.length
-      // this.lastMove = getLastMove(this.boardState, this.navIndex)
-      // console.log('new game', this.game.moves, this.navIndex)
     },
     navIndex() {
       this.lastMove = getLastMove(this.boardState, this.navIndex)
@@ -150,6 +153,33 @@ export default {
       if (e.keyCode === 38) this.goStart()
       if (e.keyCode === 40) this.goEnd()
     },
+    async runDemo() {
+      // stop any previous demo loops
+      await this.stopDemo()
+
+      this.game.status = 'started'
+      this.game.conclusion = null
+      this.player = this.game.demoPlayer
+      this.demoIsRunning = true
+      this.goStart()
+
+      console.log('starting demo')
+      while(this.demoIsRunning && this.navIndex < this.game.moves.length) {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        this.goForward()
+      }
+
+      console.log('demo done')
+      this.game.status = 'mate'
+      this.game.conclusion = 'won'
+      await new Promise(resolve => setTimeout(resolve, 5000))
+      if (this.demoIsRunning) this.runDemo()
+    },
+    async stopDemo() {
+      console.log('stopping demo')
+      this.demoIsRunning = false
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    }
   },
   template,
 }
@@ -161,7 +191,6 @@ function isInPhoneMode () {
 function getLastMove(game, moveIndex) {
   const moves = game.history({ verbose: true })
   const lastMove = moves[moveIndex - 1]
-  // const lastMove = moves.length ? moves.pop() : null
   if (!lastMove) return null
 
   const { from, to } = lastMove 
