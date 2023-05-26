@@ -37,7 +37,7 @@ const template = html`
         :game="game"
         :algebra-moves="algebraMoves"
         :navIndex="navIndex"
-        :userName="player">
+        :userName="game.demoPlayer || user">
       </wiz-board-nav>
     </div>
   </div>
@@ -119,7 +119,7 @@ export default {
         this.fensByMove.push(this.boardState.fen())
       }
       this.algebraMoves = this.boardState.history()
-      if (this.game.demoPlayer) {
+      if (!this.user) {
         this.runDemo()
         return
       }
@@ -159,7 +159,6 @@ export default {
 
       this.game.status = 'started'
       this.game.conclusion = null
-      this.player = this.game.demoPlayer
       this.demoIsRunning = true
       this.goStart()
 
