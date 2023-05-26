@@ -51,11 +51,18 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
   await checkLegalStuff()
 }
 
+function clearQuery() {
+  window.history.replaceState({}, null, window.location.origin + window.location.pathname)
+}
+
+function redirectToSignIn() {
+  window.location = window.location.origin + '/signin'
+}
 
 async function doAccountFlow() {
   // check query for botBrowsing
   if (window.location.search.includes('botBrowsing=true')) {
-    window.history.replaceState({}, null, window.location.origin + window.location.pathname)
+    clearQuery()
     botBrowsingIsSet = true
     return
   }
@@ -65,7 +72,7 @@ async function doAccountFlow() {
   const authCode = authCodeRegex.exec(window.location.search.substring(1))
   
   // go ahead and clear the query string as we no longer need it
-  window.history.replaceState({}, null, window.location.origin + window.location.pathname)
+  clearQuery()
   
   // no auth code was found, so we are done
   if (!authCode) {
@@ -115,7 +122,7 @@ async function checkLegalStuff() {
 
   // no user or sign in failed, so go to sign in page
   if (!user || signInFailed ) {
-    window.location = window.location.origin + '/signin'
+    redirectToSignIn()
     return
   }
 
@@ -132,7 +139,7 @@ async function checkLegalStuff() {
   const yowUser = await yowApi.getUser(user).catch(e => err = e)
   if (err) {
     console.error('failed to get yow user', err.message)
-    window.location = window.location.origin + '/signin'
+    redirectToSignIn()
     return
   }
 

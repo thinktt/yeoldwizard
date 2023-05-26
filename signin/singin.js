@@ -86,6 +86,7 @@ const app = createApp({
   beforeMount() {
     // there's no reason to be here go to the main app
     if (this.user && this.engineIsVerified && this.disclaimerIsAccepted) {
+      localStorage.signInFailed = false
       window.location = window.location.origin
       return
     }
