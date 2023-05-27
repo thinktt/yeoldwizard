@@ -189,6 +189,14 @@ cg-board {
   font-size: 1.7rem;
 }
 
+.board-room-overlay {
+  position: absolute;
+  width: 64vw;
+  height: 42vw;
+  z-index: 20;
+  cursor: pointer;
+}
+
 .pgn-viewer::-webkit-scrollbar {
   width: 15px;
 }
