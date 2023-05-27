@@ -1,8 +1,53 @@
 import { html } from './pageTools.js'
 
+const demoView = html`
+  <div class="board-nav">
+    <h2 class="wiz-kid-name">{{game.opponent}}</h2>
+    <div class="pgn-viewer">
+      <template v-for="(move, index) in algebraMoves">
+        <span v-if="index % 2 === 0" class="move-number">{{index / 2 + 1}}.</span>
+        <span 
+          :class="{highlight: navIndex - 1 === index}" 
+          @click="$emit('goIndex', index)" 
+          :id="'move' + (index + 1)"
+          class="half-move">
+            {{move}}
+        </span> 
+      </template>
+    </div>
+
+    <div v-if="demoModeIsOn" class="demo-message" >DEMO played by</div>
+    <div v-else class="nav-buttons">
+      <button @click="$emit('goStart')" id="go-start-button">s</button>
+      <button @click="$emit('goBack')" id="go-back-button">p</button>
+      <button @click="$emit('goForward')" id="go-forward-button">n</button>
+      <button @click="$emit('goEnd')" id="go-end-button">l</button>
+    </div>
+
+    <h2 class="user-name">{{userName}}</h2>
+      
+    <wiz-game-status :game="game" :do-pop-spin="doPopSpin"></wiz-game-status>
+
+    <div class="nav-buttons phone-nav">
+      <button @click="$emit('route-back')" title="back" class="phone-nav" >
+        &#xe05c;
+      </button>
+    </div>
 
 
-const template = html`
+
+
+    <div v-if="demoModeIsOn">
+      <a  class="button yellow" @click="$emit('stop-demo')">Stop Demo</a>
+    </div>
+    <div v-else>
+      <a  class="button yellow" @click="$emit('start-demo')">Start Demo</a>
+    </div>
+
+  </div>
+`
+
+const normalView = html`
   <div class="board-nav">
     <h2 class="wiz-kid-name">{{game.opponent}}</h2>
     <div class="pgn-viewer">
@@ -85,14 +130,22 @@ const template = html`
         &#xe901;
       </button>
     </div>
-    
-    <!-- <div v-if="game.status !== 'started'" class="nav-buttons">
-    </div> -->
+  </div>
+`
+
+const template = html`
+  <div v-if="game.demoPlayer">
+    ${demoView}
+  </div>
+  <div v-else>
+    ${normalView}
   </div>
 `
 
 export default {
-  props : ['game', 'algebraMoves', 'navIndex', 'userName', 'drawOfferState'],
+  props : [
+    'game', 'algebraMoves', 'navIndex', 'userName', 'drawOfferState', 'demoModeIsOn'
+  ],
   data() {
     return {
       comfirmMessage: '',

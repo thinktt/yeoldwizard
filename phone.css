@@ -242,6 +242,10 @@
     border-color: goldenrod;
     color: goldenrod;
   }
+  
+  .nav-buttons.phone-nav {
+    display: unset;
+  }
 
   .board-nav .king {
     height: 3rem;
@@ -255,6 +259,11 @@
   .board-nav .game-link {
     margin-top: 1.5rem
   }
+
+  .demo-message {
+    margin-top: .5rem;
+  }
+  
 
   .nav-buttons button {
     font-size: 2rem;

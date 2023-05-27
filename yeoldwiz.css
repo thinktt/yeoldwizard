@@ -502,6 +502,10 @@ a.phone-nav {
   display: none;
 }
 
+.nav-buttons.phone-nav {
+  display: none;
+}
+
 button.phone-nav {
   display: none;
 }

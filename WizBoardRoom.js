@@ -5,8 +5,8 @@ import { html } from './pageTools.js'
 
 const template = html`
   <div class="board-room">
-    <div v-if="demoIsRunning" class="board-room-overlay" @click="stopDemo">
-    </div>
+    <!-- <div v-if="demoIsRunning" class="board-room-overlay" @click="stopDemo">
+    </div> -->
     <div class="board-and-nav-2"> 
       
       <div class="top-panel"> 
@@ -27,7 +27,6 @@ const template = html`
       </wiz-board-2>
       
       <wiz-board-nav
-        @click="stopDemo"
         @quit-action="(action) => $emit('quitAction', action)"
         @go-start="goStart"
         @go-back="goBack"
@@ -35,11 +34,15 @@ const template = html`
         @go-end="goEnd"
         @go-index="goIndex"
         @route-back="$emit('route-back')"
+        @stop-demo="turnOffDemoMode"
+        @start-demo="turnOnDemoMode"
         :draw-offer-state=drawOfferState
         :game="game"
         :algebra-moves="algebraMoves"
         :navIndex="navIndex"
-        :userName="game.demoPlayer || user">
+        :userName="game.demoPlayer || user"
+        :demoIsRunning="demoIsRunning"
+        :demoModeIsOn="demoModeIsOn">
       </wiz-board-nav>
     </div>
   </div>
@@ -57,6 +60,7 @@ export default {
       lastMove: null,
       player: this.user,
       demoIsRunning : false,
+      demoModeIsOn : !this.user,
     }
   },
   created() {
@@ -179,6 +183,14 @@ export default {
     async stopDemo() {
       this.demoIsRunning = false
       await new Promise(resolve => setTimeout(resolve, 1000))
+    },
+    turnOffDemoMode() {
+      this.stopDemo()
+      this.demoModeIsOn = false
+    },
+    turnOnDemoMode() {
+      this.demoModeIsOn = true
+      this.runDemo()
     }
   },
   template,
