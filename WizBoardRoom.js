@@ -34,15 +34,15 @@ const template = html`
         @go-end="goEnd"
         @go-index="goIndex"
         @route-back="$emit('route-back')"
-        @stop-demo="turnOffDemoMode"
-        @start-demo="turnOnDemoMode"
+        @stop-demo="turnOffDemo"
+        @start-demo="turnOnDemo"
         :draw-offer-state=drawOfferState
         :game="game"
         :algebra-moves="algebraMoves"
         :navIndex="navIndex"
         :userName="game.demoPlayer || user"
         :demoIsRunning="demoIsRunning"
-        :demoModeIsOn="demoModeIsOn">
+        :demoIsOn="demoIsOn">
       </wiz-board-nav>
     </div>
   </div>
@@ -60,7 +60,7 @@ export default {
       lastMove: null,
       player: this.user,
       demoIsRunning : false,
-      demoModeIsOn : !this.user,
+      demoIsOn : !this.user,
     }
   },
   created() {
@@ -160,36 +160,45 @@ export default {
       if (e.keyCode === 40) this.goEnd()
     },
     async runDemo() {
-      // stop any previous demo loops
-      await this.stopDemo()
-
-      this.game.status = 'started'
-      this.game.conclusion = null
+      if (this.demoIsRunning) return
       this.demoIsRunning = true
-      this.goStart()
 
-      console.log('starting demo')
-      while(this.demoIsRunning && this.navIndex < this.game.moves.length) {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        this.goForward()
+      const setGameAsStarted = () => {
+        this.game.status = 'started'
+        this.game.conclusion = null
+        this.demoIsRunning = true
+      }
+      const setGameAsCompleted = () => {
+        this.game.status = 'mate'
+        this.game.conclusion = 'won'
+        this.demoIsRunning = false
       }
 
-      console.log('demo done')
-      this.game.status = 'mate'
-      this.game.conclusion = 'won'
-      await new Promise(resolve => setTimeout(resolve, 5000))
-      if (this.demoIsRunning) this.runDemo()
-    },
-    async stopDemo() {
-      this.demoIsRunning = false
+      setGameAsStarted()
       await new Promise(resolve => setTimeout(resolve, 1000))
+
+      while(this.demoIsOn) {
+        if (this.navIndex < this.game.moves.length) {
+          this.goForward()
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          continue
+        }
+        setGameAsCompleted()
+        await new Promise(resolve => setTimeout(resolve, 5000))
+        this.goStart()
+        setGameAsStarted()
+      }
+
+      setGameAsCompleted()
+      this.goStart()
+      // this.resolveDemoRun()
+      this.demoIsRunning = false
     },
-    turnOffDemoMode() {
-      this.stopDemo()
-      this.demoModeIsOn = false
+    turnOffDemo() {
+      this.demoIsOn = false
     },
-    turnOnDemoMode() {
-      this.demoModeIsOn = true
+    turnOnDemo() {
+      this.demoIsOn = true
       this.runDemo()
     }
   },

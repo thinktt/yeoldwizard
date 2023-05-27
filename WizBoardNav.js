@@ -16,7 +16,7 @@ const demoView = html`
       </template>
     </div>
 
-    <div v-if="demoModeIsOn" class="demo-message" >DEMO played by</div>
+    <div v-if="demoIsOn" class="demo-message" >DEMO played by</div>
     <div v-else class="nav-buttons">
       <button @click="$emit('goStart')" id="go-start-button">s</button>
       <button @click="$emit('goBack')" id="go-back-button">p</button>
@@ -37,10 +37,10 @@ const demoView = html`
 
 
 
-    <div v-if="demoModeIsOn">
+    <div v-if="demoIsOn">
       <a  class="button yellow" @click="$emit('stop-demo')">Stop Demo</a>
     </div>
-    <div v-else>
+    <div v-if="!demoIsOn && !demoIsRunning">
       <a  class="button yellow" @click="$emit('start-demo')">Start Demo</a>
     </div>
 
@@ -144,7 +144,8 @@ const template = html`
 
 export default {
   props : [
-    'game', 'algebraMoves', 'navIndex', 'userName', 'drawOfferState', 'demoModeIsOn'
+    'game', 'algebraMoves', 'navIndex', 'userName', 'drawOfferState', 
+    'demoIsOn', 'demoIsRunning',
   ],
   data() {
     return {

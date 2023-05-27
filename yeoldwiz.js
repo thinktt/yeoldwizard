@@ -389,7 +389,6 @@ async function startApp(user) {
         this.route('selected', cmp.name)
       },
       showDemo(cmp) {
-        console.log(cmp)
         games.hackDemoOpponetName(cmp.name)
         this.route('board', 'dXI5xOQ4')
       },
