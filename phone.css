@@ -247,6 +247,10 @@
     display: unset;
   }
 
+  a.button.demo {
+    margin-top: 1rem;
+  }
+
   .board-nav .king {
     height: 3rem;
     margin-top: 1rem;

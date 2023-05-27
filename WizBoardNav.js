@@ -28,20 +28,17 @@ const demoView = html`
       
     <wiz-game-status :game="game" :do-pop-spin="doPopSpin"></wiz-game-status>
 
+    <div v-if="demoIsOn">
+      <a  class="button yellow demo" @click="$emit('stop-demo')">Stop Demo</a>
+    </div>
+    <div v-if="!demoIsOn && !demoIsRunning">
+      <a  class="button yellow demo" @click="$emit('start-demo')">Start Demo</a>
+    </div>
+
     <div class="nav-buttons phone-nav">
       <button @click="$emit('route-back')" title="back" class="phone-nav" >
         &#xe05c;
       </button>
-    </div>
-
-
-
-
-    <div v-if="demoIsOn">
-      <a  class="button yellow" @click="$emit('stop-demo')">Stop Demo</a>
-    </div>
-    <div v-if="!demoIsOn && !demoIsRunning">
-      <a  class="button yellow" @click="$emit('start-demo')">Start Demo</a>
     </div>
 
   </div>
