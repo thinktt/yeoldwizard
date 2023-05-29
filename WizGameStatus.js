@@ -12,7 +12,7 @@ const template = html`
 
   <div v-else class="game-status">
     <div v-if="game.conclusion ==='draw'">
-      <img class="king" :class="{pop_spin: doPopSpin}" src="images/king-draw.png">
+      <img class="king doPopSpin" :class="{pop_spin: doPopSpin}" src="images/king-draw.png">
     </div>
     <div v-if="game.conclusion === 'won'">
       <img class="king" :class="{pop_spin: doPopSpin}" src="images/king-won.png">

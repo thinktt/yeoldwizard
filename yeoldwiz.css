@@ -524,6 +524,12 @@ button.phone-nav {
   border-radius: 2rem;
 }
 
+.king.small {
+  height: 3rem;
+  margin-bottom: -.5rem;
+  margin-top: .25rem;
+}
+
 
 .pop_spin {
   animation: pop_spin 1s;
@@ -598,10 +604,6 @@ button.phone-nav {
   line-height: 1.7rem;
 }
 
-.trophy {
-  font-family: iconmoon;
-  color: gold;
-}
 
 .badge-box .trophy {
   position: absolute;
@@ -763,6 +765,18 @@ button.phone-nav {
   display: inline;
   font-size: 2rem;
   padding-right: unset;
+}
+
+.pawn-won {
+  font-family: enigmax;
+  color: green;
+  font-size: 1.25rem;
+}
+
+.inline-trophy {
+  font-family: iconmoon;
+  color: gold;
+  font-size: 1.25rem;
 }
 
 .cool-guy {
