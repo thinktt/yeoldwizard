@@ -332,6 +332,10 @@ nav a {
   overflow: hidden;
 }
 
+.trophy-piece.stand-alone img{
+  height: 3rem;
+}
+
 .group .trophy-piece.short-pawn {
   padding-left: .25rem;
   padding-right: 0.25rem;
@@ -743,6 +747,22 @@ button.phone-nav {
   position: absolute;
   left: .40rem;
   top: .18rem;
+}
+
+.badge-box-2.stand-alone .circle {
+  width: 1rem;
+  height: 1rem;
+}
+
+.badge-box-2.stand-alone .pawn {
+  font-size: 1.5rem;
+  position: absolute;
+}
+
+.stand-alone {
+  display: inline;
+  font-size: 2rem;
+  padding-right: unset;
 }
 
 .cool-guy {

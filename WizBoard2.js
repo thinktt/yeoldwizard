@@ -7,6 +7,67 @@ const config = getPromoConfig('e8')
 const { color, queenTop, roookTop, knightTop, bishopTop, leftOffset } = config
 const pgnViewer = html`<div class="pgn-viewer"></div>`
 
+const pawnBadge = html`
+  <span class="badge-box-2 stand-alone">
+    <span class="badge pawn"> 
+      <span  class="pawn-won">
+        ♙
+      </span>
+    </span>
+  </span>
+`
+
+const scoreDownBadge = html`
+  <span class="badge-box-2">
+    <span class="badge score-down stand-alone">
+      <span class="circle"> 
+      </span>
+      <span class="score">
+        -1
+      </span>
+    </span> 
+  </span>
+`
+
+const scoreUpBadge = html`
+  <span class="badge-box-2 stand-alone">
+    <span class="badge score-up">
+      <span class="circle"> 
+      </span>
+      <span class="score">
+        +1
+      </span>
+    </span> 
+  </span>
+`
+
+const scoreEvenBadge = html`
+  <span class="badge-box-2 stand-alone">
+    <span class="badge score-even">
+      <span class="circle"> 
+      </span>
+      <span class="score">EVEN</span>
+    </span> 
+  </span>
+`
+
+const trophyPointBadge = html`
+  <span class="badge-box-2 stand-alone">
+    <span class="badge">
+      <span  class="trophy">
+        t
+      </span>
+      <span class="trophy-num">+1</span>
+    </span>
+  </span>
+`
+
+const trophy = html`
+  <div class="trophy-piece short-pawn stand-alone">
+    <img src="images/goldenpawn-short.png">
+  </div>
+`
+
 const template =  html`
   <div class="board-container">
     <div :id="id"></div>
@@ -23,6 +84,27 @@ const template =  html`
       <square @click="doPromotion('b')" :style="{top: bishopTop + '%', left: leftOffset + '%'}">
         <piece class="bishop" :class="color"></piece>
       </square>
+    </div>
+    <div class="promotion-overlay">
+      <div class="game-done-message">
+        <h3>You Won!</h3>     
+        <p>
+          Your score is now <br> 
+          ${scoreUpBadge}
+        </p>
+        <p>
+          Next Goal <br>  
+          Beat Stanly for the first time to win <br>
+          ${pawnBadge} <br> 
+          the green pawn badge
+        </p> 
+        <!-- ${pawnBadge}
+        ${scoreUpBadge}
+        ${scoreEvenBadge}
+        ${trophyPointBadge}
+        ${trophy} -->
+        <a class="button yellow">ok</a>
+      </div>
     </div>
   </div>
 `

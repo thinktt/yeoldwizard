@@ -5,8 +5,6 @@ import { html } from './pageTools.js'
 
 const template = html`
   <div class="board-room">
-    <!-- <div v-if="demoIsRunning" class="board-room-overlay" @click="stopDemo">
-    </div> -->
     <div class="board-and-nav-2"> 
       
       <div class="top-panel"> 
