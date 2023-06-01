@@ -141,7 +141,21 @@ cg-board {
 }
 
 .game-done-message .button {
-  transform: size(50%);
+  transform: scale(.80);
+  /* margin-top: -.5rem; */
+}
+
+.game-done-message .game-end-time {
+  display: none;
+}
+
+.game-done-message .game-status {
+  font-size: 1.5rem;
+}
+
+.game-done-message p {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .trophy-win .trophy-piece-end {

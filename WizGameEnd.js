@@ -6,20 +6,19 @@ const template = html`
     <div class="game-done-message drew">
       <wiz-game-status v-if="game" :game="game">
       </wiz-game-status>
-      {{winCount}}
-      <p>
+      <p v-if="winCount === 1 && game.conclusion === 'won'">
+        YOU WON a pawn badge <span  class="pawn-won">♙</span>
+        for beating {{this.game.opponent}} for the first time
+      </p>
+      <p v-else>
         YOUR SCORE with {{this.game.opponent}} is now 
         <span v-if="score === 0" class="inline-score even">EVEN</span>
         <span v-if="score > 0" class="inline-score up">+{{score}}</span>
         <span v-if="score < 0" class="inline-score down">{{score}}</span>
       </p>
-      <p>
-        YOU WON a pawn badge <span  class="pawn-won">♙</span>
-        for beating {{this.game.opponent}} for the first time
-      </p>
-      <p>
+      <!-- <p>
          NEXT GOAL Beat {{this.game.opponent}} to win the Pawn Badge<span  class="pawn-won">♙</span>
-      </p>
+      </p> -->
       <p>
         NEXT GOAL score
         <span class="inline-score">+2</span>

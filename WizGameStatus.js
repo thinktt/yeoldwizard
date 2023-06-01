@@ -29,7 +29,7 @@ const template = html`
       <span> {{game.conclusion}}</span> 
       by {{status}}
     </p>
-    <p>{{(new Date(game.lastMoveAt)).toDateString()}}</p>
+    <p class="game-end-time">{{(new Date(game.lastMoveAt)).toDateString()}}</p>
 </div>
 `
 
