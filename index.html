@@ -119,7 +119,12 @@
         :draw-offer-state="drawOfferState"
         :game="boardGame"
         :cmp="selected"
-        :user="user">
+        :user="user"
+        :opponent-score="games[selected.name]?.score"
+        :opponent-top-feat="games[selected.name]?.topFeat"
+        :opponent-group-title="selected.groupTitle"
+        :opponent-group-trophy="selected.groupTrophy"
+        >
       </wiz-board-room>
 
       <wiz-loader v-if="isLoading" :load-state="loadState"></wiz-loader>

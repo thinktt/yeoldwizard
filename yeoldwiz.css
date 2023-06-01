@@ -779,6 +779,11 @@ button.phone-nav {
   font-size: 1.25rem;
 }
 
+.trophy {
+  font-family: iconmoon;
+  color: gold;
+}
+
 .cool-guy {
   font-size: .6rem;
   font-family: iconmoon;

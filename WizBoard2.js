@@ -85,57 +85,7 @@ const template =  html`
         <piece class="bishop" :class="color"></piece>
       </square>
     </div>
-    <div class="promotion-overlay">
-      <!-- <div class="game-done-message">
-        <img class="king small" src="images/king-won.png">
-        <p>You won by Checkmate</p> 
-        <p>
-          Your score with Stanley is now 
-          <span class="inline-score">+1</span> 
-        </p>
-        <p>
-          Your next goal is to beat Stanly once to win the pawn badge<span  class="pawn-won">♙</span>
-        </p> 
-        <p>
-          Your next goal is get a 
-          <span class="inline-score">+2</span>
-          score against Stanly to win a trophy point <span  class="inline-trophy">t</span>
-        </p>
-        <a class="button yellow">ok</a>
-      </div> 
-      -->
-      
-      <!-- 
-      <div class="game-done-message lost">
-        <img class="king small" src="images/king-lost.png">
-        <p>You lost by Checkmate</p>
-        <p>
-          Your score with Stanley is now
-          <span class="inline-score down">-1</span> 
-          Your score will will never go below 
-          <span class="inline-score down">-5</span>
-          so you can always recover.
-        </p>
-        <p>
-          Your next goal is to beat Stanly once to win the Pawn Badge<span  class="pawn-won">♙</span>
-        </p>
-      </div>  
-      -->
-
-      <div class="game-done-message drew">
-        <h2>Game Drawn by Stalemate</h2>
-        <img class="king small" src="images/king-draw.png">
-        <p> No victory but at least you live to fight another day.</p>
-        <!-- <p>Draw by Stalemate</p> -->
-        <p>
-          Your score with Stanley is now <span class="inline-score even">EVEN</span>
-        </p>
-        <p>
-          You've yet to beat Stanly. Beat him once to win the Pawn Badge<span  class="pawn-won">♙</span>
-        </p>
-        <a class="button yellow">ok</a>
-
-    </div>
+    <wiz-game-end></wiz-game-end>
   </div>
 `
 

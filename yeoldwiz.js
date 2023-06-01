@@ -14,6 +14,7 @@ import WizMessage from './WizMessage.js'
 import WizTrophies from './WizTrophies.js'
 import WizTrophy from './WizTrophy.js'
 import WizLoader from './WizLoader.js'
+import WizGameEnd from './WizGameEnd.js'
 import router from './router.js'
 import { cssLoader } from './pageTools.js'
 import lichessApi from './lichessApi.js'
@@ -731,6 +732,7 @@ async function startApp(user) {
   app1.component('WizTrophies', WizTrophies)
   app1.component('WizTrophy', WizTrophy)
   app1.component('WizLoader', WizLoader)
+  app1.component('WizGameEnd', WizGameEnd)
   const app = app1.mount('#app')
   router.loadApp(app, cmpsObj)
   app.route = router.route
@@ -738,8 +740,14 @@ async function startApp(user) {
   app.route()
   window.app = app
 
+  // sorts the cmps into grooups, and adds a groupTitle to each cmp this is
+  // not efficient, with exessive looping trough cmps, should be done better
   for (const group of app.groups) {
     group.cmps = getRatingGroup(cmps, group.high, group.low)
+    group.cmps.forEach(cmp => {
+      cmp.groupTitle = group.title
+      cmp.groupTrophy = group.trophy
+    })
   }
 
 

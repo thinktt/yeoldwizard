@@ -1,10 +1,10 @@
-import games from './games.js'
-import { userMove } from './lib/chessground/js/board.js'
-import { Chessground } from './lib/chessground/js/chessground.js'
 import { html } from './pageTools.js'
+import { computed } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
 
 const template = html`
   <div class="board-room">
+    
     <div class="board-and-nav-2"> 
       
       <div class="top-panel"> 
@@ -48,7 +48,8 @@ const template = html`
 
 
 export default {
-  props: ['game', 'cmp', 'user', 'drawOfferState'],
+  props: ['game', 'cmp', 'user', 'drawOfferState', 'opponentScore', 
+    'opponentTopFeat', 'opponentGroupTitle', 'opponentGroupTrophy', ],
   data() {
     return {
       navIndex: 0,
@@ -59,6 +60,17 @@ export default {
       player: this.user,
       demoIsRunning : false,
       demoIsOn : !this.user,
+    }
+  },
+  provide() {
+    return {
+      score: computed(() => this.opponentScore),
+      topFeat: computed(() => this.opponentTopFeat),
+      groupTitle: computed(() => this.opponentGroupTitle),
+      groupTrophy: computed(() => this.opponentGroupTrophy),
+      gameConclusion: computed(() => this.game.conclusion),
+      opponent: computed(() => this.game.opponent),
+      drawType: computed(() => this.game.drawType),
     }
   },
   created() {
