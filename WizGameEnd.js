@@ -67,12 +67,13 @@ const template = html`
       class="game-done-message won trophy-win">
       <h2>Congradulation!</h2>
       <p>
-        You conqured {{groupDisplayName}} group by getting every Trophy Point 
+        You conqured {{groupDisplayName}} by getting every Trophy Point 
         <span  class="inline-trophy">t</span> <br>
       </p>
       <h2>YOU WON</h2>
-      <img :src="trophyImageUrl">
+      <img class="trophy-piece-end" :src="trophyImageUrl">
       <h2>{{goldenTrophyDisplayMessage}}</h2>
+      <a class="button yellow">ok</a>
     </div>  
 
     <div v-else class="game-done-message won trophy-win">

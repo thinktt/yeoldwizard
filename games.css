@@ -144,6 +144,11 @@ cg-board {
   transform: size(50%);
 }
 
+.trophy-win .trophy-piece-end {
+  margin-top: -1rem;
+  margin-bottom: -1rem;
+}
+
 .inline-score {
   background-color: green;
   padding: .25rem;

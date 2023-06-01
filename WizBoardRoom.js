@@ -71,7 +71,7 @@ export default {
       gameConclusion: computed(() => this.game.conclusion),
       groupTitle: computed(() => this.selectedGroup?.title),
       groupTrophy: computed(() => this.selectedGroup?.trophy),
-      groupHasTrophy: computed(() => this.selectedGroup?.hasTrophy),
+      groupHasTrophy: true //computed(() => this.selectedGroup?.hasTrophy),
     }
   },
   created() {
