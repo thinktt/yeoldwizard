@@ -5,9 +5,9 @@ import { computed } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 
 const template = html`
   <div class="board-room">
-    <button class="button yellow" @click="showEndMessage">
+    <!-- <button class="button yellow" @click="showEndMessage">
       end message
-    </button>
+    </button> -->
     <div class="board-and-nav-2"> 
       
       <div class="top-panel"> 
@@ -119,6 +119,13 @@ export default {
     }
   },
   watch : {
+    'game.status'(newStatus, oldStatus) {
+      console.log('new status', newStatus, 'hasFreshMoves', this.hasFreshMoves)
+      const endGameStatuses = ['mate', 'resign', 'draw']
+      if (oldStatus === 'started' && endGameStatuses.includes(newStatus)) {
+        this.endMessageIsOn = true
+      }
+    },
     'game.moves'(newMoves, oldMoves) {
       // if this is a newley loaded game we let game.id watcher process the moves
       if (this.hasFreshMoves) {
