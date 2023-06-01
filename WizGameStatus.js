@@ -3,11 +3,6 @@ import { html } from './pageTools.js'
 
 const template = html`
   <div v-if="game.status === 'started'" class="game-status">
-      <!-- <div class="game-link"> 
-      <a :href="game.link + '/' + game.playedAs" target="_blank" rel="noopener noreferrer">
-        play on lichess
-      </a>
-    </div> -->
   </div>
 
   <div v-else class="game-status">

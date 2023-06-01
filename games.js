@@ -340,7 +340,7 @@ function sortGames(games) {
     
     // if we haven't mapped this opponent yet
     if ( !gamesByOpponet[game.opponent] ) {
-      gamesByOpponet[game.opponent] = {games: [], topFeat: 'lost', score: 0}
+      gamesByOpponet[game.opponent] = {games: [], topFeat: 'lost', score: 0, winCount: 0}
     }
 
     // if this game is a higher player achievement than any game before we will map it here
@@ -348,6 +348,7 @@ function sortGames(games) {
     if (game.conclusion === 'won' && gamesByOpponet[game.opponent].score < 5) {
       gamesByOpponet[game.opponent].topFeat = 'won'
       gamesByOpponet[game.opponent].score++
+      gamesByOpponet[game.opponent].winCount++
     } else if (game.conclusion === 'lost' && gamesByOpponet[game.opponent].score > -5){
       gamesByOpponet[game.opponent].score--
     } else if (game.conclusion === 'draw' && gamesByOpponet[game.opponent].topFeat === 'lost') {

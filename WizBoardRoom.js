@@ -49,7 +49,7 @@ const template = html`
 
 export default {
   props: ['game', 'cmp', 'user', 'drawOfferState', 'opponentScore', 
-    'opponentTopFeat', 'selectedGroup', ],
+    'opponentTopFeat', 'opponentWinCount', 'selectedGroup', ],
   data() {
     return {
       navIndex: 0,
@@ -66,12 +66,12 @@ export default {
     return {
       score: computed(() => this.opponentScore),
       topFeat: computed(() => this.opponentTopFeat),
-      opponent: computed(() => this.game.opponent),
-      drawType: computed(() => this.game.drawType),
+      winCount: computed(() => this.opponentWinCount),
+      game: computed(() => this.game),
       gameConclusion: computed(() => this.game.conclusion),
       groupTitle: computed(() => this.selectedGroup?.title),
       groupTrophy: computed(() => this.selectedGroup?.trophy),
-      groupHasTrophy: true //computed(() => this.selectedGroup?.hasTrophy),
+      groupHasTrophy: true, //computed(() => this.selectedGroup?.hasTrophy),
     }
   },
   created() {

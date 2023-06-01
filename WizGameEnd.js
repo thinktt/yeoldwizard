@@ -3,67 +3,33 @@ import { html } from './pageTools.js'
 
 const template = html`
   <div class="promotion-overlay">
-    <!-- <div class="game-done-message">
-      <img class="king small" src="images/king-won.png">
-      <p>You won by Checkmate</p> 
+    <div class="game-done-message drew">
+      <wiz-game-status v-if="game" :game="game">
+      </wiz-game-status>
+      {{winCount}}
       <p>
-        Your score with Stanley is now 
-        <span class="inline-score">+1</span> 
-      </p>
-      <p>
-        Your next goal is to beat Stanly once to win the pawn badge<span  class="pawn-won">♙</span>
-      </p> 
-      <p>
-        Your next goal is get a 
-        <span class="inline-score">+2</span>
-        score against Stanly to win a trophy point <span  class="inline-trophy">t</span>
-      </p>
-      <a class="button yellow">ok</a>
-    </div> 
-    -->
-    
-    <!-- 
-    <div class="game-done-message lost">
-      <img class="king small" src="images/king-lost.png">
-      <p>You lost by Checkmate</p>
-      <p>
-        Your score with Stanley is now
-        <span class="inline-score down">-1</span> 
-        Your score will will never go below 
-        <span class="inline-score down">-5</span>
-        so you can always recover.
-      </p>
-      <p>
-        Your next goal is to beat Stanly once to win the Pawn Badge<span  class="pawn-won">♙</span>
-      </p>
-    </div>  
-    -->
-
-    <!-- <div class="game-done-message drew">
-      <img class="king small" src="images/king-won.png">
-      <h2>You won by Checkmate</h2>
-      <p> No victory but at least you live to fight another day.</p>
-      <p>Draw by Stalemate</p>
-      <p>
-        YOUR SCORE with Stanley is now <span class="inline-score even">EVEN</span>
+        YOUR SCORE with {{this.game.opponent}} is now 
+        <span v-if="score === 0" class="inline-score even">EVEN</span>
+        <span v-if="score > 0" class="inline-score up">+{{score}}</span>
+        <span v-if="score < 0" class="inline-score down">{{score}}</span>
       </p>
       <p>
         YOU WON a pawn badge <span  class="pawn-won">♙</span>
-        for beating Stanley for the first time
+        for beating {{this.game.opponent}} for the first time
       </p>
       <p>
-         NEXT GOAL Beat Stanly to win the Pawn Badge<span  class="pawn-won">♙</span>
+         NEXT GOAL Beat {{this.game.opponent}} to win the Pawn Badge<span  class="pawn-won">♙</span>
       </p>
       <p>
         NEXT GOAL score
         <span class="inline-score">+2</span>
-        against Stanly to win a trophy point <span  class="inline-trophy">t</span>
+        against {{this.game.opponent}} to win a trophy point <span  class="inline-trophy">t</span>
       </p>
       <a class="button yellow">ok</a>
     </div>
-    </div>   -->
 
-    <div v-if="score === 2 && groupHasTrophy && gameConclusion === 'won'" 
+
+    <!-- <div v-if="score === 2 && groupHasTrophy && gameConclusion === 'won'" 
       class="game-done-message won trophy-win">
       <h2>Congradulation!</h2>
       <p>
@@ -74,9 +40,9 @@ const template = html`
       <img class="trophy-piece-end" :src="trophyImageUrl">
       <h2>{{goldenTrophyDisplayMessage}}</h2>
       <a class="button yellow">ok</a>
-    </div>  
+    </div>   -->
 
-    <div v-else class="game-done-message won trophy-win">
+    <!-- <div v-else class="game-done-message won trophy-win">
       <p>
         {{score}} <br>
         {{topFeat}} <br>
@@ -88,13 +54,13 @@ const template = html`
         hasTrophy {{groupHasTrophy}} <br>
 
       </p>
-    </div>
+    </div> -->
   </div>
 `
 
 export default {
-  inject: ['score', 'topFeat', 'groupTitle', 'groupTrophy', 'gameConclusion',
-    'opponent', 'drawType', 'groupHasTrophy'], 
+  inject: ['score', 'topFeat', 'winCount', 'groupTitle', 'groupTrophy', 
+    'groupHasTrophy', 'game'], 
   computed: {
     groupDisplayName() {
       const displayName = this.groupTitle.includes('the') ? 
