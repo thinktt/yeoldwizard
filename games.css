@@ -133,7 +133,8 @@ cg-board {
 }
 
 .game-done-message.lost {
-  border-color: red;
+  /* border-color: red; */
+  border-color: darkred;
 }
 
 .game-done-message.draw {
