@@ -755,7 +755,6 @@ async function startApp(user) {
     })
   }
 
-
   function hasTrophy(group, games) {
     const hasTrophy = true
     for (const cmp of group.cmps) {

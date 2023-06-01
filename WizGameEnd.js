@@ -3,27 +3,55 @@ import { html } from './pageTools.js'
 
 const template = html`
   <div class="promotion-overlay">
-    <div class="game-done-message drew">
+    <div class="game-done-message" 
+      :class="{draw: game.conclusion === 'draw', won: game.conclusion === 'won', lost: game.conclusion === 'lost'}">
       <wiz-game-status v-if="game" :game="game">
       </wiz-game-status>
       <p v-if="winCount === 1 && game.conclusion === 'won'">
-        YOU WON a pawn badge <span  class="pawn-won">♙</span>
+      <span class="color-highlight">
+        YOU WON
+      </span>   
+        a pawn badge <span  class="pawn-won">♙</span>
         for beating {{this.game.opponent}} for the first time
       </p>
       <p v-else>
-        YOUR SCORE with {{this.game.opponent}} is now 
+        <span class="color-highlight-">
+          Your score
+        </span>   
+        with {{this.game.opponent}} is now 
         <span v-if="score === 0" class="inline-score even">EVEN</span>
         <span v-if="score > 0" class="inline-score up">+{{score}}</span>
         <span v-if="score < 0" class="inline-score down">{{score}}</span>
       </p>
-      <!-- <p>
-         NEXT GOAL Beat {{this.game.opponent}} to win the Pawn Badge<span  class="pawn-won">♙</span>
-      </p> -->
-      <p>
-        NEXT GOAL score
-        <span class="inline-score">+2</span>
-        against {{this.game.opponent}} to win a trophy point <span  class="inline-trophy">t</span>
+
+      <p v-if="winCount < 1">
+        <span class="color-highlight-green">
+          NEXT GOAL 
+        </span> <br>    
+        Beat {{this.game.opponent}} to win the Pawn Badge<span  class="pawn-won">♙</span>
       </p>
+      <p v-else-if="score < 2">
+        <span class="color-highlight">
+          NEXT GOAL
+        </span> <br> 
+        Score <span class="inline-score">+2</span>
+        against {{this.game.opponent}} to win a trophy point 
+        <span  class="inline-trophy">t</span>
+      </p>
+      <p v-else-if="groupHasTrophy">
+        You've conqured {{groupDisplayName}}, consider playing the next group!
+      </p>
+      <p v-else>
+        <span class="color-highlight-green">
+          NEXT GOAL 
+        </span> <br>
+        Win all the trophy points  <span  class="inline-trophy">t</span>
+        in this group to win <br><br> 
+        <span class="color-highlight-gold">
+          {{goldenTrophyDisplayMessage}}
+        </span>
+      </p>
+
       <a class="button yellow">ok</a>
     </div>
 
@@ -62,6 +90,7 @@ export default {
     'groupHasTrophy', 'game'], 
   computed: {
     groupDisplayName() {
+      if (!this.groupTitle) return ''
       const displayName = this.groupTitle.includes('the') ? 
           this.groupTitle.replace('The', 'the') : `the ${this.groupTitle}`
       return displayName

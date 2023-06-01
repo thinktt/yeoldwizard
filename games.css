@@ -136,7 +136,7 @@ cg-board {
   border-color: red;
 }
 
-.game-done-message.drew {
+.game-done-message.draw {
   border-color: gray;
 }
 
@@ -156,6 +156,14 @@ cg-board {
 .game-done-message p {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.color-highlight-gold {
+  color: gold;
+}
+
+.color-highlight-green {
+  color: limegreen;
 }
 
 .trophy-win .trophy-piece-end {
