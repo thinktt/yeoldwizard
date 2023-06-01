@@ -2,7 +2,7 @@ import { html } from './pageTools.js'
 
 
 const template = html`
-  <div class="promotion-overlay">
+  <div v-if="endMessageIsOn" class="promotion-overlay">
     <div v-if="score === 2 && groupHasTrophy && game.conclusion === 'won'" 
       class="game-done-message won trophy-win">
       <h2>Congradulations!</h2>
@@ -14,7 +14,7 @@ const template = html`
       <img class="trophy-piece-end" :class="groupTrophy" 
         :src="trophyImageUrl">
       <h2 class="color-highlight-gold-1">{{goldenTrophyDisplayMessage}}</h2>
-      <a class="button yellow">ok</a>
+      <a class="button yellow" @click="hideEndMessage">ok</a>
     </div>  
 
     <div v-else class="game-done-message" 
@@ -76,14 +76,14 @@ const template = html`
         </span>
       </p>
 
-      <a class="button yellow">ok</a>
+      <a class="button yellow" @click="hideEndMessage">ok</a>
     </div>
   </div>
 `
 
 export default {
   inject: ['score', 'topFeat', 'winCount', 'groupTitle', 'groupTrophy', 
-    'groupHasTrophy', 'game'], 
+    'groupHasTrophy', 'game', 'endMessageIsOn', 'hideEndMessage'], 
   computed: {
     groupDisplayName() {
       if (!this.groupTitle) return ''

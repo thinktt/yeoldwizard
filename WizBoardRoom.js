@@ -1,10 +1,13 @@
+import { end } from './lib/chessground/js/draw.js'
 import { html } from './pageTools.js'
 import { computed } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 
 
 const template = html`
   <div class="board-room">
-    
+    <button class="button yellow" @click="showEndMessage">
+      end message
+    </button>
     <div class="board-and-nav-2"> 
       
       <div class="top-panel"> 
@@ -60,6 +63,7 @@ export default {
       player: this.user,
       demoIsRunning : false,
       demoIsOn : !this.user,
+      endMessageIsOn: false,
     }
   },
   provide() {
@@ -72,6 +76,8 @@ export default {
       groupTitle: computed(() => this.selectedGroup?.title),
       groupTrophy: computed(() => this.selectedGroup?.trophy),
       groupHasTrophy: computed(() => this.selectedGroup?.hasTrophy),
+      endMessageIsOn: computed(() => this.endMessageIsOn),
+      hideEndMessage: this.hideEndMessage,
     }
   },
   created() {
@@ -128,6 +134,7 @@ export default {
       }
     },
     'game.id'() {
+      this.endMessageIsOn = false
       this.hasFreshMoves = true
       this.fensByMove = []
       this.boardState = new Chess()
@@ -148,20 +155,25 @@ export default {
   },
   methods: {
     goStart() {
+      this.endMessageIsOn = false
       this.navIndex = 0
     },
     goBack() {
+      this.endMessageIsOn = false
       if (this.navIndex === 0) return 
       this.navIndex -- 
     },
     goForward() {
+      this.endMessageIsOn = false
       if (this.navIndex === this.game.moves.length) return 
       this.navIndex ++
     },
     goEnd() {
+      this.endMessageIsOn = false
       this.navIndex = this.game.moves.length 
     },
     goIndex(index) {
+      this.endMessageIsOn = false
       this.navIndex = index + 1
     },
     keyNav(e) {
@@ -169,6 +181,12 @@ export default {
       if (e.keyCode === 37) this.goBack()
       if (e.keyCode === 38) this.goStart()
       if (e.keyCode === 40) this.goEnd()
+    },
+    showEndMessage() {
+      this.endMessageIsOn = true
+    },
+    hideEndMessage() {
+      this.endMessageIsOn = false
     },
     async runDemo() {
       if (this.demoIsRunning) return
