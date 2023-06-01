@@ -330,6 +330,11 @@ async function startApp(user) {
       }
       return data
     },
+    computed: {
+      selectedGroup() {
+        return this.groups.find(group => group.title === this.selected.groupTitle)
+      },
+    },
     methods : {
       async doMove(move) {
         const moves = this.boardGame.moves.slice()

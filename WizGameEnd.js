@@ -63,18 +63,19 @@ const template = html`
     </div>
     </div>   -->
 
-    <!-- <div class="game-done-message won trophy-win">
+    <div v-if="score === 2 && groupHasTrophy && gameConclusion === 'won'" 
+      class="game-done-message won trophy-win">
       <h2>Congradulation!</h2>
       <p>
-        You conqured the Noob group by getting every Trophy Point 
+        You conqured {{groupDisplayName}} group by getting every Trophy Point 
         <span  class="inline-trophy">t</span> <br>
       </p>
       <h2>YOU WON</h2>
-      <img src="images/goldenpawn-short.png">
-      <h2>The Golden Pawn</h2>
-    </div>   -->
+      <img :src="trophyImageUrl">
+      <h2>{{goldenTrophyDisplayMessage}}</h2>
+    </div>  
 
-    <!-- <div class="game-done-message won trophy-win">
+    <div v-else class="game-done-message won trophy-win">
       <p>
         {{score}} <br>
         {{topFeat}} <br>
@@ -83,15 +84,46 @@ const template = html`
         {{gameConclusion}} <br>
         {{opponent}} <br>
         {{drawType}} <br>
+        hasTrophy {{groupHasTrophy}} <br>
 
       </p>
-    </div> -->
+    </div>
   </div>
 `
 
 export default {
   inject: ['score', 'topFeat', 'groupTitle', 'groupTrophy', 'gameConclusion',
-    'opponent', 'drawType'], 
+    'opponent', 'drawType', 'groupHasTrophy'], 
+  computed: {
+    groupDisplayName() {
+      const displayName = this.groupTitle.includes('the') ? 
+          this.groupTitle.replace('The', 'the') : `the ${this.groupTitle}`
+      return displayName
+    },
+    goldenTrophyDisplayMessage() {
+      switch(this.groupTrophy) {
+        case 'goldenpawn':
+          return 'The Golden Pawn'
+        case 'goldenrook':
+          return 'The Golden Rook'
+        case 'goldenbishop':
+          return 'The Golden Bishop'
+        case 'goldenknight':
+          return 'The Golden Knight'
+        case 'goldenqueen':
+          return 'The Golden Queen'
+        case 'goldKing':
+          return 'The Golden King'
+        default:
+          return ''
+      }
+    },
+    trophyImageUrl() {
+      let imageName = this.groupTrophy      
+      if (imageName == 'goldenpawn') imageName= 'goldenpawn-short'
+      return `images/${imageName}.png`
+    },
+  },
   template,
   name: 'WizGameEnd',
 }

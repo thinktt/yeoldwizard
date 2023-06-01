@@ -39,6 +39,11 @@ export default {
           break
         }
       }
+      
+      // this is bad as it mutates top level state, but it it's a simple 
+      // hack for now to let us know in other components the group has the trophy
+      this.group.hasTrophy = hasTrophy
+
       return hasTrophy
     }
   },
