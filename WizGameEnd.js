@@ -3,7 +3,21 @@ import { html } from './pageTools.js'
 
 const template = html`
   <div class="promotion-overlay">
-    <div class="game-done-message" 
+    <div v-if="score === 2 && groupHasTrophy && game.conclusion === 'won'" 
+      class="game-done-message won trophy-win">
+      <h2>Congradulations!</h2>
+      <p>
+        You conqured {{groupDisplayName}} by getting every Trophy Point 
+        <span  class="inline-trophy">t</span> <br>
+      </p>
+      <h2  class="color-highlight-green-1">YOU WON</h2>
+      <img class="trophy-piece-end" :class="groupTrophy" 
+        :src="trophyImageUrl">
+      <h2 class="color-highlight-gold-1">{{goldenTrophyDisplayMessage}}</h2>
+      <a class="button yellow">ok</a>
+    </div>  
+
+    <div v-else class="game-done-message" 
       :class="{draw: game.conclusion === 'draw', won: game.conclusion === 'won', lost: game.conclusion === 'lost'}">
       <wiz-game-status v-if="game" :game="game">
       </wiz-game-status>
@@ -24,29 +38,39 @@ const template = html`
         <span v-if="score < 0" class="inline-score down">{{score}}</span>
       </p>
 
-      <p v-if="winCount < 1">
+      <p v-if="groupHasTrophy">
+        <span class="color-highlight-green">
+          NEXT GOAL 
+        </span> <br>
+        You've conquered {{groupDisplayName}},  and won the 
+        <span class="color-highlight-gold-1">
+          {{goldenTrophyDisplayMessage}}
+        </span>. Play the next group to collect more golden pieces.
+      </p>
+
+      <p v-else-if="winCount < 1">
         <span class="color-highlight-green">
           NEXT GOAL 
         </span> <br>    
-        Beat {{this.game.opponent}} to win the Pawn Badge<span  class="pawn-won">♙</span>
+        Beat {{this.game.opponent}} to win <br> 
+        The Pawn Badge<span  class="pawn-won">♙</span>
       </p>
+
       <p v-else-if="score < 2">
-        <span class="color-highlight">
+        <span class="color-highlight-green">
           NEXT GOAL
         </span> <br> 
         Score <span class="inline-score">+2</span>
         against {{this.game.opponent}} to win a trophy point 
         <span  class="inline-trophy">t</span>
       </p>
-      <p v-else-if="groupHasTrophy">
-        You've conqured {{groupDisplayName}}, consider playing the next group!
-      </p>
+
       <p v-else>
         <span class="color-highlight-green">
           NEXT GOAL 
         </span> <br>
         Win all the trophy points  <span  class="inline-trophy">t</span>
-        in this group to win <br><br> 
+        for {{groupDisplayName}} to win <br><br> 
         <span class="color-highlight-gold">
           {{goldenTrophyDisplayMessage}}
         </span>
@@ -54,34 +78,6 @@ const template = html`
 
       <a class="button yellow">ok</a>
     </div>
-
-
-    <!-- <div v-if="score === 2 && groupHasTrophy && gameConclusion === 'won'" 
-      class="game-done-message won trophy-win">
-      <h2>Congradulation!</h2>
-      <p>
-        You conqured {{groupDisplayName}} by getting every Trophy Point 
-        <span  class="inline-trophy">t</span> <br>
-      </p>
-      <h2>YOU WON</h2>
-      <img class="trophy-piece-end" :src="trophyImageUrl">
-      <h2>{{goldenTrophyDisplayMessage}}</h2>
-      <a class="button yellow">ok</a>
-    </div>   -->
-
-    <!-- <div v-else class="game-done-message won trophy-win">
-      <p>
-        {{score}} <br>
-        {{topFeat}} <br>
-        {{groupTitle}} <br>
-        {{groupTrophy}} <br>
-        {{gameConclusion}} <br>
-        {{opponent}} <br>
-        {{drawType}} <br>
-        hasTrophy {{groupHasTrophy}} <br>
-
-      </p>
-    </div> -->
   </div>
 `
 
@@ -107,7 +103,7 @@ export default {
           return 'The Golden Knight'
         case 'goldenqueen':
           return 'The Golden Queen'
-        case 'goldKing':
+        case 'goldenking':
           return 'The Golden King'
         default:
           return ''
@@ -115,7 +111,7 @@ export default {
     },
     trophyImageUrl() {
       let imageName = this.groupTrophy      
-      if (imageName == 'goldenpawn') imageName= 'goldenpawn-short'
+      // if (imageName == 'goldenpawn') imageName= 'goldenpawn-short'
       return `images/${imageName}.png`
     },
   },
