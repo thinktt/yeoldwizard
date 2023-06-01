@@ -32,9 +32,15 @@ export default {
           hasTrophy = false
           break
         } 
+        
+        const score = this.games[cmp.name].score
+        if (!score) {
+          hasTrophy = false
+          break
+        }
 
-        // a score in this group is less than to so no trophy for you
-        if (this.games[cmp.name].score && this.games[cmp.name].score < 2) {
+        // a score in this group is less than two so no trophy for you
+        if (score < 2) {
           hasTrophy = false
           break
         }
