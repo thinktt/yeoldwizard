@@ -2,7 +2,7 @@ import { html } from './pageTools.js'
 
 
 const template = html`
-  <div v-if="endMessageIsOn" class="">
+  <template v-if="endMessageIsOn">
     <div v-if="score === 2 && groupHasTrophy && game.conclusion === 'won'" 
       class="game-done-message won trophy-win">
       <wiz-game-status v-if="game" :game="game"></wiz-game-status>
@@ -79,7 +79,7 @@ const template = html`
 
       <a class="button yellow" @click="hideEndMessage">ok</a>
     </div>
-  </div>
+  </template>
 `
 
 export default {
