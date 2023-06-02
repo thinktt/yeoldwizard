@@ -7,7 +7,7 @@ const template = html`
       class="game-done-message won trophy-win">
       <h2>Congradulations!</h2>
       <p>
-        You conqured {{groupDisplayName}} by getting every Trophy Point 
+        You conquered {{groupDisplayName}} by getting every Trophy Point 
         <span  class="inline-trophy">t</span> <br>
       </p>
       <h2  class="color-highlight-green-1">YOU WON</h2>
