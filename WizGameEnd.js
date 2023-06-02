@@ -111,7 +111,6 @@ export default {
     },
     trophyImageUrl() {
       let imageName = this.groupTrophy      
-      // if (imageName == 'goldenpawn') imageName= 'goldenpawn-short'
       return `images/${imageName}.png`
     },
   },
