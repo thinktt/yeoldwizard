@@ -78,6 +78,7 @@ export default {
       groupHasTrophy: computed(() => this.selectedGroup?.hasTrophy),
       endMessageIsOn: computed(() => this.endMessageIsOn),
       hideEndMessage: this.hideEndMessage,
+      showEndMessage: this.showEndMessage,
     }
   },
   created() {

@@ -85,7 +85,7 @@ const template =  html`
         <piece class="bishop" :class="color"></piece>
       </square>
     </div>
-    <wiz-game-end></wiz-game-end>
+    <!-- <wiz-game-end></wiz-game-end> -->
   </div>
 `
 

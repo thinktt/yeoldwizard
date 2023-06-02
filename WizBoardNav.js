@@ -45,7 +45,11 @@ const demoView = html`
 `
 
 const normalView = html`
-  <div class="board-nav">
+  <div v-if="endMessageIsOn" class="board-nav">
+    <wiz-game-end>
+    </wiz-game-end>
+  </div>  
+  <div v-else class="board-nav">
     <h2 class="wiz-kid-name">{{game.opponent}}</h2>
     <div class="pgn-viewer">
       <template v-for="(move, index) in algebraMoves">
@@ -70,10 +74,6 @@ const normalView = html`
       
 
     <div v-if="shouldShowActions" class="nav-buttons lower">
-      <!-- <a :href="'https://lichess.org/' + game.id + '/' + game.playedAs" target="_blank" rel="noopener noreferrer">
-        &#xe901;
-      </a> -->
- 
       <template v-if="game.moves.length > 1 && !comfirmMessage && !isWaiting">
         <button @click="$emit('route-back')" title="back" class="phone-nav" >
           &#xe05c;
@@ -117,7 +117,8 @@ const normalView = html`
       </div>
     </div>
 
-    <wiz-game-status :game="game" :do-pop-spin="doPopSpin"></wiz-game-status>
+    <wiz-game-status @click="showEndMessage" :game="game" :do-pop-spin="doPopSpin">
+    </wiz-game-status>
     
     <div v-if="game.status !=='started'">
       <button @click="$emit('route-back')" title="back" class="lichess-button phone-nav" >
@@ -154,6 +155,7 @@ export default {
       doPopSpin: false, 
     }
   },
+  inject: ['showEndMessage', 'endMessageIsOn'],
   beforeUpdate() {
     if (this.game.status === 'started') this.shouldShowActions = true
       else this.shouldShowActions = false

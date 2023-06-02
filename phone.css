@@ -283,6 +283,14 @@
     display: none;
   }
 
+  .game-done-message {
+    padding: 1rem;
+    max-width: none;
+    padding-left: 6rem;
+    padding-right: 6rem;
+    border-style: none;
+    background-color: unset;
+  }
 
 }
 

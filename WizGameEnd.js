@@ -2,10 +2,11 @@ import { html } from './pageTools.js'
 
 
 const template = html`
-  <div v-if="endMessageIsOn" class="promotion-overlay">
+  <div v-if="endMessageIsOn" class="">
     <div v-if="score === 2 && groupHasTrophy && game.conclusion === 'won'" 
       class="game-done-message won trophy-win">
-      <h2>Congradulations!</h2>
+      <wiz-game-status v-if="game" :game="game"></wiz-game-status>
+      <!-- <h2>Congradulations!</h2> -->
       <p>
         You conquered {{groupDisplayName}} by getting every Trophy Point 
         <span  class="inline-trophy">t</span> <br>
