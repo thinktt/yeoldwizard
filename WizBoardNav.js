@@ -45,7 +45,7 @@ const demoView = html`
 `
 
 const normalView = html`
-  <div v-if="endMessageIsOn" class="board-nav">
+  <div v-if="endMessageIsOn" class="board-nav no-bk">
     <wiz-game-end>
     </wiz-game-end>
   </div>  

@@ -290,8 +290,9 @@
     padding-right: 6rem;
     border-style: none;
     background-color: unset;
-    padding-top: 2rem;
-    margin-top:20%;
+    margin-bottom: none;
+    margin-top: 0;
+    padding-top: 0;
   }
 
 }
