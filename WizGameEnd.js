@@ -8,12 +8,11 @@ const template = html`
       <wiz-game-status v-if="game" :game="game"></wiz-game-status>
       <!-- <h2>Congradulations!</h2> -->
       <p>
-        You conquered {{groupDisplayName}} by getting every Trophy Point 
+        Congratulations! You conquered {{groupDisplayName}} by getting every Trophy Point 
         <span  class="inline-trophy">t</span> <br>
       </p>
-      <h2  class="color-highlight-green-1">YOU WON</h2>
-      <img class="trophy-piece-end" :class="groupTrophy" 
-        :src="trophyImageUrl">
+      <h2  class="you-won">YOU WON</h2>
+      <img class="trophy-piece-end" :class="groupTrophy" :src="trophyImageUrl">
       <h2 class="color-highlight-gold-1">{{goldenTrophyDisplayMessage}}</h2>
       <a class="button yellow" @click="hideEndMessage">ok</a>
     </div>  

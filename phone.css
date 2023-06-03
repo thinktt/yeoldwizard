@@ -284,15 +284,44 @@
   }
 
   .game-done-message {
-    padding: 1rem;
     max-width: none;
-    padding-left: 6rem;
-    padding-right: 6rem;
+    padding-left: 5rem;
+    padding-right: 5rem;
+    padding-bottom: 0;
+    padding-top: 0;
     border-style: none;
     background-color: unset;
     margin-bottom: none;
     margin-top: 0;
-    padding-top: 0;
+  }
+
+  .you-won {
+    font-size: 1.25rem;
+    color: limegreen; 
+  }
+
+  .trophy-piece-end {
+    height: 7rem;
+  } 
+  
+  .trophy-win .goldenrook {
+    margin-top: -1.1rem;
+  }
+
+  .game-done-message .button {
+    margin-top: .25rem;
+  }
+
+  .trophy-win .goldenpawn {
+    margin-top: -1.7rem;
+  }
+
+  .trophy-win .goldenknight {
+    margin-top: -.6rem;
+  }
+
+  .trophy-win .goldenqueen {
+    margin-top: 0rem;
   }
 
 }
