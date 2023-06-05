@@ -214,7 +214,16 @@
     width: 99vw;
     height: unset;
     background-color: unset;
+    height: 30vh;
+    transition: height .5s linear;
+    overflow: hidden;
   }
+
+  /*slide board nav out of view*/
+  .board-nav.close {
+    height: 0;
+  }
+
 
  
   .board-nav .pgn-viewer {
