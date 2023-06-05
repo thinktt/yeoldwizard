@@ -45,11 +45,8 @@ const demoView = html`
 `
 
 const normalView = html`
-  <div v-if="endMessageIsOn" class="board-nav no-bk">
-    <wiz-game-end>
-    </wiz-game-end>
-  </div>  
-  <div v-else class="board-nav">
+
+  <div class="board-nav">
     <h2 class="wiz-kid-name">{{game.opponent}}</h2>
     <div class="pgn-viewer">
       <template v-for="(move, index) in algebraMoves">
@@ -129,6 +126,8 @@ const normalView = html`
       </button>
     </div>
   </div>
+  <wiz-game-end>
+  </wiz-game-end>
 `
 
 const template = html`

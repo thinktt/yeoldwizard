@@ -2,11 +2,9 @@ import { html } from './pageTools.js'
 
 
 const template = html`
-  <template v-if="endMessageIsOn">
     <div v-if="score === 2 && groupHasTrophy && game.conclusion === 'won'" 
       class="game-done-message won trophy-win">
       <wiz-game-status v-if="game" :game="game"></wiz-game-status>
-      <!-- <h2>Congradulations!</h2> -->
       <p>
         Congratulations! You conquered {{groupDisplayName}} by getting every Trophy Point 
         <span  class="inline-trophy">t</span> <br>
@@ -78,7 +76,6 @@ const template = html`
 
       <a class="button yellow" @click="hideEndMessage">ok</a>
     </div>
-  </template>
 `
 
 export default {

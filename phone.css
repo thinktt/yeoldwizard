@@ -199,7 +199,6 @@
     justify-content: center;
     flex-direction: column;
     margin: auto;
-    /* height: 100vh; */
   }
   
   .board-room-overlay {
@@ -217,6 +216,7 @@
     background-color: unset;
   }
 
+ 
   .board-nav .pgn-viewer {
     display: flex;
     padding-left: 1rem;
@@ -285,6 +285,7 @@
 
   .game-done-message {
     max-width: none;
+    width: unset;
     padding-left: 5rem;
     padding-right: 5rem;
     padding-bottom: 0;

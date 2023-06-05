@@ -125,10 +125,11 @@ cg-board {
   border-style: solid;
   border-width: .25rem;
   border-color: green;
-  max-width: 20rem;
+  /* max-width: 20rem; */
   margin: auto;
   padding: 1rem;
   padding-top: 2rem;
+  width: 18vw;
   /* margin-top:20%; */
 }
 
