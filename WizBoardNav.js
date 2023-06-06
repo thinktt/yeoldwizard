@@ -1,7 +1,7 @@
 import { html } from './pageTools.js'
 
 const demoView = html`
-  <div class="board-nav">
+  <div class="board-nav" :class="{'hide-on-desktop': endMessageIsOn}">
     <h2 class="wiz-kid-name">{{game.opponent}}</h2>
     <div class="pgn-viewer">
       <template v-for="(move, index) in algebraMoves">
@@ -26,22 +26,32 @@ const demoView = html`
 
     <h2 class="user-name">{{userName}}</h2>
       
-    <wiz-game-status :game="game" :do-pop-spin="doPopSpin"></wiz-game-status>
+    <!-- <wiz-game-status :game="game" :do-pop-spin="doPopSpin"></wiz-game-status> -->
 
-    <div v-if="demoIsOn">
+    <!-- <div v-if="demoIsOn">
       <a  class="button yellow demo" @click="$emit('stop-demo')">Stop Demo</a>
-    </div>
-    <div v-if="!demoIsOn && !demoIsRunning">
+    </div> -->
+    <!-- <div v-if="!demoIsOn && !demoIsRunning">
       <a  class="button yellow demo" @click="$emit('start-demo')">Start Demo</a>
-    </div>
+    </div> -->
 
-    <div class="nav-buttons phone-nav">
+    <div class="nav-buttons demo">
+      <button @click="$emit('start-demo')" title="play demo">
+        4
+      </button>
+      <button @click="$emit('stop-demo')" title="pause demo">
+        6
+      </button>
       <button @click="$emit('route-back')" title="back" class="phone-nav" >
         &#xe05c;
       </button>
     </div>
 
+    <wiz-game-end v-if="endMessageIsOn && isInPhoneMode()">
+    </wiz-game-end>
   </div>
+  <wiz-game-end v-if="endMessageIsOn" class="show-on-desktop">
+  </wiz-game-end>
 `
 
 const normalView = html`

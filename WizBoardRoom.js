@@ -79,6 +79,7 @@ export default {
       endMessageIsOn: computed(() => this.endMessageIsOn),
       hideEndMessage: this.hideEndMessage,
       showEndMessage: this.showEndMessage,
+      demoIsOn: computed(() => this.demoIsOn),
     }
   },
   created() {
@@ -226,8 +227,8 @@ export default {
         setGameAsStarted()
       }
 
-      setGameAsCompleted()
-      this.goStart()
+      // setGameAsCompleted()
+      // this.goStart()
       // this.resolveDemoRun()
       this.demoIsRunning = false
     },

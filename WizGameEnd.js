@@ -21,7 +21,7 @@ const template = html`
         :class="{draw: game.conclusion === 'draw', won: game.conclusion === 'won', lost: game.conclusion === 'lost'}">
         <wiz-game-status v-if="game" :game="game">
         </wiz-game-status>
-        <p v-if="winCount === 1 && game.conclusion === 'won'">
+        <p v-if="demoIsOn || winCount === 1 && game.conclusion === 'won'">
         <span class="color-highlight">
           YOU WON
         </span>   
@@ -36,6 +36,7 @@ const template = html`
           <span v-if="score === 0" class="inline-score even">EVEN</span>
           <span v-if="score > 0" class="inline-score up">+{{score}}</span>
           <span v-if="score < 0" class="inline-score down">{{score}}</span>
+          <span v-if="demoIsOn" class="inline-score up">+1</span>
         </p>
 
         <p v-if="groupHasTrophy">
@@ -88,7 +89,7 @@ export default {
     messageIsVissible: false,
   }),
   inject: ['score', 'topFeat', 'winCount', 'groupTitle', 'groupTrophy', 
-  'groupHasTrophy', 'game', 'endMessageIsOn', 'hideEndMessage'], 
+  'groupHasTrophy', 'game', 'endMessageIsOn', 'hideEndMessage', 'demoIsOn'], 
   // updated() {
   //   if (this.messageIsVissible) this.sliderIsUp = true
   // },
