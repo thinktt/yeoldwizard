@@ -125,9 +125,9 @@ const normalView = html`
         &#xe901;
       </button>
     </div>
+    <wiz-game-end>
+    </wiz-game-end>
   </div>
-  <wiz-game-end>
-  </wiz-game-end>
 `
 
 const template = html`

@@ -214,9 +214,30 @@
     width: 99vw;
     height: unset;
     background-color: unset;
-    height: 30vh;
-    transition: height .5s linear;
-    overflow: hidden;
+    position: relative;
+    /* transition: height .5s linear; */
+    /* overflow: hidden; */
+  }
+
+  .game-done-message {
+    max-width: none;
+    width: unset;
+    padding-left: 5rem;
+    padding-right: 5rem;
+    padding-bottom: 0;
+    padding-top: 0;
+    border-style: none;
+    background-color: var(--wizbrownfade);
+    margin-bottom: none;
+    margin-top: 0;
+  }
+
+  .background-box {
+    left: -.2rem;
+    position: absolute;
+    background-image: url("images/wood.png");
+    width: 100vw;
+    margin-top: 0;
   }
 
   /*slide board nav out of view*/
@@ -260,7 +281,7 @@
     margin-top: 1rem;
   }
 
-  .board-nav .king {
+  .board-nav .king, .game-done-message .king {
     height: 3rem;
     margin-top: 1rem;
   }
@@ -290,19 +311,6 @@
 
   .pgn-viewer::-webkit-scrollbar {
     display: none;
-  }
-
-  .game-done-message {
-    max-width: none;
-    width: unset;
-    padding-left: 5rem;
-    padding-right: 5rem;
-    padding-bottom: 0;
-    padding-top: 0;
-    border-style: none;
-    background-color: unset;
-    margin-bottom: none;
-    margin-top: 0;
   }
 
   .you-won {
