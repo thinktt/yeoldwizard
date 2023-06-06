@@ -232,17 +232,17 @@
     margin-top: 0;
   }
 
-  .background-box {
+  .slider-box {
     left: -.2rem;
     position: absolute;
     background-image: url("images/wood.png");
     width: 100vw;
-    margin-top: 0;
+    margin-top: 100%;
+    transition: margin .5s linear;
   }
 
-  /*slide board nav out of view*/
-  .board-nav.close {
-    height: 0;
+  .slider-box.open {
+    margin-top: 0%;
   }
 
 

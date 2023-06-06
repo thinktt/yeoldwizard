@@ -2,7 +2,7 @@ import { html } from './pageTools.js'
 
 
 const template = html`
-  <div class="background-box">
+  <div class="slider-box">
     <div v-if="score === 2 && groupHasTrophy && game.conclusion === 'won'" 
       class="game-done-message won trophy-win">
       <wiz-game-status v-if="game" :game="game"></wiz-game-status>
