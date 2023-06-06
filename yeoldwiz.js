@@ -200,6 +200,11 @@ async function startApp(user) {
   window.cmpsObj = cmpsObj
 
   const app1= createApp({
+    provide() {
+      return {
+        isInPhoneMode: () => isInPhoneMode(),
+      }
+    },
     data() {
       const data = {
         user: user,

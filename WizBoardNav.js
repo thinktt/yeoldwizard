@@ -45,8 +45,7 @@ const demoView = html`
 `
 
 const normalView = html`
-
-  <div class="board-nav">
+  <div class="board-nav" :class="{'hide-on-desktop': endMessageIsOn}">
     <h2 class="wiz-kid-name">{{game.opponent}}</h2>
     <div class="pgn-viewer">
       <template v-for="(move, index) in algebraMoves">
@@ -125,9 +124,11 @@ const normalView = html`
         &#xe901;
       </button>
     </div>
-    <wiz-game-end>
+    <wiz-game-end v-if="endMessageIsOn || isInPhoneMode()">
     </wiz-game-end>
   </div>
+  <wiz-game-end v-if="endMessageIsOn" class="show-on-desktop">
+  </wiz-game-end>
 `
 
 const template = html`
@@ -154,7 +155,7 @@ export default {
       doPopSpin: false, 
     }
   },
-  inject: ['showEndMessage', 'endMessageIsOn'],
+  inject: ['showEndMessage', 'endMessageIsOn', "isInPhoneMode"],
   beforeUpdate() {
     if (this.game.status === 'started') this.shouldShowActions = true
       else this.shouldShowActions = false

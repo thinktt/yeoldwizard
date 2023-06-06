@@ -91,6 +91,14 @@ main.down {
   display: none !important;
 }
 
+.hide-on-desktop {
+  display: none;
+}
+
+.show-on-desktop {
+  display: block;
+}
+
 h1 {
   font-size: 3rem;
   margin-bottom: 10px;

@@ -268,12 +268,13 @@
     }
   }
  
+  .hide-on-desktop {
+    display: grid; 
+  }
 
-  /* .slider-box.open {
-    margin-top: 0%;
-  } */
-
-
+  .show-on-desktop {
+    display: none;
+  }
  
   .board-nav .pgn-viewer {
     display: flex;
