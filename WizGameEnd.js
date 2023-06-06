@@ -2,7 +2,7 @@ import { html } from './pageTools.js'
 
 
 const template = html`
-  <div class="slider-box">
+  <div class="slider-box" :class="{noshow: !endMessageIsOn}"> 
     <div v-if="score === 2 && groupHasTrophy && game.conclusion === 'won'" 
       class="game-done-message won trophy-win">
       <wiz-game-status v-if="game" :game="game"></wiz-game-status>
@@ -81,8 +81,20 @@ const template = html`
 `
 
 export default {
+  data: () => ({
+    sliderIsUp: false,
+    messageIsVissible: false,
+  }),
   inject: ['score', 'topFeat', 'winCount', 'groupTitle', 'groupTrophy', 
-    'groupHasTrophy', 'game', 'endMessageIsOn', 'hideEndMessage'], 
+  'groupHasTrophy', 'game', 'endMessageIsOn', 'hideEndMessage'], 
+  // updated() {
+  //   if (this.messageIsVissible) this.sliderIsUp = true
+  // },
+  // watch: {
+  //   endMessageIsOn() {
+  //     if (this.endMessageIsOn) this.messageIsVissible = true
+  //   }
+  // },
   computed: {
     groupDisplayName() {
       if (!this.groupTitle) return ''

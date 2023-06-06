@@ -237,13 +237,25 @@
     position: absolute;
     background-image: url("images/wood.png");
     width: 100vw;
-    margin-top: 100%;
-    transition: margin .5s linear;
+    /* margin-top: 100%; */
+    /* transition: margin .5s linear; */
+    animation: slide-up .5s linear;
   }
 
-  .slider-box.open {
-    margin-top: 0%;
+  @keyframes slide-up {
+    0% {
+      margin-top: 100%;
+    }
+    100% {
+      margin-top: 0%;
+    }
   }
+    
+  }
+
+  /* .slider-box.open {
+    margin-top: 0%;
+  } */
 
 
  
