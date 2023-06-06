@@ -222,7 +222,7 @@ export default {
           continue
         }
         setGameAsCompleted()
-        await new Promise(resolve => setTimeout(resolve, 5000))
+        await new Promise(resolve => setTimeout(resolve, 15000))
         this.goStart()
         setGameAsStarted()
       }

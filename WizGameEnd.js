@@ -36,7 +36,6 @@ const template = html`
           <span v-if="score === 0" class="inline-score even">EVEN</span>
           <span v-if="score > 0" class="inline-score up">+{{score}}</span>
           <span v-if="score < 0" class="inline-score down">{{score}}</span>
-          <span v-if="demoIsOn" class="inline-score up">+1</span>
         </p>
 
         <p v-if="groupHasTrophy">
@@ -90,14 +89,6 @@ export default {
   }),
   inject: ['score', 'topFeat', 'winCount', 'groupTitle', 'groupTrophy', 
   'groupHasTrophy', 'game', 'endMessageIsOn', 'hideEndMessage', 'demoIsOn'], 
-  // updated() {
-  //   if (this.messageIsVissible) this.sliderIsUp = true
-  // },
-  // watch: {
-  //   endMessageIsOn() {
-  //     if (this.endMessageIsOn) this.messageIsVissible = true
-  //   }
-  // },
   computed: {
     groupDisplayName() {
       if (!this.groupTitle) return ''

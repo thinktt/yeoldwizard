@@ -25,16 +25,6 @@ const demoView = html`
     </div>
 
     <h2 class="user-name">{{userName}}</h2>
-      
-    <!-- <wiz-game-status :game="game" :do-pop-spin="doPopSpin"></wiz-game-status> -->
-
-    <!-- <div v-if="demoIsOn">
-      <a  class="button yellow demo" @click="$emit('stop-demo')">Stop Demo</a>
-    </div> -->
-    <!-- <div v-if="!demoIsOn && !demoIsRunning">
-      <a  class="button yellow demo" @click="$emit('start-demo')">Start Demo</a>
-    </div> -->
-
     <div class="nav-buttons demo">
       <button @click="$emit('start-demo')" title="play demo">
         4
