@@ -213,6 +213,11 @@ function setGames(games) {
     return
   }
 
+  if (games.length === 0) {
+    console.log('no games to set')
+    return
+  }
+
   // first replace the game cache
   const { gamesByOpponet, gamesById } = sortGames(games)
   gameCache = games
