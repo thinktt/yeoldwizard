@@ -16,12 +16,12 @@ import WizTrophy from './WizTrophy.js'
 import WizLoader from './WizLoader.js'
 import WizGameEnd from './WizGameEnd.js'
 import router from './router.js'
-import { cssLoader } from './pageTools.js'
 import lichessApi from './lichessApi.js'
-import { applyAnimation } from './lib/chessground/js/config.js'
-import { Chessground } from './lib/chessground/js/chessground.js'
 import yowApi from './yowApi.js'
-import { start } from './lib/chessground/js/draw.js'
+// import { applyAnimation } from './lib/chessground/js/config.js'
+// import { Chessground } from './lib/chessground/js/chessground.js'
+// import { cssLoader } from './pageTools.js'
+// import { start } from './lib/chessground/js/draw.js'
 window.games = games
 const codeVerifier = localStorage.codeVerifier
 
@@ -168,7 +168,14 @@ async function preStart() {
     tokens = JSON.parse(localStorage.tokens) 
     
     app.isLoading = true
-    await app.loadUserGames()
+
+    let err = null
+    await app.loadUserGames().catch(e => err = e)
+    if (err) {
+      console.error('failed to load user games', err.message)
+      app.setError('Failed to load user games')
+    }
+
     app.isLoading = false
     await new Promise(r => setTimeout(r, 0))
     app.goToCmp(localStorage.lastCmp || 'Wizard')
