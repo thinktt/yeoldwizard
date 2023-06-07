@@ -27,7 +27,7 @@
   <div id="app" v-cloak >
     <header>
       <span> 
-        <span @click="route('nav')" class="hamburger" :class="{noshow: navIsOn}" >☰</span> 
+        <span @click="goNav" class="hamburger" :class="{noshow: navIsOn}" >☰</span> 
         <span @click="route('back')" class="hamburger" :class="{noshow: !navIsOn}" >☰</span>
         <span class="main-title">Ye Old Wizard</span>
       </span>

@@ -472,6 +472,12 @@ async function startApp(user) {
         this.wizKidMode = 'control'
         this.navIsOn = false
       },
+      goNav() {
+        if (this.groupsAreHidden) {
+          return
+        }
+        this.route('nav')
+      },
       switchScoreMode(mode) {
         this.scoreMode = mode
         localStorage.scoreMode = mode
