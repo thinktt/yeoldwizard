@@ -122,7 +122,7 @@ export default {
   },
   watch : {
     'game.status'(newStatus, oldStatus) {
-      console.log('new status', newStatus, 'hasFreshMoves', this.hasFreshMoves)
+      // console.log('new status', newStatus, 'hasFreshMoves', this.hasFreshMoves)
       const endGameStatuses = ['mate', 'resign', 'draw']
       if (oldStatus === 'started' && endGameStatuses.includes(newStatus)) {
         this.endMessageIsOn = true
