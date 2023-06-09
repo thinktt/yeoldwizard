@@ -130,7 +130,7 @@ cg-board {
   padding: 1rem;
   padding-top: 2rem;
   width: 18vw;
-  /* margin-top:20%; */
+  margin-top: 1rem;
 }
 
 .game-done-message.lost {
