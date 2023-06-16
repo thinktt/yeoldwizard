@@ -208,6 +208,7 @@ cg-board {
   background-color: green;
   padding: .25rem;
   border-radius: 1rem;
+  line-height: 2rem;
 }
 
 .inline-score.down {
