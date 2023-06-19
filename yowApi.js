@@ -52,6 +52,7 @@ async function getGame(id) {
 }
 
 async function addUser(user) {
+  user.id = user.id.toLowerCase()
   const res = await fetch(`${yowApiUrl}/users/`, {
     method: 'POST',
     headers: {
@@ -71,7 +72,8 @@ async function addUser(user) {
 }
 
 async function getUser(id) {
-  const res = await fetch(`${yowApiUrl}/users/${id}`, {
+  const lowerId = id.toLowerCase()
+  const res = await fetch(`${yowApiUrl}/users/${lowerId}`, {
     headers: {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
