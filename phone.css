@@ -232,6 +232,12 @@
     margin-top: 0;
   }
 
+  
+  .game-done-message p {
+    margin-top: 0rem;
+    margin-bottom: 1rem;
+  }
+
   .slider-box {
     left: -.2rem;
     position: absolute;
