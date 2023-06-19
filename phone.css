@@ -328,9 +328,14 @@
     margin-top: 1rem;
   }
 
-  .board-nav .king, .game-done-message .king {
+  .board-nav .king {
     height: 3rem;
     margin-top: 1rem;
+  }
+
+  .game-done-message .king {
+    height: 3rem;
+    margin-top: .5rem;
   }
 
   .board-nav .user-name {
