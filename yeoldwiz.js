@@ -1,4 +1,4 @@
-import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+import { createApp } from 'https://unpkg.com/vue@3.3.6/dist/vue.esm-browser.js'
 import games from './games.js'
 import WizFace from './WizFace.js'
 import WizBadges from './WizBadges.js'
