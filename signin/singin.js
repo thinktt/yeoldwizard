@@ -1,4 +1,4 @@
-import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+import { createApp } from 'https://unpkg.com/vue@3.3.6/dist/vue.esm-browser.js'
 import WizDisclaimer from './WizDisclaimer.js'
 import { html } from '../pageTools.js'
 import yowApi from '../yowApi.js'

@@ -1,6 +1,6 @@
 import { end } from './lib/chessground/js/draw.js'
 import { html } from './pageTools.js'
-import { computed } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+import { computed } from 'https://unpkg.com/vue@3.3.6/dist/vue.esm-browser.js'
 
 
 const template = html`

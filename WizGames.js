@@ -1,4 +1,4 @@
-import { nextTick } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+import { nextTick } from 'https://unpkg.com/vue@3.3.6/dist/vue.esm-browser.js'
 import {html, css} from './pageTools.js'
 import games from './games.js'
 
