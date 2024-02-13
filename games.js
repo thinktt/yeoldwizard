@@ -32,6 +32,7 @@ export default {
   setDemoGames,
   getDemoGame,
   hackDemoOpponetName,
+  forwardGamesToYowApi,
 }
 
 window.dumbHash = dumbHash
@@ -112,7 +113,7 @@ async function loadGames(loadState) {
     setNullGameCount(abortedGames.length + opponentlessGames.length)
     
     // everytime game list is updated we will forward missing games to the YOW API
-    fowardGamesToYowApi()
+    forwardGamesToYowApi()
     loadState.isDone = true
     resolve()
   }
@@ -482,7 +483,7 @@ function getColorToPlay(opponent) {
 
 // forward gameIds and opponent names to long term YOW API so we no longer 
 // depend on chat messages to remember who the opponents of games are
-async function fowardGamesToYowApi() {
+async function forwardGamesToYowApi() {
   const games = getGames()
 
   let gamesForwarded = []
@@ -496,8 +497,8 @@ async function fowardGamesToYowApi() {
     const gameToSend = {id, user, opponent}
     const res = await yowApi.addGame(gameToSend)
     if (!res.ok) {
-      // console.log(`Error forwarding game data for ${id}`)
-      // console.log(res)
+      console.log(`Error forwarding game data for ${id}`)
+      console.log(res)
       gamesFailedToForward.push(game)
       continue
     }

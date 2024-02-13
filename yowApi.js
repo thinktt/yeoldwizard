@@ -11,7 +11,9 @@ export default {
 let yowApiIsDown = false
 
 // const yowApiUrl = 'http://localhost:64355'
-const yowApiUrl = 'https://yeoldwiz.duckdns.org:64355'
+// const yowApiUrl = 'https://yeoldwiz.duckdns.org:64355'
+// const yowApiUrl  = 'https://localhost:8443'
+const yowApiUrl = 'https://api.yeoldwizard.com:64355'
 const apiIsDownRes = {ok: false, status: 502, message: 'yowApi is marked as down' }
 
 async function addGame(game) {
