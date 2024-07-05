@@ -615,7 +615,7 @@ async function startApp(user) {
           return false
         }
         const challenge = await res.json()
-        const gameId = challenge.challenge.id
+        const gameId = challenge.id
         setOpponentInYowApi(gameId, opponent)
 
       
