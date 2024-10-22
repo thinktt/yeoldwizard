@@ -20,6 +20,7 @@ export default {
   addCurrentGame,
   deleteCurrentGame,
   clearGames,
+  clearAllGames,
   clearCurrentGames,
   deDupeGames,
   clearWasForwardedToYowApi,
@@ -206,6 +207,14 @@ function getGames(opponent) {
   }
   gameCache = games
   return games
+}
+
+
+function clearAllGames() {
+  gameCache = []
+  idMap = {}
+  opponentMap = {}
+  delete localStorage[user + '_gameRows']
 }
 
 function setGames(games) {

@@ -23,6 +23,7 @@ import yowApi from './yowApi.js'
 // import { cssLoader } from './pageTools.js'
 // import { start } from './lib/chessground/js/draw.js'
 window.games = games
+window.yowApi = yowApi
 const codeVerifier = localStorage.codeVerifier
 
 // cssLoader.render()
