@@ -31,17 +31,24 @@ async function checkHealth() {
   return res
 }
 
-async function getGames2(user, lastGameTime, handler, onDone) {
+async function getGames2(user, lastGameTime, gameHandler, doneHandler) {
   const url = `${yowApiUrl}/games2?playerId=${user}&createdAt=${lastGameTime}`
 
   const eventSource = new EventSource(url)
 
-  eventSource.onmessage = (event) => handler(JSON.parse(event.data))
+  eventSource.onmessage = (event) => {
+    gameHandler(JSON.parse(event.data))
+  }
+
+  eventSource.addEventListener("done", (event) => {
+    eventSource.close()
+    if (doneHandler) doneHandler()
+  })
+
   eventSource.onerror = (err) => {
-    console.log('SSE error:', err.message)
+    console.log('SSE error:', err)
     eventSource.close()
   }
-  eventSource.onclose = () => { if (onDone) onDone() }
 
   return {
     abort: () => eventSource.close()
