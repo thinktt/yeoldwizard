@@ -48,14 +48,14 @@ function getGamesByOpponent() {
   return opponentMap
 }
 
-async function loadGames(loadState) {
+async function loadGamesOld(loadState) {
   if (!user) {
     console.error('No user set, must load user before loading games')
     return
   }
 
   console.log('Attempting to update the local storage game list')
-  const storedGames = getGames()//.slice(300)
+  const storedGames = getGames()
   const storedCurrentGames = getCurrentGames()
   let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
   console.log('last game time found: ' + lastGameTime)
@@ -127,6 +127,133 @@ async function loadGames(loadState) {
   return promise
 }
 
+async function loadGames(loadState) {
+  if (!user) {
+    console.error('No user set, must load user before loading games')
+    return
+  }
+
+  console.log('Attempting to update the local storage game list')
+  const storedGames = getGames()
+  const storedCurrentGames = getCurrentGames()
+  let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
+  console.log('last game time found: ' + lastGameTime)
+  
+  // we'll add one so we will only get new games
+  lastGameTime = lastGameTime + 1
+
+  lastGameTime = 0
+  
+  let resolve
+  const promise = new Promise(r => resolve = r)
+
+  const localGames = []
+
+  const handler = async (yowGame) => {
+    let err 
+    const localGame = await yowToLocalGame(yowGame).catch(e => err = e)
+    localGames.push(localGame)
+    if (err) {
+      console.error(err) 
+    } 
+  }
+  
+  const onDone = async () => {
+
+    for (let i =0; i<100; i++) {
+      await new Promise(r => setTimeout(r, 30))
+      loadState.loaded ++
+    }
+    
+    console.log(localGames)
+    games.setGames(games.getGames())
+
+    loadState.isDone = true
+    resolve()
+  }
+
+   
+  loadState.toGet = 100
+  
+  yowApi.getGames2(user, lastGameTime, handler, onDone)
+  return promise
+}
+
+async function yowToLocalGame(yowGame) {
+  const game = {
+    id : yowGame.id,
+    createdAt: yowGame.createdAt,
+    lastMoveAt: yowGame.lastMoveAt,
+  }
+ 
+  // throw error on matching player types
+  if (yowGame.whitePlayer.type === yowGame.blackPlayer.type) {
+    throw new Error('invalid local game, players are same type:', yowGame.whitePlayer)
+  }
+
+  if (yowGame.whitePlayer.type === 'cmp') {
+    game.opponent = yowGame.whitePlayer.id 
+    game.playedAs = 'black'
+  } else {
+    game.opponent = yowGame.blackPlayer.id
+    game.playedAs = 'white' 
+  }
+
+  switch (yowGame.winner) {
+    case 'pending':
+      game.status = 'started'
+      break
+    case 'draw':
+      game.conclusion = 'draw'
+      break
+    case 'black':
+      if (game.playedAs === 'black') game.conclusion === 'won'
+        else game.conclusion = 'lost'
+      break
+    case 'white':
+      if (game.playedAs === 'white') game.conclusion === 'won'
+        else game.conclusion = 'lost'
+      break
+    default:
+      throw new Error ('no valid yowGame.winner found')
+  }
+
+  switch (yowGame.method) {
+    case 'mate':
+      game.status = 'mate'
+      break
+    case 'resign':
+      game.status = 'resign'
+      break
+    case 'time':
+      game.status = 'outoftime'
+      break
+    case 'mutual':
+      game.status = 'draw'
+      game.drawType = 'mutual'
+      break
+    case 'stalemate':
+      game.status = 'draw'
+      game.drawType =  'stalemate'
+      break
+    case 'material':
+      game.status = 'draw'
+      game.drawType = 'material'
+      break
+    case 'threefold':
+      game.status = 'draw'
+      game.drawType =  'threefold'
+      break
+    case 'fiftyMove':
+      game.status = 'draw'
+      game.drawType = 'fiftyMove'
+      break
+    default:
+      throw new Error ('no valid yowGame.method found')
+  }
+
+  return game
+}
 
 function setNullGameCount(count) {
   const previousCount = Number(localStorage.nullGamesCount) || 0
@@ -248,7 +375,7 @@ function setGames(games) {
   const gameRowsStr = JSON.stringify(gameRows)
   localStorage[user + '_gameRows'] = gameRowsStr
   const hash = dumbHash(gameRowsStr)
-  // console.log('dbhash:', hash)
+  console.log('dbhash:', hash)
   return hash
 }
 
