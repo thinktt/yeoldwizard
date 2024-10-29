@@ -9,6 +9,7 @@ export default {
   loadGames,
   setGames,
   getGames,
+  getGamesOld,
   getGamesByOpponent,
   getGamesWithMoves : getGames,
   getOpponentFromChat,
@@ -36,7 +37,8 @@ export default {
   forwardGamesToYowApi,
 }
 
-window.dumbHash = dumbHash
+// window.dumbHash = dumbHash
+
 
 // module globals
 let gameCache = null
@@ -141,37 +143,40 @@ async function loadGames(loadState) {
   
   // we'll add one so we will only get new games
   lastGameTime = lastGameTime + 1
-
   lastGameTime = 0
-  
+
   let resolve
   const promise = new Promise(r => resolve = r)
-
-  const localGames = []
+  const newGames = []
 
   const handler = async (yowGame) => {
     let err 
     const localGame = await yowToLocalGame(yowGame).catch(e => err = e)
-    localGames.push(localGame)
+    newGames.push(localGame)
     if (err) {
       console.error(err) 
     } 
   }
-  
+ 
   const onDone = async () => {
-
     for (let i =0; i<100; i++) {
       await new Promise(r => setTimeout(r, 30))
       loadState.loaded ++
     }
-    
-    console.log(localGames)
-    games.setGames(games.getGames())
 
+    newGames.sort((a, b) => b.createdAt - a.createdAt)
+    
+    const oldGames = getGames()
+    setGames(newGames)
+    compareGames(oldGames, newGames)
+    
+
+    window.oldGames = oldGames
+    window.newGames = newGames
+    
     loadState.isDone = true
     resolve()
   }
-
    
   loadState.toGet = 100
   
@@ -179,11 +184,59 @@ async function loadGames(loadState) {
   return promise
 }
 
+function compareGames(oldGames, newGames) {
+  // console.log(oldGames)
+  const oldGameMap = {}
+  oldGames.forEach(game => {
+    oldGameMap[game.id] = game
+  })
+  
+  newGames.forEach(game => {
+    const oldGame = oldGameMap[game.id]
+
+    if (!oldGame) {
+      console.error('No game found for ', game.id)
+      return 
+    }
+    
+    const keys = Object.keys(oldGame)
+    for (const key of keys) {
+      if (key === 'moves') continue
+
+      if (oldGame[key] !== game[key]) {
+        console.error(`mismatch in gameId: ${oldGame.id}, key: ${key}`)
+        console.log('old: ', oldGame[key], 'new:', game[key])
+        console.log(oldGame)
+        console.log(game) 
+        return 
+      }
+    }
+
+    const oldMoves = oldGame.moves.toString()
+    const newMoves = game.moves.toString()
+
+    if (oldMoves !== newMoves) {
+      console.error('moves do not match for ', game.id)
+      console.log(oldMoves)
+      console.log(newMoves)
+      return
+    }
+
+    // console.log('compared without error')
+  })
+  
+  console.log(newGames.length)
+  console.log(oldGames.length)
+
+}
+
 async function yowToLocalGame(yowGame) {
   const game = {
     id : yowGame.id,
     createdAt: yowGame.createdAt,
     lastMoveAt: yowGame.lastMoveAt,
+    moves: yowGame.moves.split(' '),
+    wasForwardedToYowApi: true, 
   }
  
   // throw error on matching player types
@@ -202,16 +255,17 @@ async function yowToLocalGame(yowGame) {
   switch (yowGame.winner) {
     case 'pending':
       game.status = 'started'
+      game.conclusion = null
       break
     case 'draw':
       game.conclusion = 'draw'
       break
     case 'black':
-      if (game.playedAs === 'black') game.conclusion === 'won'
+      if (game.playedAs === 'black') game.conclusion = 'won'
         else game.conclusion = 'lost'
       break
     case 'white':
-      if (game.playedAs === 'white') game.conclusion === 'won'
+      if (game.playedAs === 'white') game.conclusion = 'won'
         else game.conclusion = 'lost'
       break
     default:
@@ -221,19 +275,22 @@ async function yowToLocalGame(yowGame) {
   switch (yowGame.method) {
     case 'mate':
       game.status = 'mate'
+      game.drawType = null
       break
     case 'resign':
       game.status = 'resign'
+      game.drawType = null
       break
     case 'time':
       game.status = 'outoftime'
+      game.drawType = null
       break
     case 'mutual':
       game.status = 'draw'
       game.drawType = 'mutual'
       break
     case 'stalemate':
-      game.status = 'draw'
+      game.status = 'stalemate'
       game.drawType =  'stalemate'
       break
     case 'material':
@@ -248,6 +305,9 @@ async function yowToLocalGame(yowGame) {
       game.status = 'draw'
       game.drawType = 'fiftyMove'
       break
+    case undefined: 
+      game.status = 'started'
+      game.drawType = null
     default:
       throw new Error ('no valid yowGame.method found')
   }
@@ -319,6 +379,41 @@ function getGames(opponent) {
   console.log('loading previous games from localStorage')
   const gameKeys = JSON.parse(localStorage.gameKeys)
   const gameRowsStr = localStorage[user + '_gameRows']
+  const gameRows = JSON.parse(gameRowsStr)
+
+  let games = []
+  for (const gameRow of gameRows) {
+
+    //create a game object from the game row
+    const game = {} 
+    gameKeys.forEach((key, i) => game[key] = gameRow[i])
+
+    if (opponent && game.opponent !== opponent) continue
+    game.moves = game.moves.split(' ')
+    games.push(game)
+  }
+  gameCache = games
+  return games
+}
+
+function getGamesOld(opponent) {
+  if (opponent && opponentMap) {
+    // console.log('gameMap found returning games from the map')
+    return opponentMap[opponent] ? opponentMap[opponent].games : []
+  }
+  if (!opponent && gameCache) {
+  // if (gameCache) { 
+    //  console.log('gameCache found, returning all games')
+    return gameCache
+  }
+  if (!localStorage['lichessGameRows']) { 
+    console.log('no stored games found for ' + user)
+    return []
+  }
+
+  console.log('loading previous games from localStorage')
+  const gameKeys = JSON.parse(localStorage.gameKeysOld)
+  const gameRowsStr = localStorage[user + 'lichessGameRows']
   const gameRows = JSON.parse(gameRowsStr)
 
   let games = []

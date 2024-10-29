@@ -24,6 +24,7 @@ import yowApi from './yowApi.js'
 // import { start } from './lib/chessground/js/draw.js'
 window.games = games
 window.yowApi = yowApi
+window.lichessApi = lichessApi
 const codeVerifier = localStorage.codeVerifier
 
 // cssLoader.render()
