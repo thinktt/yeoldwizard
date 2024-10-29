@@ -8,6 +8,7 @@ export default {
   setUser,
   loadGames,
   setGames,
+  makeGameRow,
   getGames,
   getGamesOld,
   getGamesByOpponent,
@@ -159,10 +160,10 @@ async function loadGames(loadState) {
   }
  
   const onDone = async () => {
-    for (let i =0; i<100; i++) {
-      await new Promise(r => setTimeout(r, 30))
-      loadState.loaded ++
-    }
+    // for (let i =0; i<100; i++) {
+    //   await new Promise(r => setTimeout(r, 5))
+    //   loadState.loaded ++
+    // }
 
     newGames.sort((a, b) => b.createdAt - a.createdAt)
     
@@ -459,6 +460,7 @@ function setGames(games) {
   const gameKeys = Object.keys(games[0])
   const gameRows = []
 
+  // turn move arrays into move strings
   for(const game of games) {
     let moves
     moves = game.moves.join(' ')
@@ -474,6 +476,24 @@ function setGames(games) {
   return hash
 }
 
+function makeGameRow(game) {
+  const keys = ["id","createdAt","lastMoveAt","status","conclusion",
+    "drawType","opponent","playedAs","moves","wasForwardedToYowApi"]
+  
+  // convert move array to moves string
+  const moves = game.moves.join(' ')
+
+  const gameRow = []
+  for (const key of keys) {
+    if (key === 'moves') {
+      gameRow.push(moves)
+      continue
+    }
+    gameRow.push(game[key])     
+  }
+
+  return gameRow
+}
 
 function setUser(userToSet) {
   user = userToSet
