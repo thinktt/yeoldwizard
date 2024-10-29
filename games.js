@@ -9,8 +9,8 @@ export default {
   loadGames,
   setGames,
   makeGameRow,
+  parseGameRow,
   getGames,
-  getGamesOld,
   getGamesByOpponent,
   getGamesWithMoves : getGames,
   getOpponentFromChat,
@@ -36,6 +36,8 @@ export default {
   getDemoGame,
   hackDemoOpponetName,
   forwardGamesToYowApi,
+  dumbHash,
+  compareGames,
 }
 
 // window.dumbHash = dumbHash
@@ -397,41 +399,6 @@ function getGames(opponent) {
   return games
 }
 
-function getGamesOld(opponent) {
-  if (opponent && opponentMap) {
-    // console.log('gameMap found returning games from the map')
-    return opponentMap[opponent] ? opponentMap[opponent].games : []
-  }
-  if (!opponent && gameCache) {
-  // if (gameCache) { 
-    //  console.log('gameCache found, returning all games')
-    return gameCache
-  }
-  if (!localStorage['lichessGameRows']) { 
-    console.log('no stored games found for ' + user)
-    return []
-  }
-
-  console.log('loading previous games from localStorage')
-  const gameKeys = JSON.parse(localStorage.gameKeysOld)
-  const gameRowsStr = localStorage[user + 'lichessGameRows']
-  const gameRows = JSON.parse(gameRowsStr)
-
-  let games = []
-  for (const gameRow of gameRows) {
-
-    //create a game object from the game row
-    const game = {} 
-    gameKeys.forEach((key, i) => game[key] = gameRow[i])
-
-    if (opponent && game.opponent !== opponent) continue
-    game.moves = game.moves.split(' ')
-    games.push(game)
-  }
-  gameCache = games
-  return games
-}
-
 
 function clearAllGames() {
   gameCache = []
@@ -476,15 +443,17 @@ function setGames(games) {
   return hash
 }
 
-function makeGameRow(game) {
-  const keys = ["id","createdAt","lastMoveAt","status","conclusion",
+
+const gameKeys =  ["id","createdAt","lastMoveAt","status","conclusion",
     "drawType","opponent","playedAs","moves","wasForwardedToYowApi"]
-  
+
+function makeGameRow(game) {
+
   // convert move array to moves string
   const moves = game.moves.join(' ')
 
   const gameRow = []
-  for (const key of keys) {
+  for (const key of gameKeys) {
     if (key === 'moves') {
       gameRow.push(moves)
       continue
@@ -493,6 +462,14 @@ function makeGameRow(game) {
   }
 
   return gameRow
+}
+
+function parseGameRow(gameRow) {
+  const game = {}
+  gameKeys.forEach((key, i) => game[key] = gameRow[i])
+  game.moves = game.moves.split(' ')
+
+  return game
 }
 
 function setUser(userToSet) {
@@ -822,14 +799,14 @@ function dumbHash (itemToHash) {
   if (typeof(itemToHash) === 'object') str = JSON.stringify(itemToHash)
     else str = itemToHash
 
-  let hash = 0;
+  let hash = 0
   for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash &= hash; // Convert to 32bit integer
+    const char = str.charCodeAt(i)
+    hash = (hash << 5) - hash + char
+    hash &= hash // Convert to 32bit integer
   }
-  return new Uint32Array([hash])[0].toString(36);
-};
+  return new Uint32Array([hash])[0].toString(36)
+}
 
 function chessjsTest() {
   const game = games.getGameById('qQTvezgg')
