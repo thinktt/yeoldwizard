@@ -155,12 +155,15 @@ async function loadGames(loadState) {
   const handler = async (yowGame) => {
     let err 
     const localGame = await yowToLocalGame(yowGame).catch(e => err = e)
+    
     newGames.push(localGame)
     if (err) {
       console.error(err) 
     } 
   }
- 
+
+  const oldGames = storedGames
+
   const onDone = async () => {
     // for (let i =0; i<100; i++) {
     //   await new Promise(r => setTimeout(r, 5))
@@ -169,11 +172,9 @@ async function loadGames(loadState) {
 
     newGames.sort((a, b) => b.createdAt - a.createdAt)
     
-    const oldGames = getGames()
     setGames(newGames)
-    compareGames(oldGames, newGames)
+    // compareGames(oldGames, newGames)
     
-
     window.oldGames = oldGames
     window.newGames = newGames
     
@@ -187,6 +188,15 @@ async function loadGames(loadState) {
   return promise
 }
 
+function normalizeGame(game) {
+  const normalGame = {}
+  
+  for (const key of gameKeys) {
+    normalGame[key] = game[key]
+  } 
+  return normalGame
+}
+
 function compareGames(oldGames, newGames) {
   // console.log(oldGames)
   const oldGameMap = {}
@@ -196,6 +206,15 @@ function compareGames(oldGames, newGames) {
   
   newGames.forEach(game => {
     const oldGame = oldGameMap[game.id]
+
+    if (dumbHash(oldGame) === dumbHash(game)) {
+      console.log('good')
+    }
+
+    console.log(game.id, dumbHash(oldGame), dumbHash(game))
+    // if (dumbHash(oldGame) !== dumbHash(game)) {
+    //   console.error('no hash map for ', game.id)
+    // }
 
     if (!oldGame) {
       console.error('No game found for ', game.id)
@@ -315,7 +334,9 @@ async function yowToLocalGame(yowGame) {
       throw new Error ('no valid yowGame.method found')
   }
 
-  return game
+  const normalGame = normalizeGame(game) 
+
+  return normalGame
 }
 
 function setNullGameCount(count) {
