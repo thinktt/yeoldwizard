@@ -146,17 +146,22 @@ async function loadGames(loadState) {
   
   // we'll add one so we will only get new games
   lastGameTime = lastGameTime + 1
-  lastGameTime = 0
 
   let resolve
   const promise = new Promise(r => resolve = r)
   const newGames = []
+  const currentGames = []
 
   const handler = async (yowGame) => {
     let err 
     const localGame = await yowToLocalGame(yowGame).catch(e => err = e)
     
-    newGames.push(localGame)
+    if (localGame.status === 'started') {
+      currentGames.push(localGame)
+    } else {
+      newGames.push(localGame)
+    }
+    
     if (err) {
       console.error(err) 
     } 
@@ -165,40 +170,24 @@ async function loadGames(loadState) {
   const oldGames = storedGames
 
   const onDone = async () => {
-    // for (let i =0; i<100; i++) {
-    //   await new Promise(r => setTimeout(r, 5))
-    //   loadState.loaded ++
-    // }
 
     newGames.sort((a, b) => b.createdAt - a.createdAt)
+    const gamesToStore = deDupeGames(newGames.concat(storedGames))    
+    setGames(gamesToStore)
+    setCurrentGames(currentGames)
     
-    setGames(newGames)
-    // compareGames(oldGames, newGames)
-    
-    window.oldGames = oldGames
-    window.newGames = newGames
-    
+    console.log(newGames.length, 'valid new games found')
+    console.log(currentGames.length, 'current games found')
+
     loadState.isDone = true
     resolve()
   }
-   
-  loadState.toGet = 100
-  
+
   yowApi.getGames2(user, lastGameTime, handler, onDone)
   return promise
 }
 
-function normalizeGame(game) {
-  const normalGame = {}
-  
-  for (const key of gameKeys) {
-    normalGame[key] = game[key]
-  } 
-  return normalGame
-}
-
 function compareGames(oldGames, newGames) {
-  // console.log(oldGames)
   const oldGameMap = {}
   oldGames.forEach(game => {
     oldGameMap[game.id] = game
@@ -212,9 +201,6 @@ function compareGames(oldGames, newGames) {
     }
 
     console.log(game.id, dumbHash(oldGame), dumbHash(game))
-    // if (dumbHash(oldGame) !== dumbHash(game)) {
-    //   console.error('no hash map for ', game.id)
-    // }
 
     if (!oldGame) {
       console.error('No game found for ', game.id)
@@ -295,6 +281,8 @@ async function yowToLocalGame(yowGame) {
   }
 
   switch (yowGame.method) {
+    case undefined: 
+      break
     case 'mate':
       game.status = 'mate'
       game.drawType = null
@@ -331,11 +319,21 @@ async function yowToLocalGame(yowGame) {
       game.status = 'started'
       game.drawType = null
     default:
+      console.log(yowGame)
       throw new Error ('no valid yowGame.method found')
   }
 
   const normalGame = normalizeGame(game) 
 
+  return normalGame
+}
+
+function normalizeGame(game) {
+  const normalGame = {}
+  
+  for (const key of gameKeys) {
+    normalGame[key] = game[key]
+  } 
   return normalGame
 }
 
@@ -915,3 +913,10 @@ function getGameById(id) {
   return idMap[id]
 }
 
+
+
+// loaderBar loading example code 
+// for (let i =0; i<100; i++) {
+//   await new Promise(r => setTimeout(r, 5))
+//   loadState.loaded ++
+// }
