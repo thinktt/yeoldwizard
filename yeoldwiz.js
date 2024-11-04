@@ -654,7 +654,8 @@ async function startApp(user) {
           // this.route('selected', currentGame.opponent)
           this.currentGameId = currentGame.id
           this.currentGame = currentGame
-          await this.connectToStream(currentGame.id)
+          await this.loadBoard(this.currentGame)
+          // await this.connectToStream(currentGame.id)
           return
         } 
         this.currentGameId = null
