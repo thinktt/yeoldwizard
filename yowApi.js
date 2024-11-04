@@ -2,7 +2,9 @@ export default {
   checkHealth,
   getToken,
   addGame,
+  getGame,
   streamGameEvents,
+  addMove,
   setDrawOffer,
   clearDrawOffer,
   resign,
@@ -10,7 +12,6 @@ export default {
   addUser,
   getUser,
   getGames2,
-  getGame,
 }
 
 // we'll use this to mark the api as down if we get a refused connection
@@ -59,6 +60,22 @@ async function addGame(game) {
   return data
 }
 
+async function getGame(gameId) {
+  const headers = await getHeaders()
+  const res = await fetch(`${yowApiUrl}/games2/${gameId}`, {
+    method: 'GET',
+    headers: headers
+  })
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw new Error(`Failed to get game with status ${res.status}: ${data.error}`)
+  }
+
+  return data
+}
+
 async function streamGameEvents(gameIds, eventHandler, doneHandler, errHandler) {
   const url = `${yowApiUrl}/streams/${gameIds}`
   const eventSource = new EventSource(url)
@@ -86,7 +103,22 @@ async function streamGameEvents(gameIds, eventHandler, doneHandler, errHandler) 
   }
 }
 
+async function addMove(gameId, index, move) {
+  const headers = await getHeaders()
+  const res = await fetch(`${yowApiUrl}/games2/${gameId}/moves`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({ index, move })
+  })
 
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw new Error(`Failed to add move with status ${res.status}: ${data.error}`)
+  }
+
+  return data
+}
 
 async function setDrawOffer(gameId, color) {
   const headers = await getHeaders()
@@ -152,22 +184,7 @@ async function abort(gameId, color) {
   return data
 }
 
-async function getGame(id) {
-  if (yowApiIsDown) {
-    return apiIsDownRes
-  }
-  const res = await fetch(`${yowApiUrl}/games/${id}`, {
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-  }).catch((err) => {
-    yowApiIsDown = true
-    return {ok: false, status: 502, message: 'connection refused' }
-  })
-
-  return res
-}
+// 
 
 async function addUser(user) {
   user.id = user.id.toLowerCase()
@@ -302,3 +319,20 @@ async function getHeaders() {
 
 //   return res
 // } 
+
+// async function getGame(id) {
+  //   if (yowApiIsDown) {
+  //     return apiIsDownRes
+  //   }
+  //   const res = await fetch(`${yowApiUrl}/games/${id}`, {
+  //     headers: {
+  //       'Accept': 'application/json, text/plain, */*',
+  //       'Content-Type': 'application/json'
+  //     },
+  //   }).catch((err) => {
+  //     yowApiIsDown = true
+  //     return {ok: false, status: 502, message: 'connection refused' }
+  //   })
+  
+  //   return res
+  // }
