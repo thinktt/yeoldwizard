@@ -183,7 +183,7 @@ async function loadGames(loadState) {
     resolve()
   }
 
-  yowApi.getGames2(user, lastGameTime, handler, onDone)
+  yowApi.getGames(user, lastGameTime, handler, onDone)
   return promise
 }
 

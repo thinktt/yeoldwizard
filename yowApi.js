@@ -11,7 +11,7 @@ export default {
   abort,
   addUser,
   getUser,
-  getGames2,
+  getGames,
 }
 
 // we'll use this to mark the api as down if we get a refused connection
@@ -251,7 +251,7 @@ async function updateToken() {
   tokenClaims = data.claims
 }
 
-async function getGames2(user, lastGameTime, gameHandler, doneHandler) {
+async function getGames(user, lastGameTime, gameHandler, doneHandler) {
   const url = `${yowApiUrl}/games2?playerId=${user}&createdAt=${lastGameTime}`
 
   const eventSource = new EventSource(url)
