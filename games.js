@@ -44,6 +44,8 @@ export default {
 
 
 // module globals
+const gameKeys =  ["id","createdAt","lastMoveAt","status","conclusion",
+  "drawType","opponent","playedAs","moves","wasForwardedToYowApi"]
 let gameCache = null
 let opponentMap = {}
 let idMap = {}
@@ -51,85 +53,6 @@ let user = ''
 
 function getGamesByOpponent() {
   return opponentMap
-}
-
-async function loadGamesOld(loadState) {
-  if (!user) {
-    console.error('No user set, must load user before loading games')
-    return
-  }
-
-  console.log('Attempting to update the local storage game list')
-  const storedGames = getGames()
-  const storedCurrentGames = getCurrentGames()
-  let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
-  console.log('last game time found: ' + lastGameTime)
-  
-  // we'll add one so we will only get new games
-  lastGameTime = lastGameTime + 1
-
-  const games = [] 
-  const abortedGames = []
-  const opponentlessGames = []
-  const currentGames = []
-  let buildQue = 0
-  
-  const handler =  async (lichessGame) => {
-    buildQue ++
-    const game = await buildLocalGame(lichessGame)
-    loadState.loaded ++
-    
-    if (game.status === 'aborted') {
-      // clear aborted game from current games
-      deleteCurrentGame(game.id)
-      abortedGames.push(game.id) 
-      buildQue --
-      return 
-    }
-    if (!game.opponent) {
-      // console.log('oponentless game')
-      opponentlessGames.push(game.id)
-      buildQue --
-      return 
-    }
-    if (game.status === 'started') {
-      currentGames.push(game)
-      buildQue --
-      return 
-    }
-
-    games.push(game)
-    buildQue --
-  }
-  
-  let resolve
-  const promise = new Promise(r => resolve = r) 
-  const onDone = async () => {
-    while (buildQue) {
-      await new Promise(r => setTimeout(r, 0))
-    }
-    console.log(games.length, 'valid new games found')
-    console.log(opponentlessGames.length, 'opponentless games found')
-    console.log(abortedGames.length, 'aborted games found')
-    console.log(currentGames.length, 'current games found')
-    let sortedGames = games.sort((g0, g1) => g1.createdAt - g0.createdAt)
-    const gamesToStore = deDupeGames(sortedGames.concat(storedGames)) 
-    setGames(gamesToStore)
-    setCurrentGames(currentGames)
-    setNullGameCount(abortedGames.length + opponentlessGames.length)
-    
-    // everytime game list is updated we will forward missing games to the YOW API
-    forwardGamesToYowApi()
-    loadState.isDone = true
-    resolve()
-  }
-
-  // loadState.nullGameCount = getNullGameCount()
-  loadState.found = storedGames.length
-  loadState.total = await lichessApi.getGamesCount(user)
-  loadState.toGet = loadState.total - loadState.found - loadState.nullGameCount
-  lichessApi.getGames2(user, lastGameTime, handler, onDone)
-  return promise
 }
 
 async function loadGames(loadState) {
@@ -337,51 +260,6 @@ function normalizeGame(game) {
   return normalGame
 }
 
-function setNullGameCount(count) {
-  const previousCount = Number(localStorage.nullGamesCount) || 0
-  localStorage.nullGamesCount = previousCount + count 
-} 
-
-function getNullGameCount() {
-  return localStorage.nullGamesCount || 0
-}
-
-
-async function buildLocalGame(game) {
-  const {id, createdAt, lastMoveAt, status, players, winner, moves : movesStr } = game
-
-  if (status === 'aborted') {
-    return { id, status: 'aborted' }
-  }
-
-  let { opponent, opponentSource} = await getOpponent(id)
-  let wasForwardedToYowApi
-  if (opponentSource === 'yowApi') wasForwardedToYowApi = true 
-
-  if (!opponent) {
-    return { id, opponent: null }
-  }
-
-  // now make sure the opponent has it's proper cmpObj name
-  opponent = getProperName(opponent)
-  
-  //moves come from lichess as a string, make them an Array
-  const moves = movesStr.split(' ')
-  const playedAs = parsePlayedAs(players)
-
-  if (status === 'started') {
-    return { id, createdAt, lastMoveAt, status, opponent, playedAs, moves }
-  }
-
-  // This is an actual completed game to be stored in long storage. This 
-  // parsing is very slow especially for getDrawType, need to make non blocking
-  const conclusion = parseGameConclusion(players, winner)
-  const drawType = getDrawType(conclusion, moves)
-  const localGame = {id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, 
-    playedAs, moves, wasForwardedToYowApi }
-  
-  return localGame
-}
 
 function getGames(opponent) {
   if (opponent && opponentMap) {
@@ -463,11 +341,7 @@ function setGames(games) {
 }
 
 
-const gameKeys =  ["id","createdAt","lastMoveAt","status","conclusion",
-    "drawType","opponent","playedAs","moves","wasForwardedToYowApi"]
-
 function makeGameRow(game) {
-
   // convert move array to moves string
   const moves = game.moves.join(' ')
 
@@ -508,16 +382,6 @@ function clearGames(numberOfGames = 5) {
 // wipe the entire current game object, used for dev testing
 function clearCurrentGames() {
  delete localStorage[user + '_currentGames']
-}
-
-// clear the yowApi flag on all the games, used in dev to force the game
-// updater to resend all the games to the yowApi
-function clearWasForwardedToYowApi() {
-  const games = getGames()
-  for (const game of games) {
-    delete game.wasForwardedToYowApi 
-  }
-  setGames(games)
 }
 
 function getDrawType(conclusion, moves) {
@@ -879,9 +743,6 @@ const demoGames = [
 ]
 
 
-
-
-
 let shouldUseDemoGames = false
 
 function getDemoGame(name) {
@@ -915,8 +776,146 @@ function getGameById(id) {
 
 
 
+////.....................probably depricated with move to yowApi.......................
+// clear the yowApi flag on all the games, used in dev to force the game
+// updater to resend all the games to the yowApi
+function clearWasForwardedToYowApi() {
+  const games = getGames()
+  for (const game of games) {
+    delete game.wasForwardedToYowApi 
+  }
+  setGames(games)
+}
+
+function setNullGameCount(count) {
+  const previousCount = Number(localStorage.nullGamesCount) || 0
+  localStorage.nullGamesCount = previousCount + count 
+} 
+
+function getNullGameCount() {
+  return localStorage.nullGamesCount || 0
+}
+
+
 // loaderBar loading example code 
 // for (let i =0; i<100; i++) {
 //   await new Promise(r => setTimeout(r, 5))
 //   loadState.loaded ++
+// }
+
+
+// async function loadGamesOld(loadState) {
+//   if (!user) {
+//     console.error('No user set, must load user before loading games')
+//     return
+//   }
+
+//   console.log('Attempting to update the local storage game list')
+//   const storedGames = getGames()
+//   const storedCurrentGames = getCurrentGames()
+//   let lastGameTime = getLastGameTime(storedGames, storedCurrentGames)
+//   console.log('last game time found: ' + lastGameTime)
+  
+//   // we'll add one so we will only get new games
+//   lastGameTime = lastGameTime + 1
+
+//   const games = [] 
+//   const abortedGames = []
+//   const opponentlessGames = []
+//   const currentGames = []
+//   let buildQue = 0
+  
+//   const handler =  async (lichessGame) => {
+//     buildQue ++
+//     const game = await buildLocalGame(lichessGame)
+//     loadState.loaded ++
+    
+//     if (game.status === 'aborted') {
+//       // clear aborted game from current games
+//       deleteCurrentGame(game.id)
+//       abortedGames.push(game.id) 
+//       buildQue --
+//       return 
+//     }
+//     if (!game.opponent) {
+//       // console.log('oponentless game')
+//       opponentlessGames.push(game.id)
+//       buildQue --
+//       return 
+//     }
+//     if (game.status === 'started') {
+//       currentGames.push(game)
+//       buildQue --
+//       return 
+//     }
+
+//     games.push(game)
+//     buildQue --
+//   }
+  
+//   let resolve
+//   const promise = new Promise(r => resolve = r) 
+//   const onDone = async () => {
+//     while (buildQue) {
+//       await new Promise(r => setTimeout(r, 0))
+//     }
+//     console.log(games.length, 'valid new games found')
+//     console.log(opponentlessGames.length, 'opponentless games found')
+//     console.log(abortedGames.length, 'aborted games found')
+//     console.log(currentGames.length, 'current games found')
+//     let sortedGames = games.sort((g0, g1) => g1.createdAt - g0.createdAt)
+//     const gamesToStore = deDupeGames(sortedGames.concat(storedGames)) 
+//     setGames(gamesToStore)
+//     setCurrentGames(currentGames)
+//     setNullGameCount(abortedGames.length + opponentlessGames.length)
+    
+//     // everytime game list is updated we will forward missing games to the YOW API
+//     forwardGamesToYowApi()
+//     loadState.isDone = true
+//     resolve()
+//   }
+
+//   // loadState.nullGameCount = getNullGameCount()
+//   loadState.found = storedGames.length
+//   loadState.total = await lichessApi.getGamesCount(user)
+//   loadState.toGet = loadState.total - loadState.found - loadState.nullGameCount
+//   lichessApi.getGames2(user, lastGameTime, handler, onDone)
+//   return promise
+// }
+
+
+// async function buildLocalGame(game) {
+//   const {id, createdAt, lastMoveAt, status, players, winner, moves : movesStr } = game
+
+//   if (status === 'aborted') {
+//     return { id, status: 'aborted' }
+//   }
+
+//   let { opponent, opponentSource} = await getOpponent(id)
+//   let wasForwardedToYowApi
+//   if (opponentSource === 'yowApi') wasForwardedToYowApi = true 
+
+//   if (!opponent) {
+//     return { id, opponent: null }
+//   }
+
+//   // now make sure the opponent has it's proper cmpObj name
+//   opponent = getProperName(opponent)
+  
+//   //moves come from lichess as a string, make them an Array
+//   const moves = movesStr.split(' ')
+//   const playedAs = parsePlayedAs(players)
+
+//   if (status === 'started') {
+//     return { id, createdAt, lastMoveAt, status, opponent, playedAs, moves }
+//   }
+
+//   // This is an actual completed game to be stored in long storage. This 
+//   // parsing is very slow especially for getDrawType, need to make non blocking
+//   const conclusion = parseGameConclusion(players, winner)
+//   const drawType = getDrawType(conclusion, moves)
+//   const localGame = {id, createdAt, lastMoveAt, status, conclusion, drawType, opponent, 
+//     playedAs, moves, wasForwardedToYowApi }
+  
+//   return localGame
 // }
