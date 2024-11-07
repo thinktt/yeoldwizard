@@ -19,6 +19,7 @@ export default {
   getColorToPlay,
   getCurrentGames,
   getCurrentLatestGame,
+  getLiveGame,
   addCurrentGame,
   deleteCurrentGame,
   clearGames,
@@ -430,6 +431,35 @@ function getCurrentLatestGame() {
   const gameMap = getCurrentGames()
   const games = Object.values(gameMap)
   return games.reverse()[0]
+}
+
+
+// get the latest currentGame and add interactivity to it
+async function getLiveGame() {
+  const game = getCurrentLatestGame()
+
+  // connect game to stream and update game accordingly
+  const stream = await yowApi.streamGameEvents(game.id, (update) => {
+      game.moves = update.moves.split(' ')
+    }, 
+    () => console.log(`${game.id} stream closed`),  
+    (err) => console.log(`${game.id} stream error`)
+  )
+
+  game.makeMove = async (move) => {
+    await yowApi.addMove(game.id, game.moves.length, move)
+  }
+
+  // const methods = {
+  //   abort() {},
+  //   async makeMove(move) {
+      
+  //   },
+  //   offerDraw() {},
+  //   resign() {},
+  // }
+
+  return game
 }
 
 // allows for adding a single game to the current game list, useful for caching
