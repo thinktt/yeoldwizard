@@ -1,6 +1,7 @@
 import yowApi from './yowApi.js'
 import lichessApi from './lichessApi.js'
 import db from './storage.js'
+import { applyAnimation } from './lib/chessground/js/config.js'
 const Chess = window.Chess
 const chess = new Chess()
 
@@ -19,7 +20,7 @@ export default {
   getColorToPlay,
   getCurrentGames,
   getCurrentLatestGame,
-  getLiveGame,
+  connectGame,
   addCurrentGame,
   deleteCurrentGame,
   clearGames,
@@ -435,12 +436,28 @@ function getCurrentLatestGame() {
 
 
 // get the latest currentGame and add interactivity to it
-async function getLiveGame() {
-  const game = getCurrentLatestGame()
+async function connectGame(game) {
 
   // connect game to stream and update game accordingly
   const stream = await yowApi.streamGameEvents(game.id, (update) => {
+      game.lastEventTime = Date.now()
       game.moves = update.moves.split(' ')
+
+      // game is aborted
+      // app.route('back')
+      // app.messageType = 'none'
+      // app.loadUserGames()
+
+      // game is a draw
+      // game.conclusion = 'draw'
+      // game.drawType = getDrawType(this.boardGame.conclusion, this.boardGame.moves)
+      
+      // user won
+      // game.conclusion = 'won'
+
+      // user lost
+      // game.conclusion = 'lost'
+
     }, 
     () => console.log(`${game.id} stream closed`),  
     (err) => console.log(`${game.id} stream error`)
@@ -459,6 +476,7 @@ async function getLiveGame() {
   //   resign() {},
   // }
 
+  console.log(game.id, 'connected to yowApi')
   return game
 }
 

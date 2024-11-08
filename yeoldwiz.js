@@ -351,16 +351,17 @@ async function startApp(user) {
     },
     methods : {
       async doMove(move) {
-        const moves = this.boardGame.moves.slice()
-        moves.push(move)
-        this.boardGame.moves = moves
-        let err
-        const res = await lichessApi.makeMove(this.boardGame.id, move).catch((e) => err = e )
-        if (err) {
-          console.log('Error making move', err)
-          return
-        }
-        this.checkForDeadStream()
+        await this.boardGame.makeMove(move)
+        // const moves = this.boardGame.moves.slice()
+        // moves.push(move)
+        // this.boardGame.moves = moves
+        // let err
+        // const res = await lichessApi.makeMove(this.boardGame.id, move).catch((e) => err = e )
+        // if (err) {
+        //   console.log('Error making move', err)
+        //   return
+        // }
+        // this.checkForDeadStream()
       },
       async checkForDeadStream() {
         console.log('checking for dead stream')
@@ -655,10 +656,14 @@ async function startApp(user) {
           this.currentGameId = currentGame.id
           this.currentGame = currentGame
           await this.loadBoard(this.currentGame)
+          await games.connectGame(this.currentGame)
           // await this.connectToStream(currentGame.id)
           return
         } 
         this.currentGameId = null
+      },
+      async connectToStream2(gameId){
+
       },
       async connectToStream(gameId) {
         const boardGame = this.currentGame //games.getCurrentLatestGame() || {}
@@ -668,26 +673,26 @@ async function startApp(user) {
         const startPromise = new Promise(r => resolve = r)
         this.currentGame.stream = await lichessApi.getGameStream(boardGame.id, async (event) => {
           switch(event.type) {
-            case 'gameFull': 
-              console.log(`Succefully connected to Game:`)
-              console.log(event.id, event.createdAt, event.state.status) 
+            // case 'gameFull': 
+            //   console.log(`Succefully connected to Game:`)
+            //   console.log(event.id, event.createdAt, event.state.status) 
               
-              boardGame.moves = event.state.moves ? event.state.moves.split(' ') : []
-              if (event.white.id == this.user) { 
-                boardGame.playedAs = 'white'
-              } else {
-                boardGame.playedAs = 'black'
-              }
-              await this.loadBoard(boardGame)
-              this.currentGame.lastEventTime = Date.now()
-              resolve()
-              break;
+            //   boardGame.moves = event.state.moves ? event.state.moves.split(' ') : []
+            //   if (event.white.id == this.user) { 
+            //     boardGame.playedAs = 'white'
+            //   } else {
+            //     boardGame.playedAs = 'black'
+            //   }
+            //   await this.loadBoard(boardGame)
+            //   this.currentGame.lastEventTime = Date.now()
+            //   resolve()
+            //   break;
             case 'gameState':
               this.currentGame.lastEventTime = Date.now()
               this.currentGame.moves = event.moves.split(' ')
-              if (this.boardGame.id === this.currentGame.id) {
-                this.boardGame.move = this.currentGame.moves
-              }
+              // if (this.boardGame.id === this.currentGame.id) {
+              //   this.boardGame.move = this.currentGame.moves
+              // }
                 // this.currentGame = this.boardGame
               if (event.status === 'aborted') {
                 this.route('back')
@@ -719,14 +724,14 @@ async function startApp(user) {
                 this.loadUserGames()
               }
               break;
-            case 'chatLine': 
-              if (event.username === 'lichess' && event.text.includes('declines draw') ) {
-                this.drawOfferState = 'declined'
-              }
-              break;
-            default: 
-              console.log('unhandled game event: ' +  event.type)
-              console.log(event)
+            // case 'chatLine': 
+            //   if (event.username === 'lichess' && event.text.includes('declines draw') ) {
+            //     this.drawOfferState = 'declined'
+            //   }
+            //   break;
+            // default: 
+            //   console.log('unhandled game event: ' +  event.type)
+            //   console.log(event)
           } 
         }, () => {
           console.log(`game stream ${boardGame.id} has ended`)
