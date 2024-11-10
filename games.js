@@ -20,6 +20,7 @@ export default {
   getColorToPlay,
   getCurrentGames,
   getCurrentLatestGame,
+  startGame,
   connectGame,
   addCurrentGame,
   deleteCurrentGame,
@@ -29,6 +30,7 @@ export default {
   deDupeGames,
   clearWasForwardedToYowApi,
   getAlgebraMoves,
+  cordToAlgebraMove,
   getDrawType,
   getOpponent,
   getGameById,
@@ -168,7 +170,7 @@ async function yowToLocalGame(yowGame) {
     id : yowGame.id,
     createdAt: yowGame.createdAt,
     lastMoveAt: yowGame.lastMoveAt,
-    moves: yowGame.moves.split(' '),
+    moves: yowGame.moves ? yowGame.moves.split(' ') : [],
     wasForwardedToYowApi: true, 
   }
  
@@ -435,6 +437,21 @@ function getCurrentLatestGame() {
 }
 
 
+async function startGame(opponent) {
+  const colorToPlay = games.getColorToPlay(opponent)
+  const game = {}
+
+  if (colorToPlay === 'white') {
+    game.whitePlayer = {id: user, type: 'lichess'}
+    game.blackPlayer = {id: opponent, type: 'cmp'}
+  } else {
+    game.whitePlayer = {id: opponent, type: 'cmp'}
+    game.blackPlayer = {id: user, type: 'lichess'}
+  }
+
+  return await yowApi.addGame(game)  
+}
+
 // get the latest currentGame and add interactivity to it
 async function connectGame(game) {
 
@@ -464,7 +481,21 @@ async function connectGame(game) {
   )
 
   game.makeMove = async (move) => {
-    await yowApi.addMove(game.id, game.moves.length, move)
+    const algMove = cordToAlgebraMove(game.moves, move) 
+    console.log(algMove)
+    await yowApi.addMove(game.id, game.moves.length, algMove)
+  }
+
+  game.abort = async () => {
+    await yowApi.abort(game.id, game.playedAs)
+  }
+
+  game.resign = async () => {
+    await yowApi.resign(game.id, game.playedAs)
+  }
+
+  game.offerDraw = async () => {
+    await yowApi.setDrawOffer(game.id, game.playedAs) 
   }
 
   // const methods = {
@@ -698,6 +729,17 @@ function getProperName(opponent) {
   }
 
   return properNames[opponent.toLowerCase()] || opponent
+}
+
+
+function cordToAlgebraMove(gameMoves, newCordMove) {
+  const moves = [...gameMoves] 
+  moves.push(newCordMove)
+  chess.reset()
+  for (const move of moves) {
+    chess.move(move, { sloppy: true })
+  }
+  return chess.history().slice(-1)[0]
 }
 
 function getAlgebraMoves(cordinateMovesString) {
