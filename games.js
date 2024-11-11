@@ -2,6 +2,7 @@ import yowApi from './yowApi.js'
 import lichessApi from './lichessApi.js'
 import db from './storage.js'
 import { applyAnimation } from './lib/chessground/js/config.js'
+import { end } from './lib/chessground/js/draw.js'
 const Chess = window.Chess
 const chess = new Chess()
 
@@ -255,6 +256,76 @@ async function yowToLocalGame(yowGame) {
   return normalGame
 }
 
+
+function getLocalEndState(game, yowGame) {
+  const endState = {}
+  
+  switch (yowGame.winner) {
+    case 'pending':
+      endState.status = 'started'
+      endState.conclusion = null
+      break
+    case 'draw':
+      endState.conclusion = 'draw'
+      break
+    case 'black':
+      if (game.playedAs === 'black') endState.conclusion = 'won'
+        else endState.conclusion = 'lost'
+      break
+    case 'white':
+      if (game.playedAs === 'white') endState.conclusion = 'won'
+        else endState.conclusion = 'lost'
+      break
+    default:
+      throw new Error ('no valid yowendState.winner found')
+  }
+
+  switch (yowGame.method) {
+    case undefined: 
+      break
+    case 'mate':
+      endState.status = 'mate'
+      endState.drawType = null
+      break
+    case 'resign':
+      endState.status = 'resign'
+      endState.drawType = null
+      break
+    case 'time':
+      endState.status = 'outoftime'
+      endState.drawType = null
+      break
+    case 'mutual':
+      endState.status = 'draw'
+      endState.drawType = 'mutual'
+      break
+    case 'stalemate':
+      endState.status = 'stalemate'
+      endState.drawType =  'stalemate'
+      break
+    case 'material':
+      endState.status = 'draw'
+      endState.drawType = 'material'
+      break
+    case 'threefold':
+      endState.status = 'draw'
+      endState.drawType =  'threefold'
+      break
+    case 'fiftyMove':
+      endState.status = 'draw'
+      endState.drawType = 'fiftyMove'
+      break
+    case undefined: 
+      endState.status = 'started'
+      endState.drawType = null
+    default:
+      console.log(yowGame)
+      throw new Error ('no valid yowGame.method found')
+  }
+
+  return endState
+}
+
 function normalizeGame(game) {
   const normalGame = {}
   
@@ -460,10 +531,27 @@ async function connectGame(game) {
       game.lastEventTime = Date.now()
       game.moves = update.moves.split(' ')
 
-      // game is aborted
-      // app.route('back')
-      // app.messageType = 'none'
-      // app.loadUserGames()
+      if (update.winner) {
+        const endState = getLocalEndState(game, update)
+        game.status = endState.status
+        game.conclusion = endState.conclusion
+        game.drawType = endState.drawType
+      }
+
+      // if game is aborted
+      //  app.route('back')
+      //  app.messageType = 'none'
+      //  app.loadUserGames()
+
+      // // if there is a winner update then calculate game conclusion
+      // if (update.winner) {
+      //   game.conclusion = getConclusion(game, update) 
+      // }
+
+      // // if the conclusion is a draw calculate draw type
+      // if (game.conclusion === 'draw') {
+      //   game.drawType = getDrawType('draw', game.moves)
+      // }
 
       // game is a draw
       // game.conclusion = 'draw'
@@ -482,7 +570,6 @@ async function connectGame(game) {
 
   game.makeMove = async (move) => {
     const algMove = cordToAlgebraMove(game.moves, move) 
-    console.log(algMove)
     await yowApi.addMove(game.id, game.moves.length, algMove)
   }
 
@@ -509,6 +596,18 @@ async function connectGame(game) {
 
   console.log(game.id, 'connected to yowApi')
   return game
+}
+
+function getConclusion(game, update) {
+  if (update.winner === 'draw') {
+    return 'draw'
+  }
+
+  if (game.playedAs === update.winner) {
+    return 'won'
+  }
+
+  return 'lost'
 }
 
 // allows for adding a single game to the current game list, useful for caching
@@ -671,67 +770,6 @@ function getColorToPlay(opponent) {
 }
 
 
-// forward gameIds and opponent names to long term YOW API so we no longer 
-// depend on chat messages to remember who the opponents of games are
-async function forwardGamesToYowApi() {
-  const games = getGames()
-
-  let gamesForwarded = []
-  let gamesFailedToForward = [] 
-
-  for (const game of games) {
-    // first just skip any games that have already been forwarded
-    if (game.wasForwardedToYowApi) continue
-    
-    const { id, opponent } = game
-    const gameToSend = {id, user, opponent}
-    const res = await yowApi.addGame(gameToSend)
-    if (!res.ok) {
-      console.log(`Error forwarding game data for ${id}`)
-      console.log(res)
-      gamesFailedToForward.push(game)
-      continue
-    }
-    // const data = await res.json()
-    game.wasForwardedToYowApi = true
-    gamesForwarded.push(game) 
-  }
- 
-
-  setGames(games)
-  console.log(gamesForwarded.length, 'games forwarded to yowApi')
-  console.log(gamesFailedToForward.length, 'games failed to forward to yowApi')
-}
-
-
-function getProperName(opponent) {
-  const properNames = {
-    'josh age 6': 'Josh6',
-    'josh age 7': 'Josh7',
-    'josh age 8': 'Josh8',
-    'josh age 9': 'Josh9',
-    'josh age 12': 'Josh12',
-    'nyckid6': 'Josh6',
-    'nyckid7': 'Josh7',
-    'nyckid8': 'Josh8',
-    'nyckid9': 'Josh9',
-    'nyckid9': 'Josh9',
-    'nyckid12': 'Josh12',
-    'jw6':  'Josh6',
-    'jw7': 'Josh7',
-    'jw8': 'Josh8',
-    'jw9': 'Josh9',
-    'jw12': 'Josh12',
-    // 'wizard': 'Chessmaster',
-    'the wizard': 'Wizard',
-    'pawnmaster': 'Shakespeare',
-    'drawmaster': 'Logan',
-  }
-
-  return properNames[opponent.toLowerCase()] || opponent
-}
-
-
 function cordToAlgebraMove(gameMoves, newCordMove) {
   const moves = [...gameMoves] 
   moves.push(newCordMove)
@@ -885,6 +923,66 @@ function setNullGameCount(count) {
 function getNullGameCount() {
   return localStorage.nullGamesCount || 0
 }
+
+// forward gameIds and opponent names to long term YOW API so we no longer 
+// depend on chat messages to remember who the opponents of games are
+async function forwardGamesToYowApi() {
+  const games = getGames()
+
+  let gamesForwarded = []
+  let gamesFailedToForward = [] 
+
+  for (const game of games) {
+    // first just skip any games that have already been forwarded
+    if (game.wasForwardedToYowApi) continue
+    
+    const { id, opponent } = game
+    const gameToSend = {id, user, opponent}
+    const res = await yowApi.addGame(gameToSend)
+    if (!res.ok) {
+      console.log(`Error forwarding game data for ${id}`)
+      console.log(res)
+      gamesFailedToForward.push(game)
+      continue
+    }
+    // const data = await res.json()
+    game.wasForwardedToYowApi = true
+    gamesForwarded.push(game) 
+  }
+ 
+
+  setGames(games)
+  console.log(gamesForwarded.length, 'games forwarded to yowApi')
+  console.log(gamesFailedToForward.length, 'games failed to forward to yowApi')
+}
+
+function getProperName(opponent) {
+  const properNames = {
+    'josh age 6': 'Josh6',
+    'josh age 7': 'Josh7',
+    'josh age 8': 'Josh8',
+    'josh age 9': 'Josh9',
+    'josh age 12': 'Josh12',
+    'nyckid6': 'Josh6',
+    'nyckid7': 'Josh7',
+    'nyckid8': 'Josh8',
+    'nyckid9': 'Josh9',
+    'nyckid9': 'Josh9',
+    'nyckid12': 'Josh12',
+    'jw6':  'Josh6',
+    'jw7': 'Josh7',
+    'jw8': 'Josh8',
+    'jw9': 'Josh9',
+    'jw12': 'Josh12',
+    // 'wizard': 'Chessmaster',
+    'the wizard': 'Wizard',
+    'pawnmaster': 'Shakespeare',
+    'drawmaster': 'Logan',
+  }
+
+  return properNames[opponent.toLowerCase()] || opponent
+}
+
 
 
 // loaderBar loading example code 

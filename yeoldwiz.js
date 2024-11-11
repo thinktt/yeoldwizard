@@ -632,7 +632,6 @@ async function startApp(user) {
         }
       
         console.log(`${gameId} started!`)
-
         // if (!await setOpponent(gameId, opponent)) {
         //   console.log('Game started unalbe to set opponent')
         //   this.setError('Game started but unable to set opponent')
@@ -662,9 +661,6 @@ async function startApp(user) {
           return
         } 
         this.currentGameId = null
-      },
-      async connectToStream2(gameId){
-
       },
       async connectToStream(gameId) {
         const boardGame = this.currentGame //games.getCurrentLatestGame() || {}
