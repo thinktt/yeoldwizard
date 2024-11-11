@@ -483,11 +483,7 @@ async function connectGame(game, onDone) {
         stream.abort()
       }
 
-      // if game is aborted
-      //  app.route('back')
-      //  app.messageType = 'none'
-      //  app.loadUserGames()
-
+      // note: aborting games takes place in main frontend state
     }, 
     () => console.log(`${game.id} stream closed`),  
     (err) => console.log(`${game.id} stream error`)
@@ -500,6 +496,7 @@ async function connectGame(game, onDone) {
 
   game.abort = async () => {
     await yowApi.abort(game.id, game.playedAs)
+    stream.abort()
   }
 
   game.resign = async () => {
@@ -509,15 +506,6 @@ async function connectGame(game, onDone) {
   game.offerDraw = async () => {
     await yowApi.setDrawOffer(game.id, game.playedAs) 
   }
-
-  // const methods = {
-  //   abort() {},
-  //   async makeMove(move) {
-      
-  //   },
-  //   offerDraw() {},
-  //   resign() {},
-  // }
 
   console.log(game.id, 'connected to yowApi')
   return game

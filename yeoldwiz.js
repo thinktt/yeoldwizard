@@ -380,16 +380,19 @@ async function startApp(user) {
       async doQuitAction(action) {
         switch(action) {
           case 'resign':
-             lichessApi.resign(this.boardGame.id)
+             await this.boardGame.resign()
              break;
           case 'offerDraw':
-             lichessApi.offerDraw(this.boardGame.id)
+             await this.boardGame.offerDraw()
              this.drawOfferState = 'offered'
              await new Promise(r => setTimeout(r, 5000))
              if (this.drawOfferState === 'offered') this.drawOfferState = 'ignored'
              break;
           case 'abort':
-             lichessApi.abortGame(this.boardGame.id)
+             await this.boardGame.abort()
+             this.route('back')
+             this.messageType = 'none'
+             this.loadUserGames()
              break;
           case 'drawWasIgnored':
              this.drawOfferState = 'ignored'
