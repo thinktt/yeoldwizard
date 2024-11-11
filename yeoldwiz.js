@@ -656,8 +656,10 @@ async function startApp(user) {
           this.currentGameId = currentGame.id
           this.currentGame = currentGame
           await this.loadBoard(this.currentGame)
-          await games.connectGame(this.currentGame)
-          // await this.connectToStream(currentGame.id)
+          await games.connectGame(this.currentGame, () => {
+              this.currentGameId = ''
+              this.loadUserGames() 
+          })
           return
         } 
         this.currentGameId = null

@@ -466,18 +466,21 @@ async function startGame(opponent) {
 }
 
 // get the latest currentGame and add interactivity to it
-async function connectGame(game) {
+async function connectGame(game, onDone) {
 
   // connect game to stream and update game accordingly
   const stream = await yowApi.streamGameEvents(game.id, (update) => {
       game.lastEventTime = Date.now()
       game.moves = update.moves.split(' ')
 
+      // on update.winner exists game has ended
       if (update.winner) {
         const endState = getLocalEndState(game, update)
         game.status = endState.status
         game.conclusion = endState.conclusion
         game.drawType = endState.drawType
+        onDone()
+        stream.abort()
       }
 
       // if game is aborted
