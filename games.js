@@ -188,68 +188,10 @@ async function yowToLocalGame(yowGame) {
     game.playedAs = 'white' 
   }
 
-  switch (yowGame.winner) {
-    case 'pending':
-      game.status = 'started'
-      game.conclusion = null
-      break
-    case 'draw':
-      game.conclusion = 'draw'
-      break
-    case 'black':
-      if (game.playedAs === 'black') game.conclusion = 'won'
-        else game.conclusion = 'lost'
-      break
-    case 'white':
-      if (game.playedAs === 'white') game.conclusion = 'won'
-        else game.conclusion = 'lost'
-      break
-    default:
-      throw new Error ('no valid yowGame.winner found')
-  }
-
-  switch (yowGame.method) {
-    case undefined: 
-      break
-    case 'mate':
-      game.status = 'mate'
-      game.drawType = null
-      break
-    case 'resign':
-      game.status = 'resign'
-      game.drawType = null
-      break
-    case 'time':
-      game.status = 'outoftime'
-      game.drawType = null
-      break
-    case 'mutual':
-      game.status = 'draw'
-      game.drawType = 'mutual'
-      break
-    case 'stalemate':
-      game.status = 'stalemate'
-      game.drawType =  'stalemate'
-      break
-    case 'material':
-      game.status = 'draw'
-      game.drawType = 'material'
-      break
-    case 'threefold':
-      game.status = 'draw'
-      game.drawType =  'threefold'
-      break
-    case 'fiftyMove':
-      game.status = 'draw'
-      game.drawType = 'fiftyMove'
-      break
-    case undefined: 
-      game.status = 'started'
-      game.drawType = null
-    default:
-      console.log(yowGame)
-      throw new Error ('no valid yowGame.method found')
-  }
+  const endState = getLocalEndState(game, yowGame)
+  game.status = endState.status
+  game.conclusion = endState.conclusion
+  game.drawType = endState.drawType
 
   const normalGame = normalizeGame(game) 
 
@@ -542,26 +484,6 @@ async function connectGame(game) {
       //  app.route('back')
       //  app.messageType = 'none'
       //  app.loadUserGames()
-
-      // // if there is a winner update then calculate game conclusion
-      // if (update.winner) {
-      //   game.conclusion = getConclusion(game, update) 
-      // }
-
-      // // if the conclusion is a draw calculate draw type
-      // if (game.conclusion === 'draw') {
-      //   game.drawType = getDrawType('draw', game.moves)
-      // }
-
-      // game is a draw
-      // game.conclusion = 'draw'
-      // game.drawType = getDrawType(this.boardGame.conclusion, this.boardGame.moves)
-      
-      // user won
-      // game.conclusion = 'won'
-
-      // user lost
-      // game.conclusion = 'lost'
 
     }, 
     () => console.log(`${game.id} stream closed`),  
