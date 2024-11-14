@@ -252,7 +252,8 @@ async function updateToken() {
 }
 
 async function getGames(user, lastGameTime, gameHandler, doneHandler) {
-  const url = `${yowApiUrl}/games2?playerId=${user}&createdAt=${lastGameTime}`
+  const lowerUser = user.toLowerCase()
+  const url = `${yowApiUrl}/games2?playerId=${lowerUser}&createdAt=${lastGameTime}`
 
   const eventSource = new EventSource(url)
 
