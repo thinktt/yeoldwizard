@@ -35,7 +35,7 @@ let tokens
 let botBrowsingIsSet = false
 
 // flush local db if we changed the format since user used the app
-const dbVersion = '1.1'
+const dbVersion = '1.2'
 if (localStorage.dbVersion !== dbVersion) { 
   console.log(`DB does not match current version, flushing db`)
   localStorage.clear()
@@ -103,8 +103,9 @@ async function doAccountFlow() {
   }
     
   console.log('Setting user ' + account.username + ' in local storage')
-  localStorage.user = account.username
-  console.log('Successfully signed in as ' + account.username)
+  localStorage.user = account.id
+  localStorage.username = account.username
+  console.log('Successfully signed in as' + account.username)
   
   return
 }
@@ -166,7 +167,7 @@ async function preStart() {
   if (window.localStorage.user) {
 
     console.log('User ' + window.localStorage.user + ' found')
-    const app = await startApp(window.localStorage.user)
+    const app = await startApp(window.localStorage.username)
     tokens = JSON.parse(localStorage.tokens) 
     
     app.isLoading = true
@@ -561,6 +562,7 @@ async function startApp(user) {
         this.signInFailed = false;
         delLichessToken()
         delete window.localStorage.user
+        delete window.localStorage.username
         delete window.localStorage.tokens
         window.localStorage.lastCmp = 'Wizard'
         this.goToCmp('Wizard')
