@@ -470,6 +470,10 @@ async function connectGame(game, onDone) {
 
   // connect game to stream and update game accordingly
   const stream = await yowApi.streamGameEvents(game.id, (update) => {
+      
+      // don't do updates on empty move list
+      if (update.moves === '') return 
+
       game.lastEventTime = Date.now()
       game.moves = update.moves.split(' ')
 
