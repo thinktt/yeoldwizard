@@ -661,9 +661,9 @@ async function startApp(user) {
           this.currentGameId = currentGame.id
           this.currentGame = currentGame
           await this.loadBoard(this.currentGame)
-          
+
           // give some time to let board load before stream connect
-          await new Promise(resolve => setTimeout(resolve, 250))
+          // await new Promise(resolve => setTimeout(resolve, 250))
           await games.connectGame(this.currentGame, () => {
               this.currentGameId = ''
               this.loadUserGames() 
