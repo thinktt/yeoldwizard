@@ -1,8 +1,6 @@
 import yowApi from './yowApi.js'
 import lichessApi from './lichessApi.js'
 import db from './storage.js'
-import { applyAnimation } from './lib/chessground/js/config.js'
-import { end } from './lib/chessground/js/draw.js'
 const Chess = window.Chess
 const chess = new Chess()
 
@@ -43,13 +41,14 @@ export default {
   forwardGamesToYowApi,
   dumbHash,
   compareGames,
+  gameToPGN,
 }
 
 // window.dumbHash = dumbHash
 
 
 // module globals
-const gameKeys =  ["id","createdAt","lastMoveAt","status","conclusion",
+const gameKeys =  ["id", "lichessId", "createdAt","lastMoveAt","status","conclusion",
   "drawType","opponent","playedAs","moves","wasForwardedToYowApi"]
 let gameCache = null
 let opponentMap = {}
@@ -169,6 +168,7 @@ function compareGames(oldGames, newGames) {
 async function yowToLocalGame(yowGame) {
   const game = {
     id : yowGame.id,
+    lichessId: yowGame.lichessId,
     createdAt: yowGame.createdAt,
     lastMoveAt: yowGame.lastMoveAt,
     moves: yowGame.moves ? yowGame.moves.split(' ') : [],
@@ -695,6 +695,14 @@ function cordToAlgebraMove(gameMoves, newCordMove) {
     chess.move(move, { sloppy: true })
   }
   return chess.history().slice(-1)[0]
+}
+
+function gameToPGN(game) {
+  chess.reset()
+  for (const move of game.moves) {
+    chess.move(move, { sloppy: true })
+  }
+  return chess
 }
 
 function getAlgebraMoves(cordinateMovesString) {

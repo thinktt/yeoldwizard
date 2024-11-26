@@ -14,6 +14,8 @@ export default {
   offerDraw,
   abortGame,
   getChatOpponent,
+  importGame,
+  getAnalysisLink,
 }
 
 const clientId = 'yeoldwizard.com'
@@ -407,6 +409,36 @@ async function getChatOpponent(gameId) {
   console.log(`chat says ${gameId} was played by ${opponent}`)
   return opponent
 }
+
+async function importGame(pgn) {
+  const body = `pgn=${encodeURIComponent(pgn)}`
+  let err
+  const res = await fetch(`${baseUrl}/import`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + tokens.access_token
+    },
+    body
+  }).catch(e => err = e)
+
+  if (err) throw err
+
+  if (!res.ok) {
+    const err = Error(`Import game request failed with status ${res.status}`)
+    throw err
+  }
+
+  const result = await res.json()
+  return result
+}
+
+function getAnalysisLink(game) {
+  const moveUrlStr = game.moves.join('_')
+  const url = 'https://lichess.org/analysis/' + moveUrlStr
+  return url
+}
+
 
 
 
