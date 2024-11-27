@@ -208,7 +208,7 @@ export default {
       this.comfirmMessage = ''
     },
     openGame() {
-      const url = 'https://lichess.org/' + this.game.id + '/' + this.game.playedAs
+      const url = 'https://lichess.org/' + this.game.lichessId + '/' + this.game.playedAs
       console.log(url)
       window.open(url, '_blank')
     }

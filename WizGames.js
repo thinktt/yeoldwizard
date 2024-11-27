@@ -151,7 +151,7 @@ export default {
       this.$emit('goBack')
     },
     openGame(game) {
-      const url = 'https://lichess.org/' + game.id + '/' + game.playedAs
+      const url = 'https://lichess.org/' + game.lichessId + '/' + game.playedAs
       console.log(url)
       window.open(url, '_blank')
     },
