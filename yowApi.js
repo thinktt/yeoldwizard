@@ -1,3 +1,5 @@
+
+
 export default { 
   checkHealth,
   getToken,
@@ -14,10 +16,6 @@ export default {
   getGames,
 }
 
-// we'll use this to mark the api as down if we get a refused connection
-// maybe not the best solution but will keep reques noise down if we 
-// if yowApi is down for now
-let yowApiIsDown = false
 
 let token
 let tokenClaims 
@@ -26,8 +24,8 @@ let lichessToken
 // const yowApiUrl = 'http://localhost:64355'
 // const yowApiUrl = 'https://yeoldwiz.duckdns.org:64355'
 // const yowApiUrl  = 'https://localhost:8443'
-const yowApiUrl = 'https://api.yeoldwizard.com:64355'
-const apiIsDownRes = {ok: false, status: 502, message: 'yowApi is marked as down' }
+const yowApiUrl = localStorage.yowApiUrl || 'https://api.yeoldwizard.com:64355'
+console.log(`yowApi set to ${yowApiUrl}`)
 
 async function checkHealth() {
   const res = await fetch(`${yowApiUrl}/health`, {
