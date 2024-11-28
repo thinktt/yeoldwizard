@@ -18,10 +18,7 @@ import WizGameEnd from './WizGameEnd.js'
 import router from './router.js'
 import lichessApi from './lichessApi.js'
 import yowApi from './yowApi.js'
-// import { applyAnimation } from './lib/chessground/js/config.js'
-// import { Chessground } from './lib/chessground/js/chessground.js'
-// import { cssLoader } from './pageTools.js'
-// import { start } from './lib/chessground/js/draw.js'
+
 window.games = games
 window.yowApi = yowApi
 window.lichessApi = lichessApi
