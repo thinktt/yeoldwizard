@@ -75,7 +75,7 @@ const normalView = html`
           &#xe05c;
         </button>
 
-        <button class="lichess-button" @click="openGame" title="play on Lichess">
+        <!-- <button class="lichess-button" @click="openGame" title="play on Lichess"> -->
           &#xe901;
         </button>
 
@@ -93,7 +93,7 @@ const normalView = html`
         <button @click="$emit('route-back')" title="back" class="phone-nav" >
           &#xe05c;
         </button>
-        <button title="view on Lichess" class="lichess-button" @click="openGame">
+        <!-- <button title="view on Lichess" class="lichess-button" @click="openGame"> -->
           &#xe901;
         </button>
         <button @click="comfirmMessage = 'Abort Game'" id="abort-button" title="abort game">&#xea0e;</button>

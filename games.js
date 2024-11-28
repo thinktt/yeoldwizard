@@ -483,6 +483,7 @@ async function connectGame(game, onDone) {
         game.status = endState.status
         game.conclusion = endState.conclusion
         game.drawType = endState.drawType
+        game.lichessId = update.lichessId
         onDone()
         stream.abort()
       }
