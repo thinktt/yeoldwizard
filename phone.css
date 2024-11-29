@@ -315,6 +315,25 @@
     /* margin-bottom: 1rem; */
   }
 
+  #go-back-button {
+    margin-left: 2rem;
+  }
+  
+  #go-forward-button {
+    margin-right: 2rem;
+  }
+  
+  #go-start-button {
+    padding-right: 0rem;
+    margin-right: 0rem;
+  }
+  
+  #go-end-button {
+    padding-left: 0rem;
+    margin-left: 0rem;
+  }
+  
+
   .nav-buttons button:hover {
     border-color: goldenrod;
     color: goldenrod;
