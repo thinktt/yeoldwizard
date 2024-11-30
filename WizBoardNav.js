@@ -152,7 +152,8 @@ export default {
       moveOfDrawOffer: 0,
       drawWasOffered: false,
       isWaiting: false,
-      doPopSpin: false, 
+      doPopSpin: false,
+      soundIsMuted: getSoundIsMuted()
     }
   },
   inject: ['showEndMessage', 'endMessageIsOn', "isInPhoneMode"],
@@ -214,6 +215,9 @@ export default {
       window.open(url, '_blank')
     },
     playSound(index, oldIndex) {
+      window.toggleSound = this.toggleSound
+      if (this.soundIsMuted) return 
+
       const move = this.algebraMoves[index-1]
       if (!move) return 
 
@@ -229,7 +233,17 @@ export default {
       }
     
       playMoveSound() 
-    }, 
+    },
+    toggleSound() {
+      if (this.soundIsMuted) {
+        this.soundIsMuted = false
+        setSoundIsMuted(false)
+        return 
+      }
+
+      this.soundIsMuted = true
+      setSoundIsMuted(true) 
+    } 
   },
   name: 'WizBoardNav',
   template,
@@ -249,6 +263,19 @@ function playCaptureSound() {
   captureSound.currentTime = 0
   captureSound.play()
 }
+
+function setSoundIsMuted(state) {
+  localStorage.soundIsMuted = state
+}
+
+function getSoundIsMuted() {
+  if (localStorage.soundIsMuted && localStorage.soundIsMuted === 'true') {
+    return true
+  }
+  return false
+}
+
+
 
 
 // const movesSinceDrawOffer = this.game.moves.length - this.moveOfDrawOffer
