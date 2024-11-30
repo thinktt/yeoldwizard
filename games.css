@@ -398,7 +398,7 @@ cg-board {
   color: #DDDDDD;
 }
 
-.sound-button {
+button.sound-button {
   font-family: iconmoon;
   background: transparent;
   border-color: goldenrod;
@@ -412,6 +412,17 @@ cg-board {
   border-radius: 2rem;
   border: none;
   font-weight: lighter;
+  margin-right: -0.25rem; 
+}
+
+button.sound-button.off {
+  padding-right: .5rem;
+  padding-left: .5rem;
+}
+
+button.sound-button.on {
+  padding-left: 0.4rem;
+  padding-right: 0.6rem;
 }
 
 .game-status p {

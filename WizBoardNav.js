@@ -79,10 +79,10 @@ const normalView = html`
           &#xe9cc;
         </button>
 
-        <button  v-if="soundIsMuted" title="toggle sound" class="sound-button" @click="toggleSound">
+        <button  v-if="soundIsMuted" title="toggle sound" class="sound-button off" @click="toggleSound">
           &#xe60c;
         </button>
-        <button  v-else title="toggle sound" class="sound-button" @click="toggleSound">
+        <button v-else title="toggle sound" class="sound-button on" @click="toggleSound">
           &#xe60d;
         </button>
         
@@ -103,10 +103,10 @@ const normalView = html`
 
         <button @click="comfirmMessage = 'Abort Game'" id="abort-button" title="abort game">&#xea0e;</button>
         
-        <button  v-if="soundIsMuted" title="toggle sound" class="sound-button" @click="toggleSound">
+        <button  v-if="soundIsMuted" title="toggle sound" class="sound-button off" @click="toggleSound">
           &#xe60c;
         </button>
-        <button  v-else title="toggle sound" class="sound-button" @click="toggleSound">
+        <button  v-else title="toggle sound" class="sound-button on" @click="toggleSound">
           &#xe60d;
         </button>
       </template>
@@ -136,10 +136,10 @@ const normalView = html`
         &#xe901;
       </button>
      
-      <button  v-if="soundIsMuted" title="toggle sound" class="sound-button" @click="toggleSound">
+      <button  v-if="soundIsMuted" title="toggle sound" class="sound-button off" @click="toggleSound">
         &#xe60c;
       </button>
-      <button  v-else title="toggle sound" class="sound-button" @click="toggleSound">
+      <button  v-else title="toggle sound" class="sound-button on" @click="toggleSound">
         &#xe60d;
       </button>
       
