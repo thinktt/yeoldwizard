@@ -383,8 +383,8 @@ async function startApp(user) {
           case 'offerDraw':
              await this.boardGame.offerDraw()
              this.drawOfferState = 'offered'
-             await new Promise(r => setTimeout(r, 5000))
-             if (this.drawOfferState === 'offered') this.drawOfferState = 'ignored'
+             await new Promise(r => setTimeout(r, 2000))
+             if (this.drawOfferState === 'offered') this.drawOfferState = 'declined'
              break;
           case 'abort':
              await this.boardGame.abort()
