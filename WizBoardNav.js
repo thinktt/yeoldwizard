@@ -75,11 +75,16 @@ const normalView = html`
           &#xe05c;
         </button>
 
-        <!-- <button class="lichess-button" @click="openGame" title="play on Lichess">
-          &#xe901;
-        </button> -->
+        <button title="resign" @click="comfirmMessage = 'Resign'" id="resign-button">
+          &#xe9cc;
+        </button>
 
-        <button title="resign" @click="comfirmMessage = 'Resign'" id="resign-button">&#xe9cc;</button>
+        <button  v-if="soundIsMuted" title="toggle sound" class="sound-button" @click="toggleSound">
+          &#xe60c;
+        </button>
+        <button  v-else title="toggle sound" class="sound-button" @click="toggleSound">
+          &#xe60d;
+        </button>
         
         <button title="offer draw"  
           :class="{disabled: drawsAreOnHold}"
@@ -87,16 +92,23 @@ const normalView = html`
           id="offer-draw-button"> 
           &#xe904;
         </button>
+
+
       </template>
     
       <template v-else-if="!comfirmMessage && !isWaiting">
         <button @click="$emit('route-back')" title="back" class="phone-nav" >
           &#xe05c;
         </button>
-        <!-- <button title="view on Lichess" class="lichess-button" @click="openGame"> 
-          &#xe901;
-        </button> -->
+
         <button @click="comfirmMessage = 'Abort Game'" id="abort-button" title="abort game">&#xea0e;</button>
+        
+        <button  v-if="soundIsMuted" title="toggle sound" class="sound-button" @click="toggleSound">
+          &#xe60c;
+        </button>
+        <button  v-else title="toggle sound" class="sound-button" @click="toggleSound">
+          &#xe60d;
+        </button>
       </template>
     
       <template v-if="comfirmMessage">
@@ -123,6 +135,14 @@ const normalView = html`
       <button  title="view on Lichess" class="lichess-button" @click="openGame">
         &#xe901;
       </button>
+     
+      <button  v-if="soundIsMuted" title="toggle sound" class="sound-button" @click="toggleSound">
+        &#xe60c;
+      </button>
+      <button  v-else title="toggle sound" class="sound-button" @click="toggleSound">
+        &#xe60d;
+      </button>
+      
     </div>
     <wiz-game-end v-if="endMessageIsOn || isInPhoneMode()">
     </wiz-game-end>

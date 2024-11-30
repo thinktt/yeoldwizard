@@ -392,9 +392,26 @@ cg-board {
   font-weight: bold;
 }
 
+
 .lichess-button:hover {
   border-color:#DDDDDD;
   color: #DDDDDD;
+}
+
+.sound-button {
+  font-family: iconmoon;
+  background: transparent;
+  border-color: goldenrod;
+  font-size: 1.5rem;
+  padding: .5rem;
+  margin: .25rem;
+  border-style: solid;
+  color: goldenrod;
+  cursor: pointer;
+  border-width: .20rem;
+  border-radius: 2rem;
+  border: none;
+  font-weight: lighter;
 }
 
 .game-status p {
