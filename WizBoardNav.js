@@ -167,7 +167,8 @@ export default {
     }
   },
   watch: {
-    navIndex() {
+    navIndex(newIndex, oldIndex) {
+      playSound(newIndex, oldIndex, this.algebraMoves[this.navIndex-1])
       this.comfirmMessage = ''
     },
     'game.moves'() {
@@ -215,6 +216,43 @@ export default {
   },
   name: 'WizBoardNav',
   template,
+}
+
+
+const captureSound = new Audio('sounds/Capture.mp3')
+const moveSound = new Audio('sounds/Move.ogg')
+
+function playSound(index, oldIndex, move) {
+  if (!move) return 
+
+  const isNextMove = (index - oldIndex) === 1
+  const isCapture = move.includes('x')
+
+  console.log('isNextMove:', isNextMove, '  isCaputre:', isCapture)
+  console.log('index', index, 'oldIndex', oldIndex, 'diff', index - oldIndex)
+
+  if (!isNextMove) {
+    return 
+  }
+
+  if (move.includes('x')) {
+    playCaptureSound()
+    return 
+  }
+
+  playMoveSound() 
+}
+
+function playMoveSound() {
+  moveSound.pause()
+  moveSound.currentTime = 0
+  moveSound.play()
+}
+
+function playCaptureSound() {
+  captureSound.pause()
+  captureSound.currentTime = 0
+  captureSound.play()
 }
 
 
