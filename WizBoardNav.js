@@ -168,7 +168,7 @@ export default {
   },
   watch: {
     navIndex(newIndex, oldIndex) {
-      playSound(newIndex, oldIndex, this.algebraMoves[this.navIndex-1])
+      this.playSound(newIndex, oldIndex)
       this.comfirmMessage = ''
     },
     'game.moves'() {
@@ -212,36 +212,31 @@ export default {
       const url = 'https://lichess.org/' + this.game.lichessId + '/' + this.game.playedAs
       console.log(url)
       window.open(url, '_blank')
-    }
+    },
+    playSound(index, oldIndex) {
+      const move = this.algebraMoves[index-1]
+      if (!move) return 
+
+      const isNextMove = (index - oldIndex) === 1
+      if (!isNextMove) {
+        return 
+      }
+
+      const isCapture = move.includes('x')
+      if (isCapture) {
+        playCaptureSound()
+        return 
+      }
+    
+      playMoveSound() 
+    }, 
   },
   name: 'WizBoardNav',
   template,
 }
 
-
 const captureSound = new Audio('sounds/Capture.mp3')
 const moveSound = new Audio('sounds/Move.ogg')
-
-function playSound(index, oldIndex, move) {
-  if (!move) return 
-
-  const isNextMove = (index - oldIndex) === 1
-  const isCapture = move.includes('x')
-
-  console.log('isNextMove:', isNextMove, '  isCaputre:', isCapture)
-  console.log('index', index, 'oldIndex', oldIndex, 'diff', index - oldIndex)
-
-  if (!isNextMove) {
-    return 
-  }
-
-  if (move.includes('x')) {
-    playCaptureSound()
-    return 
-  }
-
-  playMoveSound() 
-}
 
 function playMoveSound() {
   moveSound.pause()
