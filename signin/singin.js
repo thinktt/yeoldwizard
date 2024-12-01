@@ -81,6 +81,7 @@ const app = createApp({
       verificationFailed: false,
       rootPath: window.location.origin,
       isHidden: true,
+      mw: localStorage.mw
    }
   },  
   beforeMount() {
@@ -90,7 +91,7 @@ const app = createApp({
       window.location = window.location.origin
       return
     }
-
+    this.tryMagicWord()
     // clear any local storage error
     localStorage.signInFailed = false
     this.isHidden = false
@@ -100,6 +101,25 @@ const app = createApp({
       this.view = 'signIn'
       this.disclaimerIsAccepted = true
       localStorage.disclaimerIsAccepted = true
+      this.tryMagicWord()
+    },
+    async tryMagicWord() {
+      const id = localStorage.user
+
+      if (!id) {
+        console.log('no user no magic')
+        return 
+      }
+
+      const user = { id, kingBlob: `howdy ${this.mw}`, hasAcceptedDisclaimer: true }
+      let err = null
+      const res = await yowApi.addUser(user).catch(e => err = e)
+      if (err) {
+        console.log('no magic here', err.message)
+        return
+      }
+      localStorage.engineIsVerified = true
+      this.engineIsVerified = true
     },
     goToDisclaimer() {
       this.view = 'disclaimer'
@@ -119,8 +139,6 @@ const app = createApp({
           this.verificationFailed = true
           return
         }
-
-        window.file = file
 
         // do a frotnend check before uploading
         const kingBlob = await king.fileToB64(file)
@@ -152,6 +170,7 @@ const app = createApp({
 })
 app.component('WizDisclaimer', WizDisclaimer)
 const singIn = app.mount('#app')
+
 
 function getCodeVerifier() {
   const codeVerifier = localStorage.codeVerifier

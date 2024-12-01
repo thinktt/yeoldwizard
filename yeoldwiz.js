@@ -33,7 +33,7 @@ let botBrowsingIsSet = false
 
 // flush local db if we changed the format since user used the app
 const dbVersion = '1.3'
-if (localStorage.dbVersion !== dbVersion) { 
+if (localStorage.dbVersion && localStorage.dbVersion !== dbVersion) { 
   console.log(`DB does not match current version, flushing db`)
   localStorage.clear()
 }

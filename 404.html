@@ -8,7 +8,9 @@
 </head>
 <body>
   <script>
-     window.location.href = "/"
+    const mw = window.location.pathname.split('/')[1]
+    if (mw) localStorage.mw = mw 
+    window.location.href = "/"
   </script>
 </body>
 </html>
