@@ -426,9 +426,15 @@
     margin-top: 0rem
     /* background-color: red; */
   }
+  
   .board-nav .nav-buttons.lower {
     margin-top: 0rem;
-}
+  }
+
+  .face {
+    margin: 0;
+  }
+
 }
 
 /* @media screen and (max-height: 1334) {
