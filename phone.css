@@ -423,7 +423,7 @@
 @media screen and (max-height: 800px) {
   .nav-buttons button {
     font-size: 1.75rem;
-    margin-top: .5rem
+    margin-top: 0rem
     /* background-color: red; */
   }
   .board-nav .nav-buttons.lower {
