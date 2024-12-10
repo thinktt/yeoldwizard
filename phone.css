@@ -420,6 +420,17 @@
 
 }
 
+@media screen and (max-height: 800px) {
+  .nav-buttons button {
+    font-size: 1.75rem;
+    margin-top: .5rem
+    /* background-color: red; */
+  }
+  .board-nav .nav-buttons.lower {
+    margin-top: 0rem;
+}
+}
+
 /* @media screen and (max-height: 1334) {
   .board-room {
     height:  unset;
