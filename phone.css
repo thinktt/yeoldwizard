@@ -1,8 +1,8 @@
 @media screen and (max-width: 1080px) {
-  html, body {
+  /* html, body {
     touch-action: none;
     overflow: hidden;
-  }
+  } */
 
   header {
     transform: scale(1.25);
