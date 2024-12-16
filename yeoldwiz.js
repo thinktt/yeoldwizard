@@ -215,6 +215,7 @@ async function startApp(user) {
     data() {
       const data = {
         titleIsRed: false,
+        fullScrollIsAllowed: true, 
         user: user,
         isHidden: true,
         groupsAreHidden: true,
@@ -443,6 +444,7 @@ async function startApp(user) {
         this.navIsOn = false
         history.pushState({}, null, '#')
         this.wizKidMode = 'preview'
+        this.allowFullScroll()
       },
       goToCmp(cmpName) {
         const selector = 'div[name="'  + cmpName + '"]'
@@ -479,6 +481,7 @@ async function startApp(user) {
       },
       goNav() {
         if (this.groupsAreHidden) {
+          console.log('hiding groups')
           return
         }
         this.route('nav')
@@ -602,6 +605,14 @@ async function startApp(user) {
           this.titleIsRed = !this.titleIsRed
           await new Promise(r => setTimeout(r, 100))
         }
+      },
+      disableFullScroll() {
+        console.log('full scroll turned off') 
+        this.fullScrollIsAllowed = false
+      },
+      allowFullScroll() {
+        console.log('full scroll is on') 
+        this.fullScrollIsAllowed = true
       },
       openGame() {
         window.open('https://lichess.org/' + this.currentGameId, '_blank')
@@ -874,33 +885,67 @@ function mangeScrollLocking() {
   }
 }
 
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
 
-let startY = 0
+function scrollToBottom() {
+  window.scrollTo({
+    top: document.documentElement.scrollHeight,
+    behavior: 'smooth'
+  })
+}
 
 document.body.addEventListener('touchstart', function(event) {
   startY = event.touches[0].clientY
 }, { passive: true })
 
-document.body.addEventListener('touchmove', function(event) {
-  const currentY = event.touches[0].clientY
-  const deltaY = currentY - startY
-  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-  const scrollHeight = document.documentElement.scrollHeight
-  const clientHeight = document.documentElement.clientHeight
-  const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1
 
-  if (deltaY > 0 && scrollTop === 0) {
-    // console.log('scrolled up to the max')
-    event.preventDefault()
-    app.flashTitle()
+let startY = 0
+document.body.addEventListener('touchmove', function(event) {
+  if (app.fullScrollIsAllowed) {
+    return
+  }
+
+   event.preventDefault()
+    const currentY = event.touches[0].clientY
+    const deltaY = currentY - startY
+
+   if (deltaY > 0) {
+    scrollToTop()
   } 
   
-  if (deltaY < 0 && isAtBottom) {
-    // console.log('scrolled down to the max')
-    event.preventDefault()
-    app.flashTitle()
+  if (deltaY < 0) {
+    scrollToBottom()
   }
 }, { passive: false })
+
+
+
+// let startY = 0
+// document.body.addEventListener('touchmove', function(event) {
+//   const currentY = event.touches[0].clientY
+//   const deltaY = currentY - startY
+//   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+//   const scrollHeight = document.documentElement.scrollHeight
+//   const clientHeight = document.documentElement.clientHeight
+//   const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1
+
+//   if (deltaY > 0 && scrollTop === 0) {
+//     // console.log('scrolled up to the max')
+//     event.preventDefault()
+//     app.flashTitle()
+//   } 
+  
+//   if (deltaY < 0 && isAtBottom) {
+//     // console.log('scrolled down to the max')
+//     event.preventDefault()
+//     app.flashTitle()
+//   }
+// }, { passive: false })
 
 // document.addEventListener('scroll', () => {
 //   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;

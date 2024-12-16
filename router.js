@@ -37,6 +37,12 @@ window.addEventListener('popstate', (event) => {
   const cmp = cmpsObj[routePieces[1]]
 
   // console.log('hash route is:', hashRoute)
+  console.log(view) 
+
+
+  // full scroll is off on most routes, except the home page 
+  // and the games page
+  app.disableFullScroll()
 
   if (view === 'board') {
     app.showBoard(item)
@@ -60,6 +66,7 @@ window.addEventListener('popstate', (event) => {
 
   if (!hashRoute) {
     // console.log('no route')
+    app.allowFullScroll()
     app.deselect()
     return
   }
@@ -107,6 +114,7 @@ function goToView(view, cmp) {
     case 'games': 
       app.select(cmp)
       app.showGames()
+      app.allowFullScroll()
       break
     case 'nav':
       app.switchNav()
