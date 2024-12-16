@@ -29,7 +29,7 @@
       <span> 
         <span @click="goNav" class="hamburger" :class="{noshow: navIsOn}" >☰</span> 
         <span @click="route('back')" class="hamburger" :class="{noshow: !navIsOn}" >☰</span>
-        <span class="main-title">Ye Old Wizard</span>
+        <span class="main-title" :class="{ red: titleIsRed }">Ye Old Wizard</span>
       </span>
 
       <span v-if="signInFailed" class="sign-in error" @click=signOut>

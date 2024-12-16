@@ -51,6 +51,10 @@ body {
   user-select: none;
 }
 
+.red {
+  color: red; 
+}
+
 body::-webkit-scrollbar-button:double-button {
   border-color: transparent transparent #9b6a2f transparent;
 }

@@ -27,6 +27,7 @@ window.addEventListener('popstate', (event) => {
     return
   }
 
+ 
   // console.log(`location: ${document.location}, state: ${JSON.stringify(event.state)}`);
   const hashRoute = window.location.hash
   lastHash = hashRoute

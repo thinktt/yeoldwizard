@@ -214,6 +214,7 @@ async function startApp(user) {
     },
     data() {
       const data = {
+        titleIsRed: false,
         user: user,
         isHidden: true,
         groupsAreHidden: true,
@@ -596,6 +597,12 @@ async function startApp(user) {
         this.message = ''
         // this.route('')
       },
+      async flashTitle() {
+        for (let i = 0; i < 8; i++) {
+          this.titleIsRed = !this.titleIsRed
+          await new Promise(r => setTimeout(r, 100))
+        }
+      },
       openGame() {
         window.open('https://lichess.org/' + this.currentGameId, '_blank')
       },
@@ -840,3 +847,97 @@ function isInPhoneMode () {
   return window.matchMedia('(max-width: 1080px)').matches
 }
 
+
+
+// the following will fully lock scrolling if the body is less than the 
+// window heght (there is no scrollabel content). This cuts down on the
+// touch rubberband effect on iOS at least when content is not scrollable 
+function lockBodyScroll() {
+  // document.body.style.overflow = 'hidden'
+  document.body.style.touchAction = 'none';
+  console.log('scrolling is locked')
+}
+
+function unlockBodyScroll() {
+  // document.body.style.overflow = ''
+  document.body.style.touchAction = '';
+  console.log('scrolling is unlocked')
+}
+
+function mangeScrollLocking() {
+  console.log(document.documentElement.scrollHeight, window.innerHeight, document.documentElement.scrollHeight <= window.innerHeight)
+  // lock scrolling if document body is less than the height of the window
+  if (document.documentElement.scrollHeight <= window.innerHeight) {
+    lockBodyScroll()
+  } else {
+    unlockBodyScroll()
+  }
+}
+
+
+let startY = 0
+
+document.body.addEventListener('touchstart', function(event) {
+  startY = event.touches[0].clientY
+}, { passive: true })
+
+document.body.addEventListener('touchmove', function(event) {
+  const currentY = event.touches[0].clientY
+  const deltaY = currentY - startY
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+  const scrollHeight = document.documentElement.scrollHeight
+  const clientHeight = document.documentElement.clientHeight
+  const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1
+
+  if (deltaY > 0 && scrollTop === 0) {
+    // console.log('scrolled up to the max')
+    event.preventDefault()
+    app.flashTitle()
+  } 
+  
+  if (deltaY < 0 && isAtBottom) {
+    // console.log('scrolled down to the max')
+    event.preventDefault()
+    app.flashTitle()
+  }
+}, { passive: false })
+
+// document.addEventListener('scroll', () => {
+//   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+//   if (scrollTop === 0) {
+//     console.log('Document reached the top!')
+//     app.flashTitle()
+//   }
+// })
+
+// document.body.addEventListener('touchmove', function(event) {
+//   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+//   if (scrollTop < 0) {
+//     event.preventDefault() 
+//   }
+// }, {
+//   passive: false,
+//   useCapture: false
+// })
+
+// const mutationObserver = new MutationObserver(() => {
+//   mangeScrollLocking();
+// })
+
+// mutationObserver.observe(document.documentElement, {
+//   childList: true,
+//   subtree: true,
+//   attributes: true,
+// })
+
+// const resizeObserver = new ResizeObserver(() => {
+//   mangeScrollLocking()
+// })
+// resizeObserver.observe(document.documentElement)
+
+// lockBodyScroll()
+
+
+window.lockBodyScroll = lockBodyScroll
+window.unlockBodyScroll = unlockBodyScroll
+window.mangeScrollLocking = mangeScrollLocking
