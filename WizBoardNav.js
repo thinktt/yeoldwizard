@@ -1,4 +1,5 @@
 import { html } from './pageTools.js'
+import sounds from './sounds.js'
 
 const demoView = html`
   <div class="board-nav" :class="{'hide-on-desktop': endMessageIsOn}">
@@ -269,19 +270,21 @@ export default {
   template,
 }
 
-const captureSound = new Audio('sounds/Capture.mp3')
-const moveSound = new Audio('sounds/Move.ogg')
+// const captureSound = new Audio('sounds/Capture.mp3')
+// const moveSound = new Audio('sounds/Move.ogg')
 
 function playMoveSound() {
-  moveSound.pause()
-  moveSound.currentTime = 0
-  moveSound.play()
+  sounds.play('move')
+    // moveSound.pause()
+    // moveSound.currentTime = 0
+    // moveSound.play()
 }
 
 function playCaptureSound() {
-  captureSound.pause()
-  captureSound.currentTime = 0
-  captureSound.play()
+  sounds.play('capture')
+  // captureSound.pause()
+  // captureSound.currentTime = 0
+  // captureSound.play()
 }
 
 function setSoundIsMuted(state) {

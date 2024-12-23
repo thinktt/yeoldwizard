@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sound Test</title>
+</head>
+<body>
+  <h1>Sound Test</h1>
+  <button id="playSound">Play Sound</button>
+
+  <script type="module">
+    import sounds from './sounds.js'
+
+    document.getElementById('playSound').addEventListener('click', () => {
+      if (sounds) {
+        sounds.play('capture')
+      } else {
+        alert('Sound not loaded yet!')
+      }
+    })
+  </script>
+</body>
+</html>
