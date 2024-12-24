@@ -49,6 +49,8 @@ body {
   font-weight: lighter;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 
 .red {
@@ -450,6 +452,7 @@ nav a {
   display: flex;
   flex-direction: column;
   user-select: none;
+  -webkit-user-select: none;
   /* margin-top: 1rem; */
 }
 
