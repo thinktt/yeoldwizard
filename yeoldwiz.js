@@ -392,7 +392,7 @@ async function startApp(user) {
              await this.boardGame.abort()
              this.route('back')
              this.messageType = 'none'
-             this.loadUserGames()
+             await this.loadUserGames()
              break;
           case 'drawWasIgnored':
              this.drawOfferState = 'ignored'
@@ -607,11 +607,9 @@ async function startApp(user) {
         }
       },
       disableFullScroll() {
-        console.log('full scroll turned off') 
         this.fullScrollIsAllowed = false
       },
       allowFullScroll() {
-        console.log('full scroll is on') 
         this.fullScrollIsAllowed = true
       },
       openGame() {

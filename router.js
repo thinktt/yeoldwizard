@@ -37,8 +37,6 @@ window.addEventListener('popstate', (event) => {
   const cmp = cmpsObj[routePieces[1]]
 
   // console.log('hash route is:', hashRoute)
-  console.log(view) 
-
 
   // full scroll is off on most routes, except the home page 
   // and the games page
