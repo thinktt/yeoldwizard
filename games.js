@@ -466,7 +466,9 @@ async function startGame(opponent) {
 }
 
 // get the latest currentGame and add interactivity to it
-async function connectGame(game, onDone) {
+async function connectGame(game, onDone, onEarlyClose) {
+
+  if (!onEarlyClose) onEarlyClose = () => {}
 
   // connect game to stream and update game accordingly
   const stream = await yowApi.streamGameEvents(game.id, (update) => {
@@ -490,8 +492,14 @@ async function connectGame(game, onDone) {
 
       // note: aborting games takes place in main frontend state
     }, 
-    () => console.log(`${game.id} stream closed`),  
-    (err) => console.log(`${game.id} stream error`)
+    () => {
+      console.log(`${game.id} stream closed`) 
+      onEarlyClose()
+    },
+    (err) => {
+      console.log(`${game.id} stream error`)
+      onEarlyClose()
+    }
   )
 
   game.makeMove = async (move) => {

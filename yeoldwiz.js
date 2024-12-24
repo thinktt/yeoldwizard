@@ -606,6 +606,12 @@ async function startApp(user) {
           await new Promise(r => setTimeout(r, 100))
         }
       },
+      async makeTitleRed() {
+        this.titleIsRed = true
+      },
+      async makeTitleWithe() {
+        this.titleIsRed = false 
+      },
       disableFullScroll() {
         this.fullScrollIsAllowed = false
       },
@@ -660,10 +666,15 @@ async function startApp(user) {
 
           // give some time to let board load before stream connect
           // await new Promise(resolve => setTimeout(resolve, 250))
-          await games.connectGame(this.currentGame, () => {
+          await games.connectGame(this.currentGame, 
+            () => {
               this.currentGameId = ''
               this.loadUserGames() 
-          })
+            },
+            () => {
+              this.makeTitleRed()
+            }
+          )
           return
         } 
         this.currentGameId = null
