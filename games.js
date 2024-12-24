@@ -42,6 +42,7 @@ export default {
   dumbHash,
   compareGames,
   gameToPGN,
+  sortGames, 
 }
 
 // window.dumbHash = dumbHash
@@ -56,6 +57,7 @@ let idMap = {}
 let user = ''
 
 function getGamesByOpponent() {
+  opponentMap
   return opponentMap
 }
 
@@ -294,7 +296,6 @@ function getGames(opponent) {
   }
 
   console.log('loading previous games from localStorage')
-  const gameKeys = JSON.parse(localStorage.gameKeys)
   const gameRowsStr = localStorage[user + '_gameRows']
   const gameRows = JSON.parse(gameRowsStr)
 
@@ -337,8 +338,8 @@ function setGames(games) {
   gameCache = games
   idMap = gamesById
   opponentMap = gamesByOpponet
+  
 
-  const gameKeys = Object.keys(games[0])
   const gameRows = []
 
   // turn move arrays into move strings
@@ -349,7 +350,6 @@ function setGames(games) {
     gameRows.push(gameRow)
   }
   
-  localStorage.gameKeys = JSON.stringify(gameKeys)
   const gameRowsStr = JSON.stringify(gameRows)
   localStorage[user + '_gameRows'] = gameRowsStr
   const hash = dumbHash(gameRowsStr)

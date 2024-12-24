@@ -629,19 +629,7 @@ async function startApp(user) {
         
         let err
         const game = await games.startGame(opponent).catch(e => err = e) 
-        // const res = await lichessApi.createChallenge(colorToPlay)
-      
-        // if (err) {
-        //   this.isStartingGame = false
-        //   return false
-        // }
-        // const challenge = await res.json()
-        const gameId = game.id
-        // setOpponentInYowApi(gameId, opponent)
-
-      
-        // give some time for the game to start, this is crappy but hopefuly works
-        // await new Promise(resolve => setTimeout(resolve, 3000))
+          const gameId = game.id
         
         if (err) {
           console.log('Game did not start')
@@ -650,12 +638,7 @@ async function startApp(user) {
         }
       
         console.log(`${gameId} started!`)
-        // if (!await setOpponent(gameId, opponent)) {
-        //   console.log('Game started unalbe to set opponent')
-        //   this.setError('Game started but unable to set opponent')
-        //   return false
-        // }
-      
+     
         games.addCurrentGame({id: gameId, opponent, })
         this.currentGameId = gameId
         
