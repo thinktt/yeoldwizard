@@ -1,8 +1,8 @@
 export default { getSound, play }
 
-function getSound(url) {
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
 
+function getSound(url) {
   return fetch(url)
     .then(res => res.arrayBuffer())
     .then(data => audioCtx.decodeAudioData(data))
