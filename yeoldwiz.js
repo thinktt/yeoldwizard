@@ -664,28 +664,25 @@ async function startApp(user) {
           this.currentGame = currentGame
           await this.loadBoard(this.currentGame)
           await this.connectToLiveGame()
-
-          // give some time to let board load before stream connect
-          // await new Promise(resolve => setTimeout(resolve, 250))
-
           return
         } 
         this.currentGameId = null
       },
       async connectToLiveGame() {
-        await games.connectGame(
-          this.currentGame, 
-          () => {
-            this.currentGameId = ''
-            this.loadUserGames() 
-          },
-          async () => {
-            this.makeTitleRed()
-            await new Promise(resolve => setTimeout(resolve, 3000))
-            this.connectToLiveGame()
-            this.makeTitleWhite()
-          }
-        )
+        
+        const onDone = () => {
+          this.currentGameId = ''
+          this.loadUserGames() 
+        }
+
+        const onEarlyClose =  async () => {
+          this.makeTitleRed()
+          // await new Promise(resolve => setTimeout(resolve, 3000))
+          // this.connectToLiveGame()
+          // this.makeTitleWhite()
+        }
+
+        await games.connectGame(this.currentGame, onDone, onEarlyClose)
       }
     },
     watch: {
@@ -923,12 +920,14 @@ document.body.addEventListener('touchmove', function(event) {
   }
 }, { passive: false })
 
-document.addEventListener('visibilitychange', () => {
+document.addEventListener('visibilitychange', async () => {
   if (document.hidden) {
     console.log('User navigated away from the tab')
     // Add your "away" logic here
   } else {
     console.log('User navigated back to the tab')
+    // await app.currentGame.abort()
+    // app.connectToLiveGame() 
     app.flashTitle()
   }
 })

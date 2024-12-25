@@ -470,56 +470,78 @@ async function connectGame(game, onDone, onEarlyClose) {
 
   if (!onEarlyClose) onEarlyClose = () => {}
 
-  // connect game to stream and update game accordingly
-  const stream = await yowApi.streamGameEvents(game.id, (update) => {
-      
-      // don't do updates on empty move list
-      if (update.moves === '') return 
+  const onGameUpdates = (update) =>  {
+    // don't do updates on empty move list
+    if (update.moves === '') return 
 
-      game.lastEventTime = Date.now()
-      game.moves = update.moves.split(' ')
+    game.lastEventTime = Date.now()
+    game.moves = update.moves.split(' ')
 
-      // on update.winner exists game has ended
-      if (update.winner) {
-        const endState = getLocalEndState(game, update)
-        game.status = endState.status
-        game.conclusion = endState.conclusion
-        game.drawType = endState.drawType
-        game.lichessId = update.lichessId
-        onDone()
-        stream.abort()
-      }
-
-      // note: aborting games takes place in main frontend state
-    }, 
-    () => {
-      console.log(`${game.id} stream closed`) 
-      onEarlyClose()
-    },
-    (err) => {
-      console.log(`${game.id} stream error`)
-      onEarlyClose()
+    // on update.winner exists game has ended
+    if (update.winner) {
+      const endState = getLocalEndState(game, update)
+      game.status = endState.status
+      game.conclusion = endState.conclusion
+      game.drawType = endState.drawType
+      game.lichessId = update.lichessId
+      onDone()
+      stream.abort()
     }
-  )
+  }
+  
+  // connect game to stream and update game accordingly
+  let stream = null 
+  game.startStream = async () => {
 
+    // close exsiting streams before starting new ones, this makes
+    // this method a restart method as well as a start method
+    if (stream !== null) {
+      await stream.abort()
+    }
+
+    stream = await yowApi.streamGameEvents(
+      game.id, 
+      onGameUpdates, 
+      () => {
+        console.log(`${game.id} stream closed`) 
+        onEarlyClose()
+      },
+      (err) => {
+        console.log(`${game.id} stream error`)
+        onEarlyClose()
+      }
+    )
+    console.log(game.id, 'stream started')
+  }
+
+  game.stopStream = () => {
+    if (stream === null) {
+      console.log('attemtpted to stop stream but no stream exist')
+      return 
+    }
+    stream.abort()
+  }
+
+  
   game.makeMove = async (move) => {
     const algMove = cordToAlgebraMove(game.moves, move) 
     await yowApi.addMove(game.id, game.moves.length, algMove)
   }
-
+  
   game.abort = async () => {
     await yowApi.abort(game.id, game.playedAs)
     stream.abort()
   }
-
+  
   game.resign = async () => {
     await yowApi.resign(game.id, game.playedAs)
   }
-
+  
   game.offerDraw = async () => {
     await yowApi.setDrawOffer(game.id, game.playedAs) 
   }
-
+  
+  game.startStream()
   console.log(game.id, 'connected to yowApi')
   return game
 }
