@@ -925,12 +925,10 @@ document.body.addEventListener('touchmove', function(event) {
 document.addEventListener('visibilitychange', async () => {
   if (document.hidden) {
     console.log('User navigated away from the tab')
-    // Add your "away" logic here
   } else {
     console.log('User navigated back to the tab')
-    // await app.currentGame.abort()
-    // app.connectToLiveGame() 
-    app.flashTitle()
+    if (app.currentGame.startStream) app.currentGame.startStream()
+    // app.flashTitle()
   }
 })
 
