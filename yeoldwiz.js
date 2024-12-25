@@ -609,7 +609,7 @@ async function startApp(user) {
       async makeTitleRed() {
         this.titleIsRed = true
       },
-      async makeTitleWithe() {
+      async makeTitleWhite() {
         this.titleIsRed = false 
       },
       disableFullScroll() {
@@ -663,22 +663,30 @@ async function startApp(user) {
           this.currentGameId = currentGame.id
           this.currentGame = currentGame
           await this.loadBoard(this.currentGame)
+          await this.connectToLiveGame()
 
           // give some time to let board load before stream connect
           // await new Promise(resolve => setTimeout(resolve, 250))
-          await games.connectGame(this.currentGame, 
-            () => {
-              this.currentGameId = ''
-              this.loadUserGames() 
-            },
-            () => {
-              this.makeTitleRed()
-            }
-          )
+
           return
         } 
         this.currentGameId = null
       },
+      async connectToLiveGame() {
+        await games.connectGame(
+          this.currentGame, 
+          () => {
+            this.currentGameId = ''
+            this.loadUserGames() 
+          },
+          async () => {
+            this.makeTitleRed()
+            await new Promise(resolve => setTimeout(resolve, 3000))
+            this.connectToLiveGame()
+            this.makeTitleWhite()
+          }
+        )
+      }
     },
     watch: {
       drawOfferState(newState, oldState) {
@@ -915,62 +923,16 @@ document.body.addEventListener('touchmove', function(event) {
   }
 }, { passive: false })
 
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    console.log('User navigated away from the tab')
+    // Add your "away" logic here
+  } else {
+    console.log('User navigated back to the tab')
+    app.flashTitle()
+  }
+})
 
-
-// let startY = 0
-// document.body.addEventListener('touchmove', function(event) {
-//   const currentY = event.touches[0].clientY
-//   const deltaY = currentY - startY
-//   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-//   const scrollHeight = document.documentElement.scrollHeight
-//   const clientHeight = document.documentElement.clientHeight
-//   const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1
-
-//   if (deltaY > 0 && scrollTop === 0) {
-//     // console.log('scrolled up to the max')
-//     event.preventDefault()
-//     app.flashTitle()
-//   } 
-  
-//   if (deltaY < 0 && isAtBottom) {
-//     // console.log('scrolled down to the max')
-//     event.preventDefault()
-//     app.flashTitle()
-//   }
-// }, { passive: false })
-
-// document.addEventListener('scroll', () => {
-//   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-//   if (scrollTop === 0) {
-//     console.log('Document reached the top!')
-//     app.flashTitle()
-//   }
-// })
-
-// document.body.addEventListener('touchmove', function(event) {
-//   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-//   if (scrollTop < 0) {
-//     event.preventDefault() 
-//   }
-// }, {
-//   passive: false,
-//   useCapture: false
-// })
-
-// const mutationObserver = new MutationObserver(() => {
-//   mangeScrollLocking();
-// })
-
-// mutationObserver.observe(document.documentElement, {
-//   childList: true,
-//   subtree: true,
-//   attributes: true,
-// })
-
-// const resizeObserver = new ResizeObserver(() => {
-//   mangeScrollLocking()
-// })
-// resizeObserver.observe(document.documentElement)
 
 // lockBodyScroll()
 
