@@ -670,6 +670,10 @@ async function startApp(user) {
       },
       async connectToLiveGame() {
         
+        const onStart = () => {
+          this.makeTitleWhite()
+        }
+
         const onDone = () => {
           this.currentGameId = ''
           this.loadUserGames() 
@@ -678,11 +682,9 @@ async function startApp(user) {
         const onEarlyClose =  async () => {
           this.makeTitleRed()
           // await new Promise(resolve => setTimeout(resolve, 3000))
-          // this.connectToLiveGame()
-          // this.makeTitleWhite()
         }
-
-        await games.connectGame(this.currentGame, onDone, onEarlyClose)
+        
+        await games.connectGame(this.currentGame, onStart, onDone, onEarlyClose)
       }
     },
     watch: {

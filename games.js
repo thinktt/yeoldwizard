@@ -466,7 +466,7 @@ async function startGame(opponent) {
 }
 
 // get the latest currentGame and add interactivity to it
-async function connectGame(game, onDone, onEarlyClose) {
+async function connectGame(game, onStart, onDone, onEarlyClose) {
 
   if (!onEarlyClose) onEarlyClose = () => {}
 
@@ -512,6 +512,7 @@ async function connectGame(game, onDone, onEarlyClose) {
       }
     )
     console.log(game.id, 'stream started')
+    onStart()
   }
 
   game.stopStream = () => {
