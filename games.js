@@ -522,9 +522,16 @@ async function connectGame(game, onStart, onDone, onEarlyClose) {
     }
     stream.abort()
   }
-
+  
+  game.streamIsClosed = () => {
+    return stream.isClosed()
+  }
   
   game.makeMove = async (move) => {
+    if (game.streamIsClosed()) {
+      console.log('move made with closed stream, reopening stream')
+      game.startStream()
+    } 
     const algMove = cordToAlgebraMove(game.moves, move) 
     await yowApi.addMove(game.id, game.moves.length, algMove)
   }

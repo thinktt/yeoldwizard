@@ -102,6 +102,9 @@ async function streamGameEvents(gameIds, eventHandler, doneHandler, errHandler) 
       const feedback = eventSource.close()
       console.log(`${gameIds} stream is now closed`)
       if (doneHandler) doneHandler()
+    },
+    isClosed() {
+      return (eventSource.readyState === EventSource.CLOSED)
     }  
   }
 }
