@@ -908,10 +908,10 @@ document.body.addEventListener('touchmove', function(event) {
   const currentY = event.touches[0].clientY
   const deltaY = currentY - startY
   
-  if (deltaY > 0 && window.scrollY === 0) {
-    console.log('reload')
-    location.reload()
-  }
+  // if (deltaY > 0 && window.scrollY === 0) {
+  //   console.log('reload')
+  //   location.reload()
+  // }
     
   if (app.fullScrollIsAllowed) {
     return
