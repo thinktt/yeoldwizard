@@ -905,15 +905,21 @@ document.body.addEventListener('touchstart', function(event) {
 
 let startY = 0
 document.body.addEventListener('touchmove', function(event) {
+  const currentY = event.touches[0].clientY
+  const deltaY = currentY - startY
+  
+  if (deltaY > 0 && window.scrollY === 0) {
+    console.log('reload')
+    location.reload()
+  }
+    
   if (app.fullScrollIsAllowed) {
     return
   }
+  
+  event.preventDefault()
 
-   event.preventDefault()
-    const currentY = event.touches[0].clientY
-    const deltaY = currentY - startY
-
-   if (deltaY > 0) {
+  if (deltaY > 0) {
     scrollToTop()
   } 
   
