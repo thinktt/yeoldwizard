@@ -214,10 +214,6 @@ async function startApp(user) {
     },
     data() {
       const data = {
-        pullReloaderTop: -30,
-        pullReloaderRotation: 20,
-        pullReloaderOpacity: .5,
-        pullReloaderIsSlidingBack: false,
         titleIsRed: false,
         fullScrollIsAllowed: true, 
         user: user,
@@ -902,35 +898,20 @@ function scrollToBottom() {
   })
 }
 
-let startY = 0
-let dragStartTime = 0
-
 document.body.addEventListener('touchstart', function(event) {
-  app.pullReloaderIsSlidingBack = false
   startY = event.touches[0].clientY
-  dragStartTime = Date.now()
 }, { passive: true })
 
 
+let startY = 0
 document.body.addEventListener('touchmove', function(event) {
   const currentY = event.touches[0].clientY
   const deltaY = currentY - startY
   
-  if (deltaY > 0 && window.scrollY === 0) {
-    event.preventDefault()
-    let pullReloaderTop = deltaY + -30
-    let pullReloaderRotation = (pullReloaderTop / 150) * 360
-    
-    if (pullReloaderTop > 150) {
-      pullReloaderTop = 150
-      pullReloaderRotation = (pullReloaderTop / 150) * 360
-    }
-    
-    app.pullReloaderTop = pullReloaderTop
-    app.pullReloaderRotation = pullReloaderRotation
-    app.pullReloaderOpacity = Math.min(1, 0.5 + pullReloaderTop / 300)
-    return 
-  }
+  // if (deltaY > 0 && window.scrollY === 0) {
+  //   console.log('reload')
+  //   location.reload()
+  // }
     
   if (app.fullScrollIsAllowed) {
     return
@@ -955,17 +936,6 @@ document.addEventListener('visibilitychange', async () => {
     if (app.currentGame.startStream) app.currentGame.startStream()
     // app.flashTitle()
   }
-})
-
-document.body.addEventListener('touchend', function() {
-  if (app.pullReloaderOpacity >= 1) {
-    location.reload()
-    return
-  }
-
-  app.pullReloaderTop = -30
-  app.pullReloaderRotation = 0
-  app.pullReloaderIsSlidingBack = true
 })
 
 
