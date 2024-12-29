@@ -917,6 +917,7 @@ document.body.addEventListener('touchmove', function(event) {
   const deltaY = currentY - startY
   
   if (deltaY > 0 && window.scrollY === 0) {
+    event.preventDefault()
     let pullReloaderTop = deltaY + -30
     let pullReloaderRotation = (pullReloaderTop / 150) * 360
     
