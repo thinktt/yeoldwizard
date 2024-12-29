@@ -57,7 +57,19 @@
       </span>
     </header>
 
+ 
+
     <main>
+      <span 
+        class="pull-reloader"
+        :class="{ 'pull-reloader-slide-back': pullReloaderIsSlidingBack }"  
+        :style="{ 
+          top: `${pullReloaderTop}px`, 
+          opacity: `${pullReloaderOpacity}`,
+          transform: `translateX(-50%) rotate(${pullReloaderRotation}deg)`}">
+        r
+      </span>
+
       <div class="nav-and-info"
         :class="{focus: infoMode == 'selected' || messageType !== 'none' || navIsOn, 'nav-is-on': navIsOn}">
         

@@ -53,6 +53,21 @@ body {
   touch-action: manipulation;
 }
 
+.pull-reloader {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  pointer-events: none;
+  color: gold;
+  font-size: 2em;
+}
+
+.pull-reloader-slide-back {
+  transition: top 0.3s ease;
+}
+
 .red {
   color: red; 
 }
