@@ -210,6 +210,7 @@ async function startApp(user) {
     provide() {
       return {
         isInPhoneMode: () => isInPhoneMode(),
+        scrollToBottom: () => scrollToBottom(),
       }
     },
     data() {

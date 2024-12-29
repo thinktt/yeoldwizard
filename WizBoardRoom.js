@@ -66,6 +66,7 @@ export default {
       endMessageIsOn: false,
     }
   },
+  inject: ["scrollToBottom", "isInPhoneMode"],
   provide() {
     return {
       score: computed(() => this.opponentScore),
@@ -147,7 +148,6 @@ export default {
 
       // capture the actual new moves
       const moves = newMoves.slice(oldMoves.length)
-      console.log(moves)
 
       // update the move fens with new moves
       for (const move of moves) {
@@ -211,6 +211,7 @@ export default {
     },
     showEndMessage() {
       this.endMessageIsOn = true
+      if (this.isInPhoneMode()) this.scrollToBottom()
     },
     hideEndMessage() {
       this.endMessageIsOn = false
