@@ -126,7 +126,7 @@ export default {
       // console.log('new status', newStatus, 'hasFreshMoves', this.hasFreshMoves)
       const endGameStatuses = ['mate', 'resign', 'draw']
       if (oldStatus === 'started' && endGameStatuses.includes(newStatus)) {
-        this.endMessageIsOn = true
+        this.showEndMessage()
       }
     },
     'game.moves'(newMoves, oldMoves) {
