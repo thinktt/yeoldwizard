@@ -27,6 +27,12 @@ const demoView = html`
 
     <h2 class="user-name">{{userName}}</h2>
     <div class="nav-buttons demo">
+      <button  v-if="soundIsMuted" title="toggle sound" class="sound-button off" @click="toggleSound">
+        &#xe60c;
+      </button>
+      <button v-else title="toggle sound" class="sound-button on" @click="toggleSound">
+        &#xe60d;
+      </button>
       <button @click="$emit('start-demo')" title="play demo">
         4
       </button>
@@ -75,7 +81,7 @@ const normalView = html`
         <button @click="$emit('route-back')" title="back" class="phone-nav" >
           &#xe05c;
         </button>
-
+    
         <button title="resign" @click="comfirmMessage = 'Resign'" id="resign-button">
           &#xe9cc;
         </button>
@@ -86,7 +92,7 @@ const normalView = html`
         <button v-else title="toggle sound" class="sound-button on" @click="toggleSound">
           &#xe60d;
         </button>
-        
+
         <button title="offer draw"  
           :class="{disabled: drawsAreOnHold}"
           @click="drawsAreOnHold ? null : comfirmMessage = 'Offer Draw'" 
@@ -94,7 +100,9 @@ const normalView = html`
           &#xe904;
         </button>
 
-
+        <button v-if="isInPhoneMode" title="reload" class="reload-button phone-nav" @click="reload">
+          r
+        </button>
       </template>
     
       <template v-else-if="!comfirmMessage && !isWaiting">
@@ -109,6 +117,9 @@ const normalView = html`
         </button>
         <button  v-else title="toggle sound" class="sound-button on" @click="toggleSound">
           &#xe60d;
+        </button>
+        <button v-if="isInPhoneMode" title="reload" class="reload-button" @click="reload">
+          r
         </button>
       </template>
     
@@ -142,6 +153,10 @@ const normalView = html`
       </button>
       <button  v-else title="toggle sound" class="sound-button on" @click="toggleSound">
         &#xe60d;
+      </button>
+
+      <button v-if="isInPhoneMode" title="reload" class="reload-button" @click="reload">
+        r
       </button>
       
     </div>
@@ -264,6 +279,9 @@ export default {
 
       this.soundIsMuted = true
       setSoundIsMuted(true) 
+    },
+    reload() {
+      window.location.reload()
     } 
   },
   name: 'WizBoardNav',

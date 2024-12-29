@@ -425,6 +425,25 @@ button.sound-button.on {
   padding-right: 0.6rem;
 }
 
+
+button.reload-button {
+  font-family: iconmoon;
+  background: transparent;
+  border-color: goldenrod;
+  font-size: 1.5rem;
+  padding: .5rem;
+  margin: .25rem;
+  border-style: solid;
+  color: goldenrod;
+  cursor: pointer;
+  border-width: .20rem;
+  border-radius: 2rem;
+  border: none;
+  font-weight: lighter;
+  margin-left: 0;
+}
+
+
 .game-status p {
   margin: 0;
   margin-bottom: .25rem;
