@@ -533,7 +533,12 @@ async function connectGame(game, onStart, onDone, onEarlyClose) {
       game.startStream()
     } 
     const algMove = cordToAlgebraMove(game.moves, move) 
-    await yowApi.addMove(game.id, game.moves.length, algMove)
+
+    let err
+    await yowApi.addMove(game.id, game.moves.length, algMove).catch(e => err = e)
+    if (err) {
+      console.error('failed to make move', err)
+    }
   }
   
   game.abort = async () => {

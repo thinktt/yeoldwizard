@@ -134,13 +134,31 @@ export default {
         this.hasFreshMoves = false
         return 
       }
-      if (newMoves.length > oldMoves.length) {
-        const newMove = newMoves[newMoves.length - 1]
-        this.boardState.move(newMove, { sloppy: true })
-        this.fensByMove.push(this.boardState.fen())
-        this.algebraMoves = this.boardState.history()
-        this.navIndex = this.game.moves.length
+      
+      // no actual new moves here
+      if (newMoves.length == oldMoves.length) {
+        return 
       }
+
+      // this should not happen
+      if (newMoves.length < oldMoves.length) {
+        throw new Error("moves have gone backwards!")
+      }
+
+      // capture the actual new moves
+      const moves = newMoves.slice(oldMoves.length)
+      console.log(moves)
+
+      // update the move fens with new moves
+      for (const move of moves) {
+        this.boardState.move(move, { sloppy: true })
+        this.fensByMove.push(this.boardState.fen())
+      }
+      
+      // update the nav index
+      this.algebraMoves = this.boardState.history()
+      this.navIndex = this.game.moves.length
+
     },
     'game.id'() {
       this.endMessageIsOn = false
