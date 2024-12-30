@@ -892,7 +892,9 @@ function scrollToTop() {
   })
 }
 
-function scrollToBottom() {
+async function scrollToBottom() {
+  // more hacky timing fixes
+  await new Promise(r => setTimeout(r, 100))
   window.scrollTo({
     top: document.documentElement.scrollHeight,
     behavior: 'smooth'

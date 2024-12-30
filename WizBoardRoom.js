@@ -211,7 +211,9 @@ export default {
     },
     showEndMessage() {
       this.endMessageIsOn = true
-      if (this.isInPhoneMode()) this.scrollToBottom()
+      if (this.isInPhoneMode()) {
+        this.scrollToBottom()
+      }
     },
     hideEndMessage() {
       this.endMessageIsOn = false
