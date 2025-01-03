@@ -140,7 +140,7 @@ const normalView = html`
     <wiz-game-status @click="showEndMessage" :game="game" :do-pop-spin="doPopSpin">
     </wiz-game-status>
     
-    <div v-if="game.status !=='started'">
+    <div v-if="game.status !=='started'" class="option-buttons">
       <button @click="$emit('route-back')" title="back" class="lichess-button phone-nav" >
         &#xe05c;
       </button>

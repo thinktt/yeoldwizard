@@ -221,7 +221,11 @@
     background-color: unset;
     position: relative;
     /* transition: height .5s linear; */
-    /* overflow: hidden; */
+    overflow: hidden;
+  }
+
+  .option-buttons {
+    margin: 1.5rem;
   }
 
   .game-done-message {
