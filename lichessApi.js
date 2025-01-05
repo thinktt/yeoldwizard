@@ -69,7 +69,6 @@ async function getSignInLink(codeVerifier) {
 async function getToken(code, codeVerifier) {
   // const codeVerifier = localStorage.getItem('codeVerifier')
   console.log('code verifier', codeVerifier)
-  console.log(localStorage)
   const url = 'https://lichess.org/api/token'
   const query =  `?code=${code}&redirect_uri=${redirectUri}`
   const body = {

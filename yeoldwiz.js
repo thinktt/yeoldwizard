@@ -48,7 +48,7 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
       window.location = `http://${devHost}` + query
 } else {
   await doAccountFlow()
-  await checkLegalStuff()
+  await preStart()
 }
 
 function clearQuery() {
@@ -76,6 +76,7 @@ async function doAccountFlow() {
   
   // no auth code was found, so we are done
   if (!authCode) {
+    console.log('no auth codes found, request is not a sign in')
     return
   }
 
@@ -92,64 +93,26 @@ async function doAccountFlow() {
   lichessApi.storeToken(token)
     
   err = null
-  const account = await lichessApi.getAccount().catch(e => err = e)
+  const lichessUser = await lichessApi.getAccount().catch(e => err = e)
   if (err) {
     console.error('failed to get account', err.message)
     localStorage.signInFailed = true
     return
   }
-    
-  console.log('Setting user ' + account.username + ' in local storage')
-  localStorage.user = account.id
-  localStorage.username = account.username
-  console.log('Successfully signed in as' + account.username)
-  
-  return
-}
 
-async function checkLegalStuff() {
-  const user = localStorage.user
-  const engineIsVerified = localStorage.engineIsVerified === 'true'
-  const disclaimerIsAccepted = localStorage.disclaimerIsAccepted === 'true'
-  // const botBrowsingIsSet = localStorage.botBrowsingIsSet === 'true'
-  const signInFailed = localStorage.signInFailed === 'true'
-  
-  // this allows the app to run singed out for bot browsing
-  if (!user && botBrowsingIsSet) {
-    localStorage.botBrowsingIsSet = false
-    botBrowsingStart()
-    return
-  }
-
-  // no user or sign in failed, so go to sign in page
-  if (!user || signInFailed ) {
-    redirectToSignIn()
-    return
-  }
-
-  // has the user done the legal stuff, if so we're good
-  if (engineIsVerified && disclaimerIsAccepted) {
-    console.log(user + ' has done the legal stuff')
-    preStart()
-    return
-  }
-
-  // let's check yowApi to see if the user has done the legal stuff
-  console.log('Checking yowApi for user ' + user)
-  let err = null
-  const yowUser = await yowApi.getUser(user).catch(e => err = e)
+  // lichess is signed in, now check yow account
+  console.log('Checking yowApi for user ' + lichessUser.id)
+  const yowUser = await yowApi.getUser(lichessUser.id).catch(e => err = e)
   if (err) {
     console.error('failed to get yow user', err.message)
-    redirectToSignIn()
+    // redirectToSignIn()
     return
   }
-
-  // user is registered so mark legal stuff as done
-  console.log(yowUser)
-  localStorage.engineIsVerified = true
-  localStorage.disclaimerIsAccepted = true
-
-  preStart()
+    
+  console.log('Setting user ' + lichessUser.username + ' in local storage')
+  localStorage.user = lichessUser.id
+  localStorage.username = lichessUser.username
+  console.log('Successfully signed in as ' + lichessUser.username)
 }
 
 
@@ -182,9 +145,16 @@ async function preStart() {
     app.groupsAreHidden = false
     return
   }
-  
-  const app = await startApp('') // start with no user
-  app.groupsAreHidden = false
+
+  // this allows the app to run singed out for bot browsing
+  if (botBrowsingIsSet) {
+    localStorage.botBrowsingIsSet = false
+    botBrowsingStart()
+    return
+  }
+
+  // there is no user, and we are not bot browsing, go to sign in
+  redirectToSignIn()
 }
 
 
