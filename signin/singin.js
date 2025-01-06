@@ -27,7 +27,7 @@ const template = html`
         Register a new account to get started or
         Sign in with Lichess if you already have an account.
       </h2>
-      <a class="button yellow" @click="doRegistartion">
+      <a class="button yellow" @click="tryRegistration">
         Register a New Account
       </a> <br>
       <a class="button blue" :href="signInLink">
@@ -91,13 +91,11 @@ const template = html`
 
     <div v-else-if="dialog === 'lichess'">
       <h2>
-         Let's connect to lichess to fisnish your registration. 
          Ye old Wizard uses Lichess accounts to track your games and intigrate 
          with lichess tools.
       </h2>
       
-      <!-- <a class="button blue" :href="signInLink"> -->
-      <a class="button blue" @click="dialog = 'done'">
+      <a class="button blue" :href="signInLink">
         Sign In to existing account
       </a> <br>
       <a class="button yellow"  @click="registerWithLichess">
@@ -108,9 +106,12 @@ const template = html`
     <div v-else-if="dialog === 'redirecting'">
       <h2>
         Dicrecting you to lichess registration.<br> 
-        Return to Ye Old Wizard when you have registered
+        Return to Ye Old Wizard when you have registered.
       </h2>
-      <div class="icon knight spin">♞</div>
+      <div v-if="isSpinning" class="icon knight spin">♞</div>
+      <a v-else class="button blue" :href="signInLink">
+        Sign In To Lichess
+      </a> <br>
     </div>
 
     
@@ -120,7 +121,7 @@ const template = html`
         On the next screen you will see all the bots you can play. 
         Select the bot you want to play and then select "Play" 
       </h2>
-      <a class="button blue" :href="rootPath">
+      <a class="button blue" @click="finishRegistration">
         Continue
       </a>
     </div>
@@ -139,6 +140,17 @@ const template = html`
       </a> <br>
     </div>
 
+    <div v-else-if="dialog === 'badRegistration'" class="error">
+      <h2>
+        There was an error registering user {{lichessId}}. Please
+        try again. 
+      </h2>
+      <a class="button yellow" @click="dialog = 'start'">
+        OK
+      </a> <br>
+    </div>
+
+
   </main>
 `
 
@@ -148,6 +160,7 @@ const app = createApp({
       disclaimerIsAccepted: localStorage.disclaimerIsAccepted === 'true',
       engineIsVerified: localStorage.engineIsVerified === 'true',
       signInFailed: localStorage.signInFailed === 'true',
+      lichessId: localStorage.lichessId,
       user: localStorage.user,
       mw: localStorage.mw,
       slots: 1,
@@ -157,9 +170,10 @@ const app = createApp({
       verificationFailed: false,
       rootPath: window.location.origin,
       isHidden: true,
+      isSpinning: false,
    }
   },  
-  beforeMount() {
+  async beforeMount() {
     // there's no reason to be here go to the main app
     if (this.user && this.engineIsVerified && this.disclaimerIsAccepted) {
       localStorage.signInFailed = false
@@ -167,12 +181,18 @@ const app = createApp({
       return
     }
     this.tryMagicWord()
+
     // clear any local storage error
     localStorage.signInFailed = false
+    
+    if (this.lichessId && this.disclaimerIsAccepted && this.engineIsVerified) {
+      await this.tryRegistration()
+    }
     this.isHidden = false
+    
   },
   methods: {
-    doRegistartion() {
+    async tryRegistration() {
       if (this.slots <= 0) {
         this.dialog = 'noSlots'
         return
@@ -188,15 +208,30 @@ const app = createApp({
         return
       }
 
-      this.dialog = 'lichess'
+      if (!this.lichessId) {
+        this.dialog = 'lichess'
+        return 
+      }
 
+      let err = null 
+      await this.registerUser().catch(e => err = e) 
+      if (err) {
+        console.log(err) 
+        this.dialog = 'badRegistration'
+        this.clearRegistration()
+        return 
+      }
+
+      this.dialog = 'done'
       
     },
     async registerWithLichess() {
       this.dialog = 'redirecting'
+      this.isSpinning = true
       await new Promise(r => setTimeout(r, 1000))
       window.open('https://lichess.org/signup', '_blank')
-      this.dialog = 'lichess'
+      await new Promise(r => setTimeout(r, 1000))
+      this.isSpinning = false
     },
     accept() {
       this.view = 'signIn'
@@ -248,6 +283,8 @@ const app = createApp({
 
         // stash the validated kingBlob
         localStorage.kingBlob = kingBlob
+        localStorage.engineIsVerified = true
+        this.engineIsVerified = true
 
         this.dialog = 'lichess'
       })
@@ -255,17 +292,31 @@ const app = createApp({
     },
     async registerUser() {
       // upload user info and king blob for backend check and registration
-      const id = localStorage.user
+      const id = this.lichessId
+      const disclaimerIsAccepted = this.disclaimerIsAccepted
       const kingBlob = localStorage.kingBlob
-      const user = { id, kingBlob, hasAcceptedDisclaimer: true }
+      const user = { id, kingBlob, hasAcceptedDisclaimer: disclaimerIsAccepted }
       let err = null
       const res = await yowApi.addUser(user).catch(e => err = e)
       if (err) {
-        console.log('error uploading king', err.message)
-        this.verificationFailed = true
-        return
+        throw err 
       }
-      this.engineIsVerified = true
+    },
+    finishRegistration() {
+      this.clearRegistration()
+      window.location = this.rootPath
+    },
+    clearRegistration() {
+      localStorage.removeItem('disclaimerIsAccepted')
+      localStorage.removeItem('engineIsVerified')
+      localStorage.removeItem('kingBlob')
+      // localStorage.removeItem('user')
+      // localStorage.removeItem('lichessId')
+      this.disclaimerIsAccepted = false;
+      this.engineIsVerified = false;
+      this.kingBlob = null;
+      // this.user = null;
+      // this.lichessId = null;
     },
   },
   template

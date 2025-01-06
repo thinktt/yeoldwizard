@@ -110,15 +110,18 @@ async function setupAccounts() {
     return
   }
 
+  // store lichess id for registration if no yow user exists yet
+  localStorage.lichessId = lichessUser.id
+
   // lichess is signed in, now check yow account
   console.log('Checking yowApi for user ' + lichessUser.id)
   const yowUser = await yowApi.getUser(lichessUser.id).catch(e => err = e)
   if (err) {
-    console.error('failed to get yow user', err.message)
+    console.log('failed to get yow user', err.message)
+    localStorage.removeItem('user')
+    localStorage.removeItem('username')
     return
   }
-  console.log(yowUser)
-
     
   console.log('Setting user ' + lichessUser.username + ' in local storage')
   localStorage.user = lichessUser.id
@@ -546,6 +549,7 @@ async function startApp(user) {
         delete window.localStorage.user
         delete window.localStorage.username
         delete window.localStorage.tokens
+        delete window.localStorage.lichessId
         window.localStorage.lastCmp = 'Wizard'
         this.goToCmp('Wizard')
         this.games = {}
