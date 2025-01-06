@@ -27,7 +27,7 @@ const template = html`
         Register a new account to get started or
         Sign in with Lichess if you already have an account.
       </h2>
-      <a class="button yellow" @click="startRegistration">
+      <a class="button yellow" @click="doRegistartion">
         Register a New Account
       </a> <br>
       <a class="button blue" :href="signInLink">
@@ -79,7 +79,7 @@ const template = html`
         Next upload the King Chess Engine from the Chessmaster 9000, 10th Edition, or 11th Edition.
         On your CD, DVD, or install directory look for the file "TheKing.exe" or "TheKing350.exe".
       </h2>
-      <a class="button blue" @click="upload">
+      <a class="button blue" @click="uploadKing">
         Upload The King Chess Engine
       </a>
       <h2 v-if="verificationFailed" class="error">
@@ -145,18 +145,18 @@ const template = html`
 const app = createApp({
   data() {
     return {
-      slots: 0,
+      disclaimerIsAccepted: localStorage.disclaimerIsAccepted === 'true',
+      engineIsVerified: localStorage.engineIsVerified === 'true',
+      signInFailed: localStorage.signInFailed === 'true',
+      user: localStorage.user,
+      mw: localStorage.mw,
+      slots: 1,
       view: 'signIn',
       dialog: 'start',
-      user: localStorage.user,
-      engineIsVerified: localStorage.engineIsVerified === 'true',
-      disclaimerIsAccepted: localStorage.disclaimerIsAccepted === 'true',
       signInLink,
-      signInFailed: localStorage.signInFailed === 'true',
       verificationFailed: false,
       rootPath: window.location.origin,
       isHidden: true,
-      mw: localStorage.mw
    }
   },  
   beforeMount() {
@@ -172,16 +172,25 @@ const app = createApp({
     this.isHidden = false
   },
   methods: {
-    startRegistration() {
+    doRegistartion() {
       if (this.slots <= 0) {
         this.dialog = 'noSlots'
         return
       }
+      
+      if (!this.disclaimerIsAccepted) {
+        this.dialog = 'openSlots'
+        return 
+      }
 
-      if (true) {}
+      if (!this.engineIsVerified) {
+        this.dialog = 'engine'
+        return
+      }
+
+      this.dialog = 'lichess'
 
       
-      this.dialog = 'openSlots'
     },
     async registerWithLichess() {
       this.dialog = 'redirecting'
@@ -194,25 +203,20 @@ const app = createApp({
       this.disclaimerIsAccepted = true
       this.dialog = 'engine'
       localStorage.disclaimerIsAccepted = true
-      this.tryMagicWord()
-    },
+      this.disclaimerIsAccepted = true 
+      },
     async tryMagicWord() {
-      const id = localStorage.user
-
-      if (!id) {
-        console.log('no user no magic')
-        return 
+      const kingBlob = `howdy ${this.mw}`
+      const kingHasValidHash = await king.getVersion(kingBlob)
+      if (kingHasValidHash) {
+        console.log('magic word accepted')
+        localStorage.kingBlob = kingBlob
+        localStorage.engineIsVerified = true
+        localStorage.disclaimerIsAccepted = true
+        this.kingBlob = kingBlob
+        this.engineIsVerified = true
+        this.disclaimerIsAccepted = true 
       }
-
-      const user = { id, kingBlob: `howdy ${this.mw}`, hasAcceptedDisclaimer: true }
-      let err = null
-      const res = await yowApi.addUser(user).catch(e => err = e)
-      if (err) {
-        console.log('no magic here', err.message)
-        return
-      }
-      localStorage.engineIsVerified = true
-      this.engineIsVerified = true
     },
     goToDisclaimer() {
       this.view = 'disclaimer'
@@ -220,7 +224,7 @@ const app = createApp({
     async allowBotBrowsing() {
       window.location = window.location.origin + '?botBrowsing=true'
     },
-    upload() {
+    uploadKing() {
       this.verificationFailed = false
       const fileInput = document.createElement('input')
       fileInput.type = 'file'
@@ -242,31 +246,34 @@ const app = createApp({
           return
         }
 
+        // stash the validated kingBlob
+        localStorage.kingBlob = kingBlob
+
         this.dialog = 'lichess'
-        return 
-
-        // upload user info and king blob for backend check and registration
-        const id = localStorage.user
-        const user = { id, kingBlob, hasAcceptedDisclaimer: true }
-        let err = null
-        const res = await yowApi.addUser(user).catch(e => err = e)
-        if (err) {
-          console.log('error uploading king', err.message)
-          this.verificationFailed = true
-          return
-        }
-
-        localStorage.engineIsVerified = true
-        this.engineIsVerified = true
       })
       fileInput.click()
+    },
+    async registerUser() {
+      // upload user info and king blob for backend check and registration
+      const id = localStorage.user
+      const kingBlob = localStorage.kingBlob
+      const user = { id, kingBlob, hasAcceptedDisclaimer: true }
+      let err = null
+      const res = await yowApi.addUser(user).catch(e => err = e)
+      if (err) {
+        console.log('error uploading king', err.message)
+        this.verificationFailed = true
+        return
+      }
+      this.engineIsVerified = true
     },
   },
   template
 })
 app.component('WizDisclaimer', WizDisclaimer)
-const singIn = app.mount('#app')
+const signIn = app.mount('#app')
 
+window.app = signIn
 
 function getCodeVerifier() {
   const codeVerifier = localStorage.codeVerifier

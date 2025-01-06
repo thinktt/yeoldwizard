@@ -47,7 +47,8 @@ if (localStorage.redirectToDev === 'true' && window.location.search &&
       const query = window.location.search 
       window.location = `http://${devHost}` + query
 } else {
-  await doAccountFlow()
+  await doAuthFlow()
+  await setupAccounts()
   await preStart()
 }
 
@@ -59,7 +60,7 @@ function redirectToSignIn() {
   window.location = window.location.origin + '/signin'
 }
 
-async function doAccountFlow() {
+async function doAuthFlow() {
   // check query for botBrowsing
   if (window.location.search.includes('botBrowsing=true')) {
     clearQuery()
@@ -87,16 +88,25 @@ async function doAccountFlow() {
   const token = await lichessApi.getToken(code, codeVerifier).catch(e => err = e)
   if (err) {
     console.error('failed to get token', err.message)
-    localStorage.signInFailed = true
+    redirectToSignIn()
+    // localStorage.signInFailed = true
     return
   }
   lichessApi.storeToken(token)
-    
-  err = null
+}
+
+async function setupAccounts() {
+
+  // no lichess id singed in so no accounts to setup
+  if (!localStorage.tokens) {
+    return
+  } 
+
+  let err = null
   const lichessUser = await lichessApi.getAccount().catch(e => err = e)
   if (err) {
     console.error('failed to get account', err.message)
-    localStorage.signInFailed = true
+    // localStorage.signInFailed = true
     return
   }
 
@@ -105,16 +115,16 @@ async function doAccountFlow() {
   const yowUser = await yowApi.getUser(lichessUser.id).catch(e => err = e)
   if (err) {
     console.error('failed to get yow user', err.message)
-    // redirectToSignIn()
     return
   }
+  console.log(yowUser)
+
     
   console.log('Setting user ' + lichessUser.username + ' in local storage')
   localStorage.user = lichessUser.id
   localStorage.username = lichessUser.username
   console.log('Successfully signed in as ' + lichessUser.username)
 }
-
 
 async function botBrowsingStart() {
   const app = await startApp('') // start with no user
@@ -123,7 +133,7 @@ async function botBrowsingStart() {
 }
 
 async function preStart() {
-  // User is already signed in and stored in localstorage
+  // User is signed in and stored, start the app
   if (window.localStorage.user) {
 
     console.log('User ' + window.localStorage.user + ' found')
@@ -146,7 +156,7 @@ async function preStart() {
     return
   }
 
-  // this allows the app to run singed out for bot browsing
+  // there is no user but bot browsing is set
   if (botBrowsingIsSet) {
     localStorage.botBrowsingIsSet = false
     botBrowsingStart()

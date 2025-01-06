@@ -36,7 +36,7 @@ if (localStorage.tokens) {
   tokens = JSON.parse(localStorage.tokens)
   console.log('token found')
 } else {
-   console.log('no api tokens found for api')
+   console.log('no api tokens found for lichess api')
 }
 
 function storeToken(tokenToSet) {
